@@ -3,6 +3,7 @@
 import unittest
 from utils import request_unittest, request_post
 from config import *
+import sys
 
 class test_wallet_info_api(request_unittest):
     @classmethod
@@ -22,6 +23,7 @@ class test_wallet_info_api(request_unittest):
             "id":1
         }
         request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
 
     @classmethod
     def tearDownClass(self):
@@ -73,6 +75,14 @@ class test_wallet_info_api(request_unittest):
         self.request_post_result_asset_is_none(req_data)
 
     def test_set_password(self):
+        req_data = {
+            "jsonrpc": "2.0",
+            "method": "unlock",
+            "params": [wallet_password],
+            "id":1
+        }
+        self.request_post(req_data)
+
         req_data = {
             "jsonrpc": "2.0",
             "method": "set_password",
@@ -210,6 +220,7 @@ class test_wallet_info_api(request_unittest):
         self.assertTrue(private_key, result['wif_priv_key'])
         self.assertTrue(public_key, result['pub_key'])
 
+    @unittest.skipIf(True, "master branch no api")
     def test_suggest_brain_address_key(self):
         req_data = {
             "jsonrpc": "2.0",

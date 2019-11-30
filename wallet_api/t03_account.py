@@ -3,6 +3,7 @@
 import unittest
 from utils import request_unittest, request_post
 from config import *
+import sys
 
 class test_wallet_account_api(request_unittest):
     @classmethod
@@ -31,6 +32,25 @@ class test_wallet_account_api(request_unittest):
         }
         request_post(req_data)
 
+        req_data = {
+            "jsonrpc": "2.0",
+            "method": "get_account",
+            "params": [test_account],
+            "id":1
+        }
+        account = request_post(req_data)["result"]
+        self.test_account_id = account["id"]
+
+        req_data = {
+            "jsonrpc": "2.0",
+            "method": "get_account",
+            "params": [test_witness_account],
+            "id":1
+        }
+        account = request_post(req_data)["result"]
+        self.test_witness_account_id = account["id"]
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
+
     @classmethod
     def tearDownClass(self):
         req_data = {
@@ -40,6 +60,7 @@ class test_wallet_account_api(request_unittest):
             "id":1
         }
         request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
 
     def test_list_my_accounts(self):
         req_data = {
@@ -217,7 +238,8 @@ class test_wallet_account_api(request_unittest):
         }
         self.request_post(req_data)
 
-    def test_transfer(self):
+    @unittest.skipIf(True, " master branch no")
+    def test_transfer_old(self):
         req_data = {
             "jsonrpc": "2.0",
             "method": "transfer",
@@ -226,11 +248,50 @@ class test_wallet_account_api(request_unittest):
         }
         self.request_post(req_data)
 
-    def test_transfer2(self):
+    @unittest.skipIf(True, " master branch no")
+    def test_transfer2_old(self):
         req_data = {
             "jsonrpc": "2.0",
             "method": "transfer2",
             "params": [test_account, test_witness_account, 10, 'COCOS', 'test transfer2'],
+            "id":1
+        }
+        self.request_post(req_data)
+
+    def test_transfer_memo(self):
+        amount = 10
+        req_data = {
+            "jsonrpc": "2.0",
+            "method": "transfer",
+            "params": [test_account, test_witness_account, amount, 'COCOS', ['test transfer', 'false'], 'true'],
+            "id":1
+        }
+        self.request_post(req_data)
+
+        amount = 0.0017598
+        req_data = {
+            "jsonrpc": "2.0",
+            "method": "transfer",
+            "params": [test_account, test_witness_account, "%.5f"%(amount), 'COCOS', ['test transfer', 'true'], 'true'],
+            "id":1
+        }
+        self.request_post(req_data)
+
+    def test_transfer2_memo(self):
+        amount = 10
+        req_data = {
+            "jsonrpc": "2.0",
+            "method": "transfer2",
+            "params": [test_account, test_witness_account, amount, 'COCOS', ['test transfer2', 'true']],
+            "id":1
+        }
+        self.request_post(req_data)
+
+        amount = 0.0017598
+        req_data = {
+            "jsonrpc": "2.0",
+            "method": "transfer2",
+            "params": [test_account, test_witness_account, "%.5f"%(amount), 'COCOS', ['test transfer2', 'false']],
             "id":1
         }
         self.request_post(req_data)
@@ -256,12 +317,24 @@ class test_wallet_account_api(request_unittest):
         }
         self.request_post(req_data)
 
-    def test_update_collateral_for_gas(self):
+
+    @unittest.skipIf(True, " master branch no by account name")
+    def test_update_collateral_for_gas_by_account_name(self):
         amount = 10*10**5
         req_data = {
         "jsonrpc": "2.0",
         "method": "update_collateral_for_gas",
         "params": [test_account, test_witness_account, amount, 'true'],
+        "id":1
+        }
+        self.request_post(req_data)
+
+    def test_update_collateral_for_gas_by_account_id(self):
+        amount = 10*10**5
+        req_data = {
+        "jsonrpc": "2.0",
+        "method": "update_collateral_for_gas",
+        "params": [self.test_account_id, self.test_witness_account_id, amount, 'true'],
         "id":1
         }
         self.request_post(req_data)
