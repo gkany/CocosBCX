@@ -65,7 +65,7 @@ class test_wallet_contract_api(request_unittest):
         }
         self.request_post(req_data)
 
-    @unittest.skipIf(True, 'filename need cli_wallet abspath')
+    @unittest.skipIf(True, 'no support')
     def test_create_contract_from_file(self):
         #generate random contract_name by suggest_brain_key
         tokens = generate_random_words()

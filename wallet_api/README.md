@@ -107,9 +107,11 @@
 
 ## 9. 文件
 ``` text         
-(create_file)(add_file_relate_account)(file_signature)(propose_relate_parent_file)
+(create_file)(add_file_relate_account)(file_signature)
 
 (list_account_created_file)(lookup_file)
+
+(propose_relate_parent_file)
 ```
 
 

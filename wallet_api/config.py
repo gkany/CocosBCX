@@ -23,6 +23,7 @@ test_committee_account = 'init5'
 test_committee_account_public_key = 'COCOS8LQSvCgZvwW44iJuCBkVmpR3uUh6J2VFkBJScA3vJq3gXTLCLr'
 test_committee_account_private_key = '5KVEqMvCQf5CP4Stkd9CW479uwQnDbhCiFxbdRLXgkxS3RchZ6X'
 
+test_nh_creator = "creator2"
 
 core_asset = "COCOS"
 asset_gas = "GAS"

@@ -67,3 +67,13 @@ restricted_enum = [
         "whitelist_markets",                   #3,
         "blacklist_markets",                   #4
 ]
+
+
+# enum class nh_asset_list_type
+nh_asset_list_type = [
+    "only_active"         ,                    # = 0,  // target with NHA active permission only 
+    "only_owner"          ,                    # = 1,  // target with NHA owner permission only 
+    "all_active"          ,                    # = 2,  // target with NHA active permission
+    "all_owner"           ,                    # = 3,  // target with NHA active permission
+    "owner_and_active"    ,                    # = 4   // target with NHA both active and owner permission
+]
