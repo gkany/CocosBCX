@@ -377,22 +377,239 @@ class test_database_api(request_unittest):
 
     #    // Witnesses
     #    (get_witnesses)(get_witness_by_account)(lookup_witness_accounts)(get_witness_count)
+    def test_get_witnesses(self):
+        committee_ids = []
+        for index in range(1, 11, 3):
+            committee_id = "1.5.{}".format(index)
+            committee_ids.append(committee_id)
+        req_data = {
+            "method": "get_witnesses",
+            "params": [committee_ids],
+            "id":1
+        }
+        self.request_post(req_data)
+
+    def test_get_witness_by_account(self):
+        committee_accounts = [test_witness_account]
+        for account in committee_accounts:
+            req_data = {
+                "method": "get_witness_by_account",
+                "params": [account],
+                "id":1
+            }
+            self.request_post(req_data)
+
+    def test_lookup_witness_accounts(self):
+        req_data = {
+            "method": "lookup_witness_accounts",
+            "params": ["", 5],
+            "id":1
+        }
+        self.request_post(req_data)
+
+    def test_get_witness_count(self):
+        req_data = {
+            "method": "get_witness_count",
+            "params": [],
+            "id":1
+        }
+        self.request_post(req_data)
 
     #    // Committee members
     #    (get_committee_members)(get_committee_member_by_account)(lookup_committee_member_accounts)(get_committee_count)
+    # vector<optional<committee_member_object>> get_committee_members(const vector<committee_member_id_type> &committee_member_ids) const;
+    # fc::optional<committee_member_object> get_committee_member_by_account(account_id_type account) const;
+    # map<string, committee_member_id_type> lookup_committee_member_accounts(const string &lower_bound_name, uint32_t limit) const;
+    # uint64_t get_committee_count() const;
+    def test_get_committee_members(self):
+        committee_ids = []
+        for index in range(1, 11, 3):
+            committee_id = "1.6.{}".format(index)
+            committee_ids.append(committee_id)
+        req_data = {
+            "method": "get_committee_members",
+            "params": [committee_ids],
+            "id":1
+        }
+        self.request_post(req_data)
+
+    def test_get_committee_member_by_account(self):
+        committee_accounts = [test_committee_account]
+        for account in committee_accounts:
+            req_data = {
+                "method": "get_committee_member_by_account",
+                "params": [account],
+                "id":1
+            }
+            self.request_post(req_data)
+
+    def test_lookup_committee_member_accounts(self):
+        req_data = {
+            "method": "lookup_committee_member_accounts",
+            "params": ["", 5],
+            "id":1
+        }
+        self.request_post(req_data)
+
+    def test_get_committee_count(self):
+        req_data = {
+            "method": "get_committee_count",
+            "params": [],
+            "id":1
+        }
+        self.request_post(req_data)
 
     #    // workers
     #    (get_all_workers)
+    def test_get_all_workers(self):
+        req_data = {
+            "method": "get_all_workers",
+            "params": [],
+            "id":1
+        }
+        self.request_post(req_data)
 
     #    // Votes
     #    (lookup_vote_ids)
+    def test_lookup_vote_ids(self):
+        votes = ["1:0", "1:1"]
+        req_data = {
+            "method": "lookup_vote_ids",
+            "params": [votes],
+            "id":1
+        }
+        self.request_post(req_data)
 
     #    // Authority / validation
     #    (get_transaction_hex)(get_required_signatures)(get_potential_signatures)(get_potential_address_signatures)(verify_authority)(verify_account_authority)(validate_transaction)
+    def test_get_transaction_hex(self):
+        req_data = {
+            "method": "transfer",
+            "params": [test_account, test_witness_account, "0.1", core_asset, ["node_rpc test get_transaction_hex", 'false'], 'true'],
+            "id":1
+        }
+        result = request_post(req_data, is_wallet_rpc=True)['result']
+        trx = result[1]
+        account_id = "1.2.{}".format(index)
+        req_data = {
+            "method": "get_transaction_hex",
+            "params": [trx],
+            "id":1
+        }
+        self.request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
+
+    def test_get_required_signatures(self):
+        req_data = {
+            "method": "transfer",
+            "params": [test_account, test_witness_account, "0.1", core_asset, ["node_rpc test get_required_signatures", 'false'], 'true'],
+            "id":1
+        }
+        result = request_post(req_data, is_wallet_rpc=True)['result']
+        trx = result[1]
+        req_data = {
+            "method": "get_required_signatures",
+            "params": [trx, [test_witness_account_public_key]],
+            "id":1
+        }
+        self.request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
+
+    def test_get_potential_signatures(self):
+        req_data = {
+            "method": "transfer",
+            "params": [test_account, test_witness_account, "0.1", core_asset, ["node_rpc test get_potential_signatures", 'false'], 'true'],
+            "id":1
+        }
+        result = request_post(req_data, is_wallet_rpc=True)['result']
+        trx = result[1]
+        req_data = {
+            "method": "get_potential_signatures",
+            "params": [trx],
+            "id":1
+        }
+        self.request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
+
+    # get_potential_address_signatures
+    def test_get_potential_address_signatures(self):
+        req_data = {
+            "method": "transfer",
+            "params": [test_account, test_witness_account, "0.1", core_asset, ["node_rpc test get_potential_address_signatures", 'false'], 'true'],
+            "id":1
+        }
+        result = request_post(req_data, is_wallet_rpc=True)['result']
+        trx = result[1]
+        req_data = {
+            "method": "get_potential_address_signatures",
+            "params": [trx],
+            "id":1
+        }
+        self.request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
+
+    # verify_authority
+    def test_verify_authority(self):
+        req_data = {
+            "method": "transfer",
+            "params": [test_account, test_witness_account, "0.1", core_asset, ["node_rpc test verify_authority", 'false'], 'true'],
+            "id":1
+        }
+        result = request_post(req_data, is_wallet_rpc=True)['result']
+        trx = result[1]
+        req_data = {
+            "method": "verify_authority",
+            "params": [trx],
+            "id":1
+        }
+        self.request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
+
+    def test_verify_account_authority(self):
+        req_data = {
+            "method": "verify_account_authority",
+            "params": [test_account, [test_account_public_key]],
+            "id":1
+        }
+        self.request_post(req_data)
+
+        req_data = {
+            "method": "verify_account_authority",
+            "params": [test_account, [test_account_public_key, test_witness_account_public_key]],
+            "id":1
+        }
+        self.request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
+
+    # validate_transaction
+    def test_validate_transaction(self):
+        req_data = {
+            "method": "transfer",
+            "params": [test_account, test_witness_account, "0.1", core_asset, ["node_rpc test verify_authority", 'false'], 'true'],
+            "id":1
+        }
+        result = request_post(req_data, is_wallet_rpc=True)['result']
+        trx = result[1]
+        req_data = {
+            "method": "validate_transaction",
+            "params": [trx],
+            "id":1
+        }
+        self.request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
 
     #    // Proposed transactions
     #    (get_proposed_transactions))
-
+    def test_get_proposed_transactions(self):
+        for index in range(5, 16, 2):
+            account_id = "1.2.{}".format(index)
+            req_data = {
+                "method": "get_proposed_transactions",
+                "params": [account_id],
+                "id":1
+            }
+            self.request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
 
 
 
