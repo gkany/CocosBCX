@@ -371,6 +371,52 @@ class test_database_api(request_unittest):
        
     #    // Assets
     #    (get_assets)(list_assets)(lookup_asset_symbols)(list_asset_restricted_objects)
+    # vector<optional<asset_object>> get_assets(const vector<asset_id_type> &asset_ids) const;
+    # vector<asset_object> list_assets(const string &lower_bound_symbol, uint32_t limit) const;
+    # vector<optional<asset_object>> lookup_asset_symbols(const vector<string> &symbols_or_ids) const;
+    # vector<asset_restricted_object> database_api::list_asset_restricted_objects(const asset_id_type asset_id, restricted_enum restricted_type) const
+
+    def test_get_assets(self):
+        asset_ids = []
+        for index in range(1, 11, 3):
+            asset_id = "1.3.{}".format(index)
+            asset_ids.append(asset_id)
+        req_data = {
+            "method": "get_assets",
+            "params": [asset_ids],
+            "id":1
+        }
+        self.request_post(req_data)
+
+    def test_list_assets(self):
+        symbols_or_ids = ["GAS", "1.3.0"]
+        req_data = {
+            "method": "list_assets",
+            "params": [symbols_or_ids],
+            "id":1
+        }
+        self.request_post(req_data)
+
+    def test_lookup_asset_symbols(self):
+        lower_bound_symbol = ""
+        limit = 5
+        req_data = {
+            "method": "lookup_asset_symbols",
+            "params": [lower_bound_symbol, limit],
+            "id":1
+        }
+        self.request_post(req_data)
+
+    def test_list_asset_restricted_objects(self):
+        for index in range(0, 3):
+            asset_id = "1.3.{}".format(index)
+            for restricted_index in range(0, len(restricted_enum)):
+                req_data = {
+                    "method": "list_asset_restricted_objects",
+                    "params": [asset_id, restricted_index],
+                    "id":1
+                }
+                self.request_post(req_data)
 
     #    // Markets / feeds
     #    (get_order_book)(estimation_gas)(get_limit_orders)(get_call_orders)(get_settle_orders)(get_margin_positions)(get_collateral_bids)(subscribe_to_market)(unsubscribe_from_market)(get_ticker)(get_24_volume)(get_trade_history)(get_trade_history_by_sequence)
