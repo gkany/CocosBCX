@@ -75,6 +75,7 @@ class test_database_api(request_unittest):
     #    (get_block_header)(get_block_header_batch)(get_block)(get_transaction)(get_recent_transaction_by_id)
 
     #   optional<block_header> get_block_header(uint32_t block_num) const;
+    @unittest.skipIf(True, "test other")
     def test_get_block_header(self):
         for block_num in range(10, 100, 20):
             req_data = {
@@ -86,6 +87,7 @@ class test_database_api(request_unittest):
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
     #   map<uint32_t, optional<block_header>> get_block_header_batch(const vector<uint32_t> block_nums) const;
+    @unittest.skipIf(True, "test other")
     def test_get_block_header_batch(self):
         req_data = {
             "method": "get_block_header_batch",
@@ -96,6 +98,7 @@ class test_database_api(request_unittest):
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
     #   optional<signed_block> get_block(uint32_t block_num) const;
+    @unittest.skipIf(True, "test other")
     def test_get_block(self):
         for block_num in range(10, 100, 20):
             req_data = {
@@ -107,6 +110,7 @@ class test_database_api(request_unittest):
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
     #   processed_transaction get_transaction(uint32_t block_num, uint32_t trx_in_block) const;
+    @unittest.skipIf(True, "test other")
     def test_get_transaction(self):
         req_data = {
             "method": "transfer",
@@ -135,6 +139,7 @@ class test_database_api(request_unittest):
 
 
     #   optional<signed_transaction> get_recent_transaction_by_id(const string &id) const;
+    @unittest.skipIf(True, "test other")
     def test_get_recent_transaction_by_id(self):
         req_data = {
             "method": "transfer",
@@ -155,6 +160,7 @@ class test_database_api(request_unittest):
 
     #    // Globals
     #    (get_chain_properties)(get_global_properties)(get_config)(get_chain_id)(get_dynamic_global_properties)
+    @unittest.skipIf(True, "test other")
     def test_get_chain_properties(self):
         req_data = {
             "method": "get_chain_properties",
@@ -164,6 +170,7 @@ class test_database_api(request_unittest):
         self.request_post(req_data)
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
+    @unittest.skipIf(True, "test other")
     def test_get_global_properties(self):
         req_data = {
             "method": "get_global_properties",
@@ -173,6 +180,7 @@ class test_database_api(request_unittest):
         self.request_post(req_data)
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
+    @unittest.skipIf(True, "test other")
     def test_get_config(self):
         req_data = {
             "method": "get_config",
@@ -182,6 +190,7 @@ class test_database_api(request_unittest):
         self.request_post(req_data)
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
+    @unittest.skipIf(True, "test other")
     def test_get_chain_id(self):
         req_data = {
             "method": "get_chain_id",
@@ -191,6 +200,7 @@ class test_database_api(request_unittest):
         self.request_post(req_data)
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
+    @unittest.skipIf(True, "test other")
     def test_get_dynamic_global_properties(self):
         req_data = {
             "method": "get_dynamic_global_properties",
@@ -203,6 +213,7 @@ class test_database_api(request_unittest):
     #    // Keys
     #    (get_key_references)(is_public_key_registered)(get_signature_keys)
     #   vector<vector<account_id_type>> get_key_references(vector<public_key_type> key) const;
+    @unittest.skipIf(True, "test other")
     def test_get_key_references(self):
         req_data = {
             "method": "get_key_references",
@@ -212,6 +223,7 @@ class test_database_api(request_unittest):
         self.request_post(req_data)
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
+    @unittest.skipIf(True, "test other")
     def test_is_public_key_registered(self):
         req_data = {
             "method": "is_public_key_registered",
@@ -221,6 +233,7 @@ class test_database_api(request_unittest):
         self.request_post(req_data)
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
+    @unittest.skipIf(True, "test other")
     def test_get_signature_keys(self):
         req_data = {
             "method": "transfer",
@@ -240,6 +253,7 @@ class test_database_api(request_unittest):
     #    // Accounts  
     #    (get_accounts)(get_full_accounts)(get_account_by_name)(get_account_references)(lookup_account_names)(lookup_accounts)(get_account_count)
 
+    @unittest.skipIf(True, "test other")
     def test_get_accounts(self):
         account_ids = []
         for index in range(0, 10, 2):
@@ -262,6 +276,7 @@ class test_database_api(request_unittest):
         self.request_post(req_data)
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
+    @unittest.skipIf(True, "test other")
     def test_get_account_by_name(self):
         req_data = {
             "method": "get_account_by_name",
@@ -271,6 +286,7 @@ class test_database_api(request_unittest):
         self.request_post(req_data)
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
+    @unittest.skipIf(True, "test other")
     def test_get_account_references(self):
         for index in range(0, 10, 2):
             account_id = "1.2.{}".format(index)
@@ -282,6 +298,7 @@ class test_database_api(request_unittest):
             self.request_post(req_data)
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
+    @unittest.skipIf(True, "test other")
     def test_lookup_account_names(self):
         req_data = {
             "method": "lookup_account_names",
@@ -291,6 +308,7 @@ class test_database_api(request_unittest):
         self.request_post(req_data)
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
+    @unittest.skipIf(True, "test other")
     def test_lookup_accounts(self):
         req_data = {
             "method": "lookup_accounts",
@@ -304,6 +322,7 @@ class test_database_api(request_unittest):
     #    (get_account_balances)(get_named_account_balances)(get_balance_objects)(get_vested_balances)(get_vesting_balances)(get_prototype_operation_by_idx)
 
     #   vector<asset> get_account_balances(account_id_type id, const flat_set<asset_id_type> &assets) const;
+    @unittest.skipIf(True, "test other")
     def test_get_account_balances(self):
         assets = ["1.3.0", "1.3.1"]
         for index in range(0, 10, 2):
@@ -316,6 +335,7 @@ class test_database_api(request_unittest):
             self.request_post(req_data)
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
+    @unittest.skipIf(True, "test other")
     def test_get_named_account_balances(self):
         assets = ["1.3.0", "1.3.1"]
         accounts = [test_account, test_witness_account, test_committee_account]
@@ -356,6 +376,7 @@ class test_database_api(request_unittest):
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
     #   vector<vesting_balance_object> get_vesting_balances(account_id_type account_id) const;
+    @unittest.skipIf(True, "test other")
     def test_get_vesting_balances(self):
         accounts = [test_witness_account, ]
         for index in range(1, 5):
@@ -386,7 +407,7 @@ class test_database_api(request_unittest):
     # vector<asset_object> list_assets(const string &lower_bound_symbol, uint32_t limit) const;
     # vector<optional<asset_object>> lookup_asset_symbols(const vector<string> &symbols_or_ids) const;
     # vector<asset_restricted_object> database_api::list_asset_restricted_objects(const asset_id_type asset_id, restricted_enum restricted_type) const
-
+    @unittest.skipIf(True, "test other")
     def test_get_assets(self):
         asset_ids = []
         for index in range(1, 11, 3):
@@ -409,7 +430,7 @@ class test_database_api(request_unittest):
     #     }
     #     self.request_post(req_data)
 
-    # vector<optional<asset_object>> lookup_asset_symbols(const vector<string> &symbols_or_ids) const;
+    @unittest.skipIf(True, "test other")
     def test_list_assets(self):
         lower_bound_symbol = ""
         limit = 5
@@ -421,6 +442,7 @@ class test_database_api(request_unittest):
         self.request_post(req_data)
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
+    @unittest.skipIf(True, "test other")
     def test_list_asset_restricted_objects(self):
         for index in range(0, 1):
             asset_id = "1.3.{}".format(index)
@@ -436,8 +458,136 @@ class test_database_api(request_unittest):
     #    // Markets / feeds
     #    (get_order_book)(estimation_gas)(get_limit_orders)(get_call_orders)(get_settle_orders)(get_margin_positions)(get_collateral_bids)(subscribe_to_market)(unsubscribe_from_market)(get_ticker)(get_24_volume)(get_trade_history)(get_trade_history_by_sequence)
 
+
+    #   void subscribe_to_market(std::function<void(const variant &)> callback,
+    #                            asset_id_type a, asset_id_type b);
+
+    #   void unsubscribe_from_market(asset_id_type a, asset_id_type b);
+
+    #   market_ticker get_ticker(const string &base, const string &quote) const;
+
+    #   market_volume get_24_volume(const string &base, const string &quote) const;
+
+    #   order_book get_order_book(const string &base, const string &quote, unsigned limit = 50) const;
+
+    @unittest.skipIf(True, 'retry test')
+    def test_subscribe_to_market(self):
+        base = core_asset
+        limit = 5
+        for index in range(1, 2):
+            quote_id = "1.3.{}".format(index)
+            req_data = {
+                "method": "subscribe_to_market",
+                "params": [subscribe_to_market_callback, base, quote_id],
+                "id":1
+            }
+            self.request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
+
+        # unsubscribe_from_market
+        # time.sleep(30)
+        # for index in range(1, 2):
+        #     quote_id = "1.3.{}".format(index)
+        #     req_data = {
+        #         "method": "unsubscribe_from_market",
+        #         "params": [base, quote_id],
+        #         "id":1
+        #     }
+        #     self.request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
+
+    @unittest.skipIf(True, 'retry test')
+    def test_unsubscribe_from_market(self):
+        base = core_asset
+        for index in range(1, 2):
+            quote_id = "1.3.{}".format(index)
+            req_data = {
+                "method": "unsubscribe_from_market",
+                "params": [base, quote_id],
+                "id":1
+            }
+            self.request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
+
+    #   vector<market_trade> get_trade_history_by_sequence(const string &base, const string &quote, int64_t start, fc::time_point_sec stop, unsigned limit = 100) const;
+    def test_get_order_book(self):
+        base = core_asset
+        limit = 5
+        # for index in range(1, 5):
+        for index in range(1, 2):
+            quote_id = "1.3.{}".format(index)
+            req_data = {
+                "method": "get_order_book",
+                "params": [base, quote_id, limit],
+                "id":1
+            }
+            self.request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
+
+    def test_get_24_volume(self):
+        base = core_asset
+        limit = 5
+        # for index in range(1, 5):
+        for index in range(1, 2):
+            quote_id = "1.3.{}".format(index)
+            req_data = {
+                "method": "get_24_volume",
+                "params": [base, quote_id],
+                "id":1
+            }
+            self.request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
+
+    def test_get_ticker(self):
+        base = core_asset
+        limit = 5
+        # for index in range(1, 5):
+        for index in range(1, 2):
+            quote_id = "1.3.{}".format(index)
+            req_data = {
+                "method": "get_ticker",
+                "params": [base, quote_id],
+                "id":1
+            }
+            self.request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
+
+    #   vector<market_trade> get_trade_history(const string &base, const string &quote, fc::time_point_sec start, fc::time_point_sec stop, unsigned limit = 100) const;
+    def test_get_trade_history(self):
+        base = core_asset
+        start = datetime_N_ago(10).strftime("%Y-%m-%dT%H:%M:%S")
+        stop = datetime_N_ago(0).strftime("%Y-%m-%dT%H:%M:%S")
+        limit = 20
+        # for index in range(1, 5):
+        for index in range(1, 2):
+            quote_id = "1.3.{}".format(index)
+            req_data = {
+                "method": "get_trade_history",
+                "params": [base, quote_id, start, stop, limit],
+                "id":1
+            }
+            self.request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
+
+    # get_trade_history_by_sequence
+    def test_get_trade_history_by_sequence(self):
+        base = core_asset
+        start = 1000
+        stop = datetime_N_ago(0).strftime("%Y-%m-%dT%H:%M:%S")
+        limit = 20
+        for index in range(1, 2):
+            quote_id = "1.3.{}".format(index)
+            req_data = {
+                "method": "get_trade_history_by_sequence",
+                "params": [base, quote_id, start, stop, limit],
+                "id":1
+            }
+            self.request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
+
     #    // Witnesses    
     #    (get_witnesses)(get_witness_by_account)(lookup_witness_accounts)(get_witness_count)
+    @unittest.skipIf(True, "test other")
     def test_get_witnesses(self):
         committee_ids = []
         for index in range(1, 11, 3):
@@ -452,6 +602,7 @@ class test_database_api(request_unittest):
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
     # fc::optional<witness_object> get_witness_by_account(account_id_type account) const;
+    @unittest.skipIf(True, "test other")
     def test_get_witness_by_account(self):
         for index in range(5, 9):
             account_id = "1.2.{}".format(index)
@@ -463,6 +614,7 @@ class test_database_api(request_unittest):
             self.request_post(req_data)
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
+    @unittest.skipIf(True, "test other")
     def test_lookup_witness_accounts(self):
         req_data = {
             "method": "lookup_witness_accounts",
@@ -472,6 +624,7 @@ class test_database_api(request_unittest):
         self.request_post(req_data)
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
+    @unittest.skipIf(True, "test other")
     def test_get_witness_count(self):
         req_data = {
             "method": "get_witness_count",
@@ -487,6 +640,7 @@ class test_database_api(request_unittest):
     # fc::optional<committee_member_object> get_committee_member_by_account(account_id_type account) const;
     # map<string, committee_member_id_type> lookup_committee_member_accounts(const string &lower_bound_name, uint32_t limit) const;
     # uint64_t get_committee_count() const;
+    @unittest.skipIf(True, "test other")
     def test_get_committee_members(self):
         committee_ids = []
         for index in range(1, 11, 3):
@@ -500,6 +654,7 @@ class test_database_api(request_unittest):
         self.request_post(req_data)
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
+    @unittest.skipIf(True, "test other")
     def test_get_committee_member_by_account(self):
         for index in range(5, 9):
             account_id = "1.2.{}".format(index)
@@ -511,6 +666,7 @@ class test_database_api(request_unittest):
             self.request_post(req_data)
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
+    @unittest.skipIf(True, "test other")
     def test_lookup_committee_member_accounts(self):
         req_data = {
             "method": "lookup_committee_member_accounts",
@@ -520,6 +676,7 @@ class test_database_api(request_unittest):
         self.request_post(req_data)
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
+    @unittest.skipIf(True, "test other")
     def test_get_committee_count(self):
         req_data = {
             "method": "get_committee_count",
@@ -531,6 +688,7 @@ class test_database_api(request_unittest):
 
     #    // workers
     #    (get_all_workers)
+    @unittest.skipIf(True, "test other")
     def test_get_all_workers(self):
         req_data = {
             "method": "get_all_workers",
@@ -542,6 +700,7 @@ class test_database_api(request_unittest):
 
     #    // Votes
     #    (lookup_vote_ids)
+    @unittest.skipIf(True, "test other")
     def test_lookup_vote_ids(self):
         votes = ["1:0", "1:1"]
         req_data = {
@@ -554,6 +713,7 @@ class test_database_api(request_unittest):
 
     #    // Authority / validation
     #    (get_transaction_hex)(get_required_signatures)(get_potential_signatures)(get_potential_address_signatures)(verify_authority)(verify_account_authority)(validate_transaction)
+    @unittest.skipIf(True, "test other")
     def test_get_transaction_hex(self):
         req_data = {
             "method": "transfer",
@@ -571,6 +731,7 @@ class test_database_api(request_unittest):
         self.request_post(req_data)
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
+    @unittest.skipIf(True, "test other")
     def test_get_required_signatures(self):
         req_data = {
             "method": "transfer",
@@ -587,6 +748,7 @@ class test_database_api(request_unittest):
         self.request_post(req_data)
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
+    @unittest.skipIf(True, "test other")
     def test_get_potential_signatures(self):
         req_data = {
             "method": "transfer",
@@ -604,6 +766,7 @@ class test_database_api(request_unittest):
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
     # get_potential_address_signatures
+    @unittest.skipIf(True, "test other")
     def test_get_potential_address_signatures(self):
         req_data = {
             "method": "transfer",
@@ -621,6 +784,7 @@ class test_database_api(request_unittest):
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
     # verify_authority
+    @unittest.skipIf(True, "test other")
     def test_verify_authority(self):
         req_data = {
             "method": "transfer",
@@ -637,7 +801,7 @@ class test_database_api(request_unittest):
         self.request_post(req_data)
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
-    @unittest.skipIf(True, "")
+    @unittest.skipIf(True, "test other")
     def test_verify_account_authority(self):
         req_data = {
             "method": "verify_account_authority",
@@ -648,7 +812,9 @@ class test_database_api(request_unittest):
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
     # validate_transaction
+    @unittest.skipIf(True, "test other")
     def test_validate_transaction(self):
+        # transfer function: broadcast must be False
         req_data = {
             "method": "transfer",
             "params": [test_witness_account, test_account, "0.1", core_asset, ["node_rpc test validate_transaction", 'false'], 'false'],
@@ -666,6 +832,7 @@ class test_database_api(request_unittest):
 
     #    // Proposed transactions
     #    (get_proposed_transactions))
+    @unittest.skipIf(True, "test other")
     def test_get_proposed_transactions(self):
         for index in range(5, 16, 2):
             account_id = "1.2.{}".format(index)

@@ -135,3 +135,6 @@ def datetime_N_ago(n):
     n_ago = (datetime.datetime.now() - datetime.timedelta(days = n))
     # return n_ago.strftime("%Y-%m-%d %H:%M:%S")
     return n_ago
+
+def subscribe_to_market_callback(cb_data):
+    print('[{}] callback_data: {}'.format(sys._getframe().f_code.co_name, cb_data))
