@@ -23,7 +23,25 @@
         network_node_api
 ```
 
-3. api-access配置
+3. api-access配置  
+``` json  
+{
+    "root":{
+        "password_hash_b64":"iHLgVGD7iiZXrFLRNH9GAF4mNqLO6OwvK0b2XZ6U1VI=",
+        "password_salt_b64":"DXobg1wQ0Lg=",
+        "allowed_apis":[
+            "login",
+            "block",
+            "network_broadcast",
+            "database",
+            "history",
+            "network_node",
+            "asset",
+            "debug"
+        ]
+    }
+}
+```
 
 ## api支持的接口
 ### 1. database_api  
