@@ -27,13 +27,21 @@ class test_database_api(request_unittest):
         }
         request_post(req_data, is_wallet_rpc=True)
 
-        # req_data = {
-        #     "jsonrpc": "2.0",
-        #     "method": "import_key",
-        #     "params": [test_witness_account, test_witness_account_private_key],
-        #     "id":1
-        # }
-        # request_post(req_data, is_wallet_rpc=True)
+        req_data = {
+            "jsonrpc": "2.0",
+            "method": "import_key",
+            "params": [test_committee_account, test_witness_account_private_key],
+            "id":1
+        }
+        request_post(req_data, is_wallet_rpc=True)
+
+        req_data = {
+            "jsonrpc": "2.0",
+            "method": "import_key",
+            "params": [test_witness_account, test_witness_account_private_key],
+            "id":1
+        }
+        request_post(req_data, is_wallet_rpc=True)
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
 
@@ -321,6 +329,7 @@ class test_database_api(request_unittest):
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
 #       vector<balance_object> get_balance_objects(const vector<address> &addrs) const;
+    @unittest.skipIf(True, 'modify test balance address')
     def test_get_balance_objects(self):
         addres_list = [test_balance_address]
         req_data = {
@@ -332,9 +341,10 @@ class test_database_api(request_unittest):
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
     #   vector<asset> get_vested_balances(const vector<balance_id_type> &objs) const;
+    @unittest.skipIf(True, 'test other')
     def test_get_vested_balances(self):
         balance_ids = []
-        for index in range(1, 10, 3):
+        for index in range(1, 3):
             balance_id = "1.15.{}".format(index)
             balance_ids.append(balance_id)
         req_data = {
@@ -347,11 +357,12 @@ class test_database_api(request_unittest):
 
     #   vector<vesting_balance_object> get_vesting_balances(account_id_type account_id) const;
     def test_get_vesting_balances(self):
-        accounts = [test_account, test_witness_account, test_committee_account]
-        for account_name in accounts:
+        accounts = [test_witness_account, ]
+        for index in range(1, 5):
+            account_id = "1.2.{}".format(index)
             req_data = {
                 "method": "get_vesting_balances",
-                "params": [account_name],
+                "params": [account_id],
                 "id":1
             }
             self.request_post(req_data)
@@ -387,28 +398,31 @@ class test_database_api(request_unittest):
             "id":1
         }
         self.request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
 
+    # def test_list_assets(self):
+    #     symbols_or_ids = ["GAS", "1.3.0"]
+    #     req_data = {
+    #         "method": "list_assets",
+    #         "params": [symbols_or_ids],
+    #         "id":1
+    #     }
+    #     self.request_post(req_data)
+
+    # vector<optional<asset_object>> lookup_asset_symbols(const vector<string> &symbols_or_ids) const;
     def test_list_assets(self):
-        symbols_or_ids = ["GAS", "1.3.0"]
-        req_data = {
-            "method": "list_assets",
-            "params": [symbols_or_ids],
-            "id":1
-        }
-        self.request_post(req_data)
-
-    def test_lookup_asset_symbols(self):
         lower_bound_symbol = ""
         limit = 5
         req_data = {
-            "method": "lookup_asset_symbols",
+            "method": "list_assets",
             "params": [lower_bound_symbol, limit],
             "id":1
         }
         self.request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
 
     def test_list_asset_restricted_objects(self):
-        for index in range(0, 3):
+        for index in range(0, 1):
             asset_id = "1.3.{}".format(index)
             for restricted_index in range(0, len(restricted_enum)):
                 req_data = {
@@ -417,16 +431,17 @@ class test_database_api(request_unittest):
                     "id":1
                 }
                 self.request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
 
     #    // Markets / feeds
     #    (get_order_book)(estimation_gas)(get_limit_orders)(get_call_orders)(get_settle_orders)(get_margin_positions)(get_collateral_bids)(subscribe_to_market)(unsubscribe_from_market)(get_ticker)(get_24_volume)(get_trade_history)(get_trade_history_by_sequence)
 
-    #    // Witnesses
+    #    // Witnesses    
     #    (get_witnesses)(get_witness_by_account)(lookup_witness_accounts)(get_witness_count)
     def test_get_witnesses(self):
         committee_ids = []
         for index in range(1, 11, 3):
-            committee_id = "1.5.{}".format(index)
+            committee_id = "1.6.{}".format(index)
             committee_ids.append(committee_id)
         req_data = {
             "method": "get_witnesses",
@@ -434,16 +449,19 @@ class test_database_api(request_unittest):
             "id":1
         }
         self.request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
 
+    # fc::optional<witness_object> get_witness_by_account(account_id_type account) const;
     def test_get_witness_by_account(self):
-        committee_accounts = [test_witness_account]
-        for account in committee_accounts:
+        for index in range(5, 9):
+            account_id = "1.2.{}".format(index)
             req_data = {
                 "method": "get_witness_by_account",
-                "params": [account],
+                "params": [account_id],
                 "id":1
             }
             self.request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
 
     def test_lookup_witness_accounts(self):
         req_data = {
@@ -452,6 +470,7 @@ class test_database_api(request_unittest):
             "id":1
         }
         self.request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
 
     def test_get_witness_count(self):
         req_data = {
@@ -460,6 +479,7 @@ class test_database_api(request_unittest):
             "id":1
         }
         self.request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
 
     #    // Committee members
     #    (get_committee_members)(get_committee_member_by_account)(lookup_committee_member_accounts)(get_committee_count)
@@ -470,7 +490,7 @@ class test_database_api(request_unittest):
     def test_get_committee_members(self):
         committee_ids = []
         for index in range(1, 11, 3):
-            committee_id = "1.6.{}".format(index)
+            committee_id = "1.5.{}".format(index)
             committee_ids.append(committee_id)
         req_data = {
             "method": "get_committee_members",
@@ -478,16 +498,18 @@ class test_database_api(request_unittest):
             "id":1
         }
         self.request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
 
     def test_get_committee_member_by_account(self):
-        committee_accounts = [test_committee_account]
-        for account in committee_accounts:
+        for index in range(5, 9):
+            account_id = "1.2.{}".format(index)
             req_data = {
                 "method": "get_committee_member_by_account",
-                "params": [account],
+                "params": [account_id],
                 "id":1
             }
             self.request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
 
     def test_lookup_committee_member_accounts(self):
         req_data = {
@@ -496,6 +518,7 @@ class test_database_api(request_unittest):
             "id":1
         }
         self.request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
 
     def test_get_committee_count(self):
         req_data = {
@@ -504,6 +527,7 @@ class test_database_api(request_unittest):
             "id":1
         }
         self.request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
 
     #    // workers
     #    (get_all_workers)
@@ -514,6 +538,7 @@ class test_database_api(request_unittest):
             "id":1
         }
         self.request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
 
     #    // Votes
     #    (lookup_vote_ids)
@@ -525,18 +550,19 @@ class test_database_api(request_unittest):
             "id":1
         }
         self.request_post(req_data)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
 
     #    // Authority / validation
     #    (get_transaction_hex)(get_required_signatures)(get_potential_signatures)(get_potential_address_signatures)(verify_authority)(verify_account_authority)(validate_transaction)
     def test_get_transaction_hex(self):
         req_data = {
             "method": "transfer",
-            "params": [test_account, test_witness_account, "0.1", core_asset, ["node_rpc test get_transaction_hex", 'false'], 'true'],
+            "params": [test_witness_account, test_account, "0.1", core_asset, ["node_rpc test get_transaction_hex", 'false'], 'true'],
             "id":1
         }
         result = request_post(req_data, is_wallet_rpc=True)['result']
         trx = result[1]
-        account_id = "1.2.{}".format(index)
+
         req_data = {
             "method": "get_transaction_hex",
             "params": [trx],
@@ -548,7 +574,7 @@ class test_database_api(request_unittest):
     def test_get_required_signatures(self):
         req_data = {
             "method": "transfer",
-            "params": [test_account, test_witness_account, "0.1", core_asset, ["node_rpc test get_required_signatures", 'false'], 'true'],
+            "params": [test_witness_account, test_account, "0.1", core_asset, ["node_rpc test get_required_signatures", 'false'], 'true'],
             "id":1
         }
         result = request_post(req_data, is_wallet_rpc=True)['result']
@@ -564,7 +590,7 @@ class test_database_api(request_unittest):
     def test_get_potential_signatures(self):
         req_data = {
             "method": "transfer",
-            "params": [test_account, test_witness_account, "0.1", core_asset, ["node_rpc test get_potential_signatures", 'false'], 'true'],
+            "params": [test_witness_account, test_account, "0.1", core_asset, ["node_rpc test get_potential_signatures", 'false'], 'true'],
             "id":1
         }
         result = request_post(req_data, is_wallet_rpc=True)['result']
@@ -581,7 +607,7 @@ class test_database_api(request_unittest):
     def test_get_potential_address_signatures(self):
         req_data = {
             "method": "transfer",
-            "params": [test_account, test_witness_account, "0.1", core_asset, ["node_rpc test get_potential_address_signatures", 'false'], 'true'],
+            "params": [test_witness_account, test_account, "0.1", core_asset, ["node_rpc test get_potential_address_signatures", 'false'], 'true'],
             "id":1
         }
         result = request_post(req_data, is_wallet_rpc=True)['result']
@@ -611,17 +637,11 @@ class test_database_api(request_unittest):
         self.request_post(req_data)
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
+    @unittest.skipIf(True, "")
     def test_verify_account_authority(self):
         req_data = {
             "method": "verify_account_authority",
             "params": [test_account, [test_account_public_key]],
-            "id":1
-        }
-        self.request_post(req_data)
-
-        req_data = {
-            "method": "verify_account_authority",
-            "params": [test_account, [test_account_public_key, test_witness_account_public_key]],
             "id":1
         }
         self.request_post(req_data)
@@ -631,7 +651,7 @@ class test_database_api(request_unittest):
     def test_validate_transaction(self):
         req_data = {
             "method": "transfer",
-            "params": [test_account, test_witness_account, "0.1", core_asset, ["node_rpc test verify_authority", 'false'], 'true'],
+            "params": [test_witness_account, test_account, "0.1", core_asset, ["node_rpc test validate_transaction", 'false'], 'false'],
             "id":1
         }
         result = request_post(req_data, is_wallet_rpc=True)['result']
