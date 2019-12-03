@@ -1,8 +1,33 @@
 # chain api
 
-## 1. database_api  
+# 链api
+## 链支持的api
 ``` text
-FC_API(graphene::app::database_api,
+       ["login",0],
+       ["block",1],
+       ["network_broadcast",2],
+       ["database",3],
+       ["history",4],
+       ["network_node",5],
+       ["asset",6],
+       ["debug",7]
+``` 
+### api-access 
+1. api-access 在config.ini中配置。默认为空。  
+
+2. api-access若为空，login时: user="", password=""。这种模式下，节点只开发如下几种接口：  
+``` text
+        database_api
+        network_broadcast_api
+        history_api
+        network_node_api
+```
+
+3. api-access配置
+
+## api支持的接口
+### 1. database_api  
+``` text
        // Objects
        (get_objects)
 
@@ -61,45 +86,54 @@ FC_API(graphene::app::database_api,
        (get_proposed_transactions))
 ```
 
-## 2. history_api  
+### 2. history_api  
 ``` text  
-FC_API(graphene::app::history_api,
-       (get_account_history)(get_account_history_operations)(get_relative_account_history)(get_fill_order_history)(get_market_history)(get_market_history_buckets))
+    (get_account_history)
+    (get_account_history_operations)
+    (get_relative_account_history)
+    (get_fill_order_history)
+    (get_market_history)
+    (get_market_history_buckets)
 ```
 
 
-## 3. block_api
+### 3. block_api
 ``` text
-FC_API(graphene::app::block_api,
        (get_blocks))
 
 ```
 
 
-## 4. network_broadcast_api
+### 4. network_broadcast_api
 ``` text  
-FC_API(graphene::app::network_broadcast_api,
-       (broadcast_transaction)(broadcast_transaction_with_callback)(broadcast_transaction_synchronous)(broadcast_block))
-
-
+       (broadcast_transaction)
+       (broadcast_transaction_with_callback)
+       (broadcast_transaction_synchronous)
+       (broadcast_block)
 ```
 
-## 5. network_node_api
+### 5. network_node_api
 ``` text  
-FC_API(graphene::app::network_node_api,
-       (get_info)(add_node)(get_connected_peers)(get_potential_peers)(get_advanced_node_parameters)(set_advanced_node_parameters)(set_message_send_cache_size)(set_deduce_in_verification_mode))
+       (get_info)
+       (add_node)
+       (get_connected_peers)
+       (get_potential_peers)
+       (get_advanced_node_parameters)
 
+       # need permission
+       (set_advanced_node_parameters)
+       (set_message_send_cache_size)
+       (set_deduce_in_verification_mode))
 ```
 
-
-## 6. asset_api
+### 6. asset_api
 ``` text  
 FC_API(graphene::app::asset_api,
        (get_asset_holders)(get_asset_holders_count)(get_all_asset_holders))
 
 ```
 
-## 7. login_api
+### 7. login_api
 ``` text  
 FC_API(graphene::app::login_api,
        (login)(block)(network_broadcast)(database)(history)(network_node)(asset)(debug))

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+#http
 host = '127.0.0.1'
 port = 8048
 cli_wallet_url = "http://{}:{}".format(host, port)
@@ -12,7 +13,14 @@ wallet_password = "123456"
 
 headers = {"content-type": "application/json"}
 
+# websocket
+ws_host = '127.0.0.1'
+ws_port = 8049
+node_ws_url = "ws://{}:{}".format(ws_host, ws_port)
+node_wss_url = "wss://{}:{}".format(ws_host, ws_port)
+
 test_account = 'nicotest'
+test_account_id = "1.2.17"
 test_account_private_key = '5J2SChqa9QxrCkdMor9VC2k9NT4R4ctRrJA6odQCPkb3yL89vxo'
 test_account_public_key = 'COCOS56a5dTnfGpuPoWACnYj65dahcXMpTrNQkV3hHWCFkLxMF5mXpx'
 

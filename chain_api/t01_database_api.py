@@ -478,7 +478,7 @@ class test_database_api(request_unittest):
             quote_id = "1.3.{}".format(index)
             req_data = {
                 "method": "subscribe_to_market",
-                "params": [subscribe_to_market_callback, base, quote_id],
+                "params": [test_callback, base, quote_id],
                 "id":1
             }
             self.request_post(req_data)

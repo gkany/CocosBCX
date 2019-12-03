@@ -3,6 +3,7 @@
 import json
 import requests
 import unittest
+from websocket import *
 
 import time
 import sys
@@ -15,6 +16,14 @@ def request_post(req_data, is_assert=True, is_wallet_rpc=False):
     if is_wallet_rpc:
         rpc_url = cli_wallet_url
     response = json.loads(requests.post(rpc_url, data = json.dumps(req_data), headers = headers).text)
+    print('>> {} {}\n{}\n'.format(req_data['method'], req_data['params'], response))
+    if is_assert:
+        assert 'error' not in response
+    return response
+
+def ws_post(ws, req_data, is_assert=True):
+    ws.send(json.dumps(req_data))
+    response = json.loads(ws.recv())
     print('>> {} {}\n{}\n'.format(req_data['method'], req_data['params'], response))
     if is_assert:
         assert 'error' not in response
@@ -131,10 +140,33 @@ class request_unittest(unittest.TestCase):
         self.assertEqual(value, response['result'])
 
 
+
+
+class websocket_unittest(unittest.TestCase):
+    # def __init__():
+    #     self.ws = create_connection(node_ws_url)
+
+    def ws_post(self, ws, req_data):
+        ws.send(json.dumps(req_data))
+        response = json.loads(ws.recv())
+        print('>> {} {}\n{}\n'.format(req_data['method'], req_data['params'], response))
+        self.assertFalse('error' in response)
+        return response
+
+# ws.send(json.dumps(data))
+# print("Sent")
+# print("Receiving...")
+# result =  ws.recv()
+# print("Received '%s'" % result)
+# result =  json.loads(result)
+# app_id = result["result"]
+# print(app_id)
+
+
 def datetime_N_ago(n):
     n_ago = (datetime.datetime.now() - datetime.timedelta(days = n))
     # return n_ago.strftime("%Y-%m-%d %H:%M:%S")
     return n_ago
 
-def subscribe_to_market_callback(cb_data):
+def test_callback(cb_data):
     print('[{}] callback_data: {}'.format(sys._getframe().f_code.co_name, cb_data))
