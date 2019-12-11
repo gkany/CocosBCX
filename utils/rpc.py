@@ -62,17 +62,6 @@ class websocket_rpc(object):
         self.api_id["history"] = self.history(api_id=1)
         self.api_id["network_broadcast"] = self.network_broadcast(api_id=1)
         self.api_id["network_node"] = self.network_node(api_id=1)
-        #network_node
-
-        # self.ws = create_connection(node_ws_url)
-        # req_data = {
-        #     "id":1,
-        #     "method":"call",
-        #     "params":[1, "network_node", []]
-        # }
-        # # handle = ws_post(self.ws, req_data)['result']
-        # response = self.rpc_exec(req_data)
-        # self.api_id["network_node"] = self.rpc_exec(req_data)
 
     """ RPC Calls
     """
@@ -238,8 +227,27 @@ def test():
     result = node_rpc_instance.get_info(api="network_node")
     print('get_info: {}\n'.format(result))
 
-    result = node_rpc_instance.get_connected_peers(api="network_node")
-    print('get_connected_peers: {}\n'.format(result))
+    # result = node_rpc_instance.get_connected_peers(api="network_node")
+    # print('get_connected_peers: {}\n'.format(result))
 
 test()
 
+'''
+get_object: {'id': '1.2.0', 'membership_expiration_date': '1969-12-31T23:59:59', 'registrar': '1.2.0', 'name': 'committee-account', 'owner': {'weight_threshold': 1, 'account_auths': [], 'key_auths': [], 'address_auths': []}, 'active': {'weight_threshold': 6, 'account_auths': [['1.2.5', 1], ['1.2.6', 1], ['1.2.7', 1], ['1.2.8', 1], ['1.2.9', 1], ['1.2.10', 1], ['1.2.11', 1], ['1.2.12', 1], ['1.2.13', 1], ['1.2.14', 1], ['1.2.15', 1]], 'key_auths': [], 'address_auths': []}, 'options': {'memo_key': 'COCOS1111111111111111111111111111111114T1Anm', 'votes': [], 'extensions': []}, 'statistics': '2.6.0', 'asset_locked': {'locked_total': [], 'contract_lock_details': []}}
+
+get_account: {'id': '1.2.48', 'membership_expiration_date': '1970-01-01T00:00:00', 'registrar': '1.2.16', 'name': 'test1', 'owner': {'weight_threshold': 1, 'account_auths': [], 'key_auths': [['COCOS8ex6GhWdrZjUSeBtSr6XsUVbdCFiG1MfAZ6UNQpqhF6ME5a8iG', 1]], 'address_auths': []}, 'active': {'weight_threshold': 1, 'account_auths': [], 'key_auths': [['COCOS7URPaKF17PRX5GoyoKYiEe8wXB1Pzb5PDcHoq1nof2rnDPvZfG', 1]], 'address_auths': []}, 'options': {'memo_key': 'COCOS7URPaKF17PRX5GoyoKYiEe8wXB1Pzb5PDcHoq1nof2rnDPvZfG', 'votes': [], 'extensions': []}, 'statistics': '2.6.48', 'asset_locked': {'locked_total': [], 'contract_lock_details': []}}
+
+get_asset: {'id': '1.3.0', 'symbol': 'COCOS', 'precision': 5, 'issuer': '1.2.0', 'options': {'max_supply': '10000000000000000', 'market_fee_percent': 0, 'max_market_fee': '1000000000000000000', 'issuer_permissions': 2, 'flags': 0, 'description': '', 'extensions': []}, 'dynamic_asset_data_id': '2.3.0'}
+
+get_asset: {'id': '1.3.1', 'symbol': 'GAS', 'precision': 5, 'issuer': '1.2.0', 'options': {'max_supply': '10000000000000000', 'market_fee_percent': 0, 'max_market_fee': '1000000000000000000', 'issuer_permissions': 138, 'flags': 138, 'core_exchange_rate': {'base': {'amount': 1, 'asset_id': '1.3.0'}, 'quote': {'amount': 1, 'asset_id': '1.3.1'}}, 'description': '', 'extensions': []}, 'dynamic_asset_data_id': '2.3.1'}
+
+get_block: {'previous': '00000063300a5e64dd8855f126e295ca999791c5', 'timestamp': '2019-12-02T09:33:08', 'witness': '1.6.5', 'transaction_merkle_root': '0000000000000000000000000000000000000000', 'witness_signature': '1f3b60a8515597ac48dc1ec9dcf59d10e2cb725238a3391e0d11ec52b84c35334b1515989c3541fe7a9818c3e59096bf895223e7573320634dfaf610f8a3ba727d', 'block_id': '00000064cf16744d4959cce228481b7f413349ac', 'transactions': []}
+
+get_dynamic_global_properties: {'id': '2.1.0', 'head_block_number': 390835, 'head_block_id': '0005f6b3fbf5afd62408c27cc3b29bdeeb52ab40', 'time': '2019-12-11T10:52:54', 'current_witness': '1.6.1', 'current_transaction_count': 1, 'next_maintenance_time': '2019-12-12T00:00:00', 'last_budget_time': '2019-12-11T00:00:00', 'witness_budget': '236160000000', 'accounts_registered_this_interval': 81, 'recently_missed_count': 0, 'current_aslot': 408357, 'recent_slots_filled': '340282366920938463463374607431768211455', 'dynamic_flags': 0, 'last_irreversible_block_num': 390825}
+
+get_account_balances: [{'amount': '10182316604722', 'asset_id': '1.3.0'}, {'amount': 0, 'asset_id': '1.3.1'}]
+
+get_account_history: []
+
+get_info: {'listening_on': '0.0.0.0:8050', 'node_public_key': '02b14f3e5bc9ac794b8676c6ab82403f2888b02b18af90ada3a5ef25477a20214c', 'node_id': '648d4f5bd95ad13c3becbe7ac882563573908246d40c3c2186b8013c81c90837d5', 'firewalled': 'unknown', 'connection_count': 5}
+'''
