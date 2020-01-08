@@ -83,6 +83,13 @@ def node_restart():
     cmd_exec(cmd)
     chain_id_init()
 
+def generate_wallet_start():
+    ws = 'ws://{}:{}'.format(host, node_rpc_port)
+    cmd = './{} --chain-id {} -s {} -r 0.0.0.0:{} '.format(
+        wallet_bin_filename, chain_id, ws, '8047')
+    start_file = './{}/start.sh'.format(wallet_bin_path)
+    cmd_exec('echo {} >> {} && chmod +x {}'.format(cmd, start_file, start_file))
+
 def cli_wallet_start():
     chain_id_init()
     ws = 'ws://{}:{}'.format(host, node_rpc_port)
@@ -105,6 +112,7 @@ def cli_wallet_init():
     cli_wallet_start()
     sleep(2)
     cli_wallet_operate_init()
+    generate_wallet_start()
 
 def cli_wallet_operate_init():
     print('cli_wallet_url: {}'.format(cli_wallet_url))
