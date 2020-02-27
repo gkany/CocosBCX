@@ -1,7 +1,6 @@
 # chain api
 
 # 链api
-# 链api
 ## 链支持的api
 ``` text
        ["login",0],
@@ -78,7 +77,7 @@
 
 
 
-​a. user="root", password="123456"测试  
+a. user="root", password="123456"测试  
 
 ```json  
 Logging RPC to file: logs/rpc/rpc.log
