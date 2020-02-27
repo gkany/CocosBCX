@@ -13,7 +13,7 @@
        ["debug",7]
 ```
 ### api-access 
-1. api-access 在config.ini中配置。默认为空。    
+1. api-access 在config.ini文件或命令行启动参数中配置。默认为空。    
 
 2. api-access若为空，login时: user="", password=""。这种模式下，节点只开放如下4种接口：  
 ``` text
