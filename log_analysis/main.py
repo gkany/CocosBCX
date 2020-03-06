@@ -6,8 +6,8 @@ import socket
 import datetime
 import xlwt
 
-#log_path = "/mnt/witness/logs/witness_node.log"  # mainnet
-log_path = "/mnt/new_witness/logs/witness_node.log" # testnet
+log_path = "/mnt/witness/logs/witness_node.log"  # mainnet
+#log_path = "/mnt/new_witness/logs/witness_node.log" # testnet
 
 tag = "blocks"
 
