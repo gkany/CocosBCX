@@ -9,7 +9,8 @@ import random
 
 
 cli_wallet_url = "http://127.0.0.1:8048"
-chain_api_url = "http://127.0.0.1:8049"
+#chain_api_url = "http://127.0.0.1:8049"
+chain_api_url = "https://test.cocosbcx.net"
 
 headers = {"content-type": "application/json"}
 
