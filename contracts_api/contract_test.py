@@ -429,8 +429,7 @@ class contract_api_case_test(unittest.TestCase):
         get_contract_call_tx_result(tx_id)
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
-# symbol_or_id
-    @unittest.skipIf(False, "test other")
+    @unittest.skipIf(True, "test other")
     def test_contract_15_adjust_lock_asset(self):
         contract_name = self.contract_basic_name + "15.adjustlockasset"
         file_name = os.getcwd() + "/contract_15_adjust_lock_asset.lua"
@@ -450,83 +449,40 @@ class contract_api_case_test(unittest.TestCase):
         get_contract_call_tx_result(tx_id)
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
-    @unittest.skipIf(True, 'test other')
-    def test_collateral_gas_self(self):
+    @unittest.skipIf(False, 'test other')
+    def test_contract_22_collateral_gas_self(self):
+        contract_name = self.contract_basic_name + "22.collateralgas"
+        file_name = os.getcwd() + "/contract_22_update_collateral_for_gas.lua"
+        # contract_create_if_not_exist(g_owner, contract_name, g_pub_key, file_name)
+        revise_contract(g_owner, contract_name, file_name)
+
+        function = "test_colllateral_gas"
+        print("### collateral_gas_self test")
+        list_account_balances(g_owner)
+        params = [[2,{"v":g_owner}], [1,{"v":1000*gas_precision}]]
+        result = call_contract(g_owner, contract_name, function, params)['result']
+        tx_id = result[0]
+        time.sleep(2)
+        get_contract_call_tx_result(tx_id)
         list_account_balances(g_owner)
 
-        call_contract(g_owner, g_owner, 100000*gas_precision)
+        params = [[2,{"v":g_owner}], [1,{"v":800*gas_precision}]]
+        result = call_contract(g_owner, contract_name, function, params)['result']
+        tx_id = result[0]
+        time.sleep(2)
+        get_contract_call_tx_result(tx_id)
         list_account_balances(g_owner)
 
-        call_contract(g_owner, g_owner, 80000*gas_precision)
+        params = [[2,{"v":g_owner}], [1,{"v":0}]]
+        result = call_contract(g_owner, contract_name, function, params)['result']
+        tx_id = result[0]
+        time.sleep(2)
+        get_contract_call_tx_result(tx_id)
         list_account_balances(g_owner)
 
-        call_contract(g_owner, g_owner, 0)
-        list_account_balances(g_owner)
-
-        response = call_contract(g_owner, g_owner, -100*gas_precision, is_assert=False)
+        response = call_contract(g_owner, contract_name, function, params, is_assert=False)
         assert 'error' in response
         print('{} done\n'.format(sys._getframe().f_code.co_name))
-
-    @unittest.skipIf(True, 'test other')
-    def test_collateral_gas_other(self):
-        req_data = {
-            "jsonrpc": "2.0",
-            "method": "transfer",
-            "params": [g_owner, g_account2, transfer_amount, 'COCOS', ['test account', 'false'], 'true'],
-            "id":1
-        }
-        request_post(req_data)
-        list_account_balances(g_account2)
-        list_account_balances(g_owner)
-
-        call_contract(g_account2, g_owner, transfer_amount*0.5*gas_precision)
-        list_account_balances(g_owner)
-        list_account_balances(g_account2)
-
-        call_contract(g_account2, g_owner, transfer_amount*0.8*gas_precision)
-        list_account_balances(g_owner)
-        list_account_balances(g_account2)
-
-        call_contract(g_account2, g_owner, 0)
-        list_account_balances(g_owner)
-        list_account_balances(g_account2)
-
-        response = call_contract(g_account2, g_owner, -0.3*transfer_amount*gas_precision, is_assert=False)
-        assert 'error' in response
-        print('{} done\n'.format(sys._getframe().f_code.co_name))
-
-    @unittest.skipIf(True, 'test other')
-    def test_collateral_gas_multi_accounts(self):
-        req_data = {
-            "jsonrpc": "2.0",
-            "method": "transfer",
-            "params": [g_owner, g_account2, transfer_amount, 'COCOS', ['test account', 'false'], 'true'],
-            "id":1
-        }
-        request_post(req_data)
-        list_account_balances(g_account2)
-        list_account_balances(g_owner)
-
-        call_contract(g_account2, g_owner, transfer_amount*0.5*gas_precision)
-        list_account_balances(g_owner)
-        list_account_balances(g_account2)
-
-        call_contract(g_owner, g_owner, 80000*gas_precision)
-        list_account_balances(g_owner)
-        list_account_balances(g_account2)
-
-        call_contract(g_owner, g_owner, 8000*gas_precision)
-        list_account_balances(g_owner)
-        list_account_balances(g_account2)
-
-        call_contract(g_account2, g_owner, transfer_amount*0.8*gas_precision)
-        list_account_balances(g_owner)
-        list_account_balances(g_account2)
-
-        call_contract(g_account2, g_owner, 0)
-        call_contract(g_owner, g_owner, 0)
-        list_account_balances(g_owner)
-        list_account_balances(g_account2)
 
 if __name__ == "__main__":
     unittest.main()
