@@ -226,7 +226,7 @@
 ```
 * cpp函数原型：
 ``` c++
-	void transfer_from_owner(string to, double amount, string symbol, bool enable_logger = false) 
+	void transfer_from_owner(string to, double amount, string symbol, bool enable_logger = false)
 ```
 
 ### 24. transfer_from_caller
@@ -236,7 +236,7 @@
 ```
 * cpp函数原型：
 ``` c++
-	void transfer_from_caller(string to, double amount, string symbol, bool enable_logger = false) 
+	void transfer_from_caller(string to, double amount, string symbol, bool enable_logger = false)
 ```
 
 ### 25. transfer_nht_from_owner
@@ -246,7 +246,7 @@
 ```
 * cpp函数原型：
 ``` c++
-	void transfer_nht_from_owner(string to, string token_hash_or_id, bool enable_logger = false) 
+	void transfer_nht_from_owner(string to, string token_hash_or_id, bool enable_logger = false)
 ```
 
 ### 26. transfer_nht_from_caller
@@ -256,7 +256,7 @@
 ```
 * cpp函数原型：
 ``` c++
-	void transfer_nht_from_caller(string to, string token_hash_or_id, bool enable_logger = false) 
+	void transfer_nht_from_caller(string to, string token_hash_or_id, bool enable_logger = false)
 ```
 
 ### 27. get_account_balance
@@ -266,7 +266,7 @@
 ```
 * cpp函数原型：
 ``` c++
-	int64_t get_account_balance(string account, string symbol) -> int64_t 
+	int64_t get_account_balance(string account, string symbol) -> int64_t
 ```
 
 ### 28. change_nht_active_by_owner
@@ -276,7 +276,7 @@
 ```
 * cpp函数原型：
 ``` c++
-	void change_nht_active_by_owner(string beneficiary_account, string token_hash_or_id, bool enable_logger = false) 
+	void change_nht_active_by_owner(string beneficiary_account, string token_hash_or_id, bool enable_logger = false)
 ```
 
 ### 29. transfer_nht_active_from_caller
@@ -286,7 +286,7 @@
 ```
 * cpp函数原型：
 ``` c++
-	void transfer_nht_active_from_caller(string to, string token_hash_or_id, bool enable_logger = false) 
+	void transfer_nht_active_from_caller(string to, string token_hash_or_id, bool enable_logger = false)
 ```
 
 ### 30. transfer_nht_dealership_from_owner
@@ -296,7 +296,7 @@
 ```
 * cpp函数原型：
 ``` c++
-	void transfer_nht_dealership_from_owner(string to, string token_hash_or_id, bool enable_logger = false) 
+	void transfer_nht_dealership_from_owner(string to, string token_hash_or_id, bool enable_logger = false)
 ```
 
 ### 31. transfer_nht_dealership_from_caller
@@ -306,7 +306,7 @@
 ```
 * cpp函数原型：
 ``` c++
-	void transfer_nht_dealership_from_caller(string to, string token_hash_or_id, bool enable_logger = false) 
+	void transfer_nht_dealership_from_caller(string to, string token_hash_or_id, bool enable_logger = false)
 ```
 
 ### 32. set_nht_limit_list
@@ -316,7 +316,7 @@
 ```
 * cpp函数原型：
 ``` c++
-	void set_nht_limit_list(string token_hash_or_id, string contract_name_or_ids, bool limit_type, bool enable_logger = false) 
+	void set_nht_limit_list(string token_hash_or_id, string contract_name_or_ids, bool limit_type, bool enable_logger = false)
 ```
 
 ### 33. relate_nh_asset
@@ -326,6 +326,6 @@
 ```
 * cpp函数原型：
 ``` c++
-	void relate_nh_asset(string parent_token_hash_or_id, string child_token_hash_or_id, bool relate, bool enable_logger = false) 
+	void relate_nh_asset(string parent_token_hash_or_id, string child_token_hash_or_id, bool relate, bool enable_logger = false)
 ```
 

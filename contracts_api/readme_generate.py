@@ -76,7 +76,7 @@ for line in src_file.readlines():
     if line.startswith("[](register_scheduler"):
         # print(line)
         tokens = line.split("fc_register,")
-        params = tokens[1].strip()[:-1]
+        params = tokens[1].strip()[:-1].strip()
         # print(params)
         full_func_name = "{} {}({}".format(return_type, func_name, params)
         api_desc = "### {}. {}\n* 函数名:\n``` text\n\t[lua] {}  -->  [cpp] {}\n```\n* cpp函数原型：\n``` c++\n\t{}\n```\n\n".format(
