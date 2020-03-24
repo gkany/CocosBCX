@@ -42,24 +42,50 @@ print("total api function: {}".format(api_count))
 src_file.close()
 
 print("\n### 3. write register-lambda-function to README.md")
+flag = True
 startWith = "registerFunction<register_scheduler, "
 src_file = open(src_file_name, 'r')
+
+func_name = ""
+return_type = ""
 for line in src_file.readlines():
+    line = line.strip()
+    if line.startswith("/*"):
+        flag = False
+    elif line.endswith("*/"):
+        flag = True
+    if not flag:
+        continue
+
     if line.find("registerFunction<") != -1:
-        line = line.strip()
         tokens = line.split(">")
         func_name = tokens[1][2:-2]
         print("   " + func_name)
         params = tokens[0][len(startWith):]
         params_tokens = params.split("(")
-        full_func_name = "{} {}({}".format(params_tokens[0], func_name, params_tokens[1])
+        return_type = params_tokens[0]
+        # full_func_name = "{} {}({}".format(params_tokens[0], func_name, params_tokens[1])
         # print(full_func_name)
         # api_desc = "### {}. {}\n> 函数原型：\n``` c++\n{}\n```\n\n".format(api_count, func_name, full_func_name)
+        # api_desc = "### {}. {}\n* 函数名:\n``` text\n\t[lua] {}  -->  [cpp] {}\n```\n* cpp函数原型：\n``` c++\n\t{}\n```\n\n".format(
+        #     api_count, func_name, func_name, func_name, full_func_name)
+        # # print(api_desc)
+        # readme_file.write(api_desc)
+        # api_count += 1
+
+    if line.startswith("[](register_scheduler"):
+        # print(line)
+        tokens = line.split("fc_register,")
+        params = tokens[1].strip()[:-1]
+        # print(params)
+        full_func_name = "{} {}({}".format(return_type, func_name, params)
         api_desc = "### {}. {}\n* 函数名:\n``` text\n\t[lua] {}  -->  [cpp] {}\n```\n* cpp函数原型：\n``` c++\n\t{}\n```\n\n".format(
             api_count, func_name, func_name, func_name, full_func_name)
         # print(api_desc)
         readme_file.write(api_desc)
         api_count += 1
+        func_name = ""
+
 src_file.close()
 readme_file.close()
 

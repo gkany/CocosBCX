@@ -569,7 +569,7 @@ class contract_api_case_test(unittest.TestCase):
         get_contract_call_tx_result(tx_id)
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
-    @unittest.skipIf(False, "test other")
+    @unittest.skipIf(True, "test other")
     def test_contract_17_nht_describe_change(self):
         # 1. register_nh_asset_creator
         status = register_nh_asset_creator_if_not(g_owner)
@@ -795,6 +795,411 @@ class contract_api_case_test(unittest.TestCase):
 
         response = call_contract(g_owner, contract_name, function, params, is_assert=False)
         assert 'error' in response
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
+
+    @unittest.skipIf(True, 'test other')
+    def test_contract_23_transfer_from_owner(self):
+        contract_name = self.contract_basic_name + "23.transferfromowner"
+        file_name = os.getcwd() + "/contract_23_transfer_from_owner.lua"
+        contract_create_if_not_exist(g_owner, contract_name, g_pub_key, file_name)
+        # revise_contract(g_owner, contract_name, file_name)
+
+        function = "test_transfer_from_owner"
+        params = [
+            [2,{"v":"1.2.5"}],
+            [1,{"v":1523.78}],
+            [2,{"v":"COCOS"}],
+            [3,{"v":True}]
+        ]
+        result = call_contract(g_owner, contract_name, function, params)['result']
+        tx_id = result[0]
+        time.sleep(2)
+        get_contract_call_tx_result(tx_id)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
+
+    @unittest.skipIf(True, 'test other')
+    def test_contract_24_transfer_from_caller(self):
+        contract_name = self.contract_basic_name + "24.transferfromcaller"
+        file_name = os.getcwd() + "/contract_24_transfer_from_caller.lua"
+        contract_create_if_not_exist(g_owner, contract_name, g_pub_key, file_name)
+        # revise_contract(g_owner, contract_name, file_name)
+
+        function = "test_transfer_from_caller"
+        params = [
+            [2,{"v":"1.2.5"}],
+            [1,{"v":1523.78}],
+            [2,{"v":"COCOS"}],
+            [3,{"v":True}]
+        ]
+        result = call_contract(g_owner, contract_name, function, params)['result']
+        tx_id = result[0]
+        time.sleep(2)
+        get_contract_call_tx_result(tx_id)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
+
+
+    @unittest.skipIf(True, 'test other')
+    def test_contract_27_get_account_balance(self):
+        contract_name = self.contract_basic_name + "27.getaccountbalance"
+        file_name = os.getcwd() + "/contract_27_get_account_balance.lua"
+        contract_create_if_not_exist(g_owner, contract_name, g_pub_key, file_name)
+        # revise_contract(g_owner, contract_name, file_name)
+
+        function = "test_get_account_balance"
+        params = [[2,{"v":g_owner}], [2,{"v":"COCOS"}]]
+        result = call_contract(g_owner, contract_name, function, params)['result']
+        tx_id = result[0]
+        time.sleep(2)
+        get_contract_call_tx_result(tx_id)
+
+        params = [[2,{"v":"1.2.5"}], [2,{"v":"1.3.0"}]]
+        result = call_contract(g_owner, contract_name, function, params)['result']
+        tx_id = result[0]
+        time.sleep(2)
+        get_contract_call_tx_result(tx_id)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
+
+
+    @unittest.skipIf(True, 'test other')
+    def test_contract_25_transfer_nht_from_caller(self):
+        # 1. register_nh_asset_creator
+        status = register_nh_asset_creator_if_not(g_owner)
+        assert status
+
+        # 2. create_world_view
+        world_view = "test_wv" + random_lowercases(4) #随机世界观其他test_case操作不方便，使用全局world_view
+        # world_view = self.world_view
+        create_world_view_if_not_exist(g_owner, world_view)
+        lookup_world_view(world_view)
+
+        # 3. create_contract
+        contract_name = self.contract_basic_name + "25.transfernhtfromcaller"
+        file_name = os.getcwd() + "/contract_25_transfer_nht_from_owner.lua"
+        contract_create_if_not_exist(g_owner, contract_name, g_pub_key, file_name)
+        revise_contract(g_owner, contract_name, file_name)
+
+        contract_object = get_contract(contract_name)['result']
+        contract_id = contract_object['id']
+        print("contract_name: {}, contract_id: {}".format(contract_name, contract_id))
+
+        # 4. create_nh_asset by contract
+        function = "test_create_nh_asset"
+        symbol = "COCOS"
+        base_describe = "'nh_symbol': '{}'".format(random_uppercases(5))
+        params = [
+            [2,{"v":g_owner}],
+            [2,{"v":symbol}],
+            [2,{"v":world_view}],
+            [2,{"v":base_describe}],
+            [3,{"v":True}]
+        ]
+        result = call_contract(g_owner, contract_name, function, params)['result']
+        tx_id = result[0]
+        time.sleep(2)
+        get_contract_call_tx_result(tx_id)
+
+        # 5. list_account_nh_asset
+        nh_assets_pair = list_account_nh_asset(g_owner, [world_view])['result']
+        assert nh_assets_pair[1] > 0
+        nh_asset = nh_assets_pair[0][0]
+        nh_asset_id = nh_asset['id']
+
+        # 6. transfer nht by contract
+        function = "test_transfer_nht_from_owner"
+        params = [
+            [2,{"v":"1.2.5"}],
+            [2,{"v":nh_asset_id}],
+            [3,{"v":True}]
+        ]
+        result = call_contract(g_owner, contract_name, function, params)['result']
+        tx_id = result[0]
+        time.sleep(2)
+        get_contract_call_tx_result(tx_id)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
+
+    @unittest.skipIf(True, 'test other')
+    def test_contract_26_transfer_nht_from_caller(self):
+        # 1. register_nh_asset_creator
+        status = register_nh_asset_creator_if_not(g_owner)
+        assert status
+
+        # 2. create_world_view
+        world_view = "test_wv" + random_lowercases(4) #随机世界观其他test_case操作不方便，使用全局world_view
+        # world_view = self.world_view
+        create_world_view_if_not_exist(g_owner, world_view)
+        lookup_world_view(world_view)
+
+        # 3. create_contract
+        contract_name = self.contract_basic_name + "26.transfernhtfromcaller"
+        file_name = os.getcwd() + "/contract_26_transfer_nht_from_caller.lua"
+        contract_create_if_not_exist(g_owner, contract_name, g_pub_key, file_name)
+        revise_contract(g_owner, contract_name, file_name)
+
+        contract_object = get_contract(contract_name)['result']
+        contract_id = contract_object['id']
+        print("contract_name: {}, contract_id: {}".format(contract_name, contract_id))
+
+        # 4. create_nh_asset by contract
+        function = "test_create_nh_asset"
+        symbol = "COCOS"
+        base_describe = "'nh_symbol': '{}'".format(random_uppercases(5))
+        params = [
+            [2,{"v":g_owner}],
+            [2,{"v":symbol}],
+            [2,{"v":world_view}],
+            [2,{"v":base_describe}],
+            [3,{"v":True}]
+        ]
+        result = call_contract(g_owner, contract_name, function, params)['result']
+        tx_id = result[0]
+        time.sleep(2)
+        get_contract_call_tx_result(tx_id)
+
+        # 5. list_account_nh_asset
+        nh_assets_pair = list_account_nh_asset(g_owner, [world_view])['result']
+        assert nh_assets_pair[1] > 0
+        nh_asset = nh_assets_pair[0][0]
+        nh_asset_id = nh_asset['id']
+
+        # 6. transfer nht by contract
+        function = "test_transfer_nht_from_caller"
+        params = [
+            [2,{"v":"1.2.5"}],
+            [2,{"v":nh_asset_id}],
+            [3,{"v":True}]
+        ]
+        result = call_contract(g_owner, contract_name, function, params)['result']
+        tx_id = result[0]
+        time.sleep(2)
+        get_contract_call_tx_result(tx_id)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
+
+    @unittest.skipIf(False, 'test other')
+    def test_contract_28_change_nht_active_by_owner(self):
+        # 1. register_nh_asset_creator
+        status = register_nh_asset_creator_if_not(g_owner)
+        assert status
+
+        # 2. create_world_view
+        world_view = "test_wv" + random_lowercases(4) #随机世界观其他test_case操作不方便，使用全局world_view
+        # world_view = self.world_view
+        create_world_view_if_not_exist(g_owner, world_view)
+        lookup_world_view(world_view)
+
+        # 3. create_contract
+        contract_name = self.contract_basic_name + "28.changenhtactivebyowner"
+        file_name = os.getcwd() + "/contract_28_change_nht_active_by_owner.lua"
+        contract_create_if_not_exist(g_owner, contract_name, g_pub_key, file_name)
+        revise_contract(g_owner, contract_name, file_name)
+
+        contract_object = get_contract(contract_name)['result']
+        contract_id = contract_object['id']
+        print("contract_name: {}, contract_id: {}".format(contract_name, contract_id))
+
+        # 4. create_nh_asset by contract
+        function = "test_create_nh_asset"
+        symbol = "COCOS"
+        base_describe = "'nh_symbol': '{}'".format(random_uppercases(5))
+        params = [
+            [2,{"v":g_owner}],
+            [2,{"v":symbol}],
+            [2,{"v":world_view}],
+            [2,{"v":base_describe}],
+            [3,{"v":True}]
+        ]
+        result = call_contract(g_owner, contract_name, function, params)['result']
+        tx_id = result[0]
+        time.sleep(2)
+        get_contract_call_tx_result(tx_id)
+
+        # 5. list_account_nh_asset
+        nh_assets_pair = list_account_nh_asset(g_owner, [world_view])['result']
+        assert nh_assets_pair[1] > 0
+        nh_asset = nh_assets_pair[0][0]
+        nh_asset_id = nh_asset['id']
+
+        # 6. transfer nht by contract
+        function = "test_change_nht_active_by_owner"
+        params = [
+            [2,{"v":"1.2.5"}],
+            [2,{"v":nh_asset_id}],
+            [3,{"v":True}]
+        ]
+        result = call_contract(g_owner, contract_name, function, params)['result']
+        tx_id = result[0]
+        time.sleep(2)
+        get_contract_call_tx_result(tx_id)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
+
+    @unittest.skipIf(False, 'test other')
+    def test_contract_29_change_nht_active_by_caller(self):
+        # 1. register_nh_asset_creator
+        status = register_nh_asset_creator_if_not(g_owner)
+        assert status
+
+        # 2. create_world_view
+        world_view = "test_wv" + random_lowercases(4) #随机世界观其他test_case操作不方便，使用全局world_view
+        # world_view = self.world_view
+        create_world_view_if_not_exist(g_owner, world_view)
+        lookup_world_view(world_view)
+
+        # 3. create_contract
+        contract_name = self.contract_basic_name + "29.changenhtactivebycaller"
+        file_name = os.getcwd() + "/contract_29_change_nht_active_by_caller.lua"
+        contract_create_if_not_exist(g_owner, contract_name, g_pub_key, file_name)
+        revise_contract(g_owner, contract_name, file_name)
+
+        contract_object = get_contract(contract_name)['result']
+        contract_id = contract_object['id']
+        print("contract_name: {}, contract_id: {}".format(contract_name, contract_id))
+
+        # 4. create_nh_asset by contract
+        function = "test_create_nh_asset"
+        symbol = "COCOS"
+        base_describe = "'nh_symbol': '{}'".format(random_uppercases(5))
+        params = [
+            [2,{"v":g_owner}],
+            [2,{"v":symbol}],
+            [2,{"v":world_view}],
+            [2,{"v":base_describe}],
+            [3,{"v":True}]
+        ]
+        result = call_contract(g_owner, contract_name, function, params)['result']
+        tx_id = result[0]
+        time.sleep(2)
+        get_contract_call_tx_result(tx_id)
+
+        # 5. list_account_nh_asset
+        nh_assets_pair = list_account_nh_asset(g_owner, [world_view])['result']
+        assert nh_assets_pair[1] > 0
+        nh_asset = nh_assets_pair[0][0]
+        nh_asset_id = nh_asset['id']
+
+        # 6. transfer nht by contract
+        function = "test_change_nht_active_by_caller"
+        params = [
+            [2,{"v":"1.2.5"}],
+            [2,{"v":nh_asset_id}],
+            [3,{"v":True}]
+        ]
+        result = call_contract(g_owner, contract_name, function, params)['result']
+        tx_id = result[0]
+        time.sleep(2)
+        get_contract_call_tx_result(tx_id)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
+
+    @unittest.skipIf(False, 'test other')
+    def test_contract_30_transfer_nht_dealership_from_owner(self):
+        # 1. register_nh_asset_creator
+        status = register_nh_asset_creator_if_not(g_owner)
+        assert status
+
+        # 2. create_world_view
+        world_view = "test_wv" + random_lowercases(4) #随机世界观其他test_case操作不方便，使用全局world_view
+        # world_view = self.world_view
+        create_world_view_if_not_exist(g_owner, world_view)
+        lookup_world_view(world_view)
+
+        # 3. create_contract
+        contract_name = self.contract_basic_name + "30.transfernhtdealershipfromowner"
+        file_name = os.getcwd() + "/contract_30_transfer_nht_dealership_from_owner.lua"
+        contract_create_if_not_exist(g_owner, contract_name, g_pub_key, file_name)
+        revise_contract(g_owner, contract_name, file_name)
+
+        contract_object = get_contract(contract_name)['result']
+        contract_id = contract_object['id']
+        print("contract_name: {}, contract_id: {}".format(contract_name, contract_id))
+
+        # 4. create_nh_asset by contract
+        function = "test_create_nh_asset"
+        symbol = "COCOS"
+        base_describe = "'nh_symbol': '{}'".format(random_uppercases(5))
+        params = [
+            [2,{"v":g_owner}],
+            [2,{"v":symbol}],
+            [2,{"v":world_view}],
+            [2,{"v":base_describe}],
+            [3,{"v":True}]
+        ]
+        result = call_contract(g_owner, contract_name, function, params)['result']
+        tx_id = result[0]
+        time.sleep(2)
+        get_contract_call_tx_result(tx_id)
+
+        # 5. list_account_nh_asset
+        nh_assets_pair = list_account_nh_asset(g_owner, [world_view])['result']
+        assert nh_assets_pair[1] > 0
+        nh_asset = nh_assets_pair[0][0]
+        nh_asset_id = nh_asset['id']
+
+        # 6. transfer nht by contract
+        function = "test_transfer_nht_dealership_from_owner"
+        params = [
+            [2,{"v":"1.2.5"}],
+            [2,{"v":nh_asset_id}],
+            [3,{"v":True}]
+        ]
+        result = call_contract(g_owner, contract_name, function, params)['result']
+        tx_id = result[0]
+        time.sleep(2)
+        get_contract_call_tx_result(tx_id)
+        print('{} done\n'.format(sys._getframe().f_code.co_name))
+
+    @unittest.skipIf(False, 'test other')
+    def test_contract_31_transfer_nht_dealership_from_caller(self):
+        # 1. register_nh_asset_creator
+        status = register_nh_asset_creator_if_not(g_owner)
+        assert status
+
+        # 2. create_world_view
+        world_view = "test_wv" + random_lowercases(4) #随机世界观其他test_case操作不方便，使用全局world_view
+        # world_view = self.world_view
+        create_world_view_if_not_exist(g_owner, world_view)
+        lookup_world_view(world_view)
+
+        # 3. create_contract
+        contract_name = self.contract_basic_name + "31.transfernhtdealershipfromcaller"
+        file_name = os.getcwd() + "/contract_31_transfer_nht_dealership_from_caller.lua"
+        contract_create_if_not_exist(g_owner, contract_name, g_pub_key, file_name)
+        revise_contract(g_owner, contract_name, file_name)
+
+        contract_object = get_contract(contract_name)['result']
+        contract_id = contract_object['id']
+        print("contract_name: {}, contract_id: {}".format(contract_name, contract_id))
+
+        # 4. create_nh_asset by contract
+        function = "test_create_nh_asset"
+        symbol = "COCOS"
+        base_describe = "'nh_symbol': '{}'".format(random_uppercases(5))
+        params = [
+            [2,{"v":g_owner}],
+            [2,{"v":symbol}],
+            [2,{"v":world_view}],
+            [2,{"v":base_describe}],
+            [3,{"v":True}]
+        ]
+        result = call_contract(g_owner, contract_name, function, params)['result']
+        tx_id = result[0]
+        time.sleep(2)
+        get_contract_call_tx_result(tx_id)
+
+        # 5. list_account_nh_asset
+        nh_assets_pair = list_account_nh_asset(g_owner, [world_view])['result']
+        assert nh_assets_pair[1] > 0
+        nh_asset = nh_assets_pair[0][0]
+        nh_asset_id = nh_asset['id']
+
+        # 6. transfer nht by contract
+        function = "test_transfer_nht_dealership_from_caller"
+        params = [
+            [2,{"v":"1.2.5"}],
+            [2,{"v":nh_asset_id}],
+            [3,{"v":True}]
+        ]
+        result = call_contract(g_owner, contract_name, function, params)['result']
+        tx_id = result[0]
+        time.sleep(2)
+        get_contract_call_tx_result(tx_id)
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
     @unittest.skipIf(True, "test other")
