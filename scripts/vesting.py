@@ -74,17 +74,9 @@ def request_post(req_data, is_assert=True, response_log=True, url=chain_url):
         assert 'error' not in response
     return response
 
-def main():
-    # initial()
-    # for key in node_address_dict:
-    #     args = [key, node_address_dict[key]]
-    #     t = Thread(target=listen_block, args=(args,))
-    #     t.start()
-    pass
-
 #########
 wallet_password = "123456"
-private_key = "5J2SChqa9QxrCkdMor9VC2k9NT4R4ctRrJA6odQCPkb3yL89vxo"
+private_key = "5J2SChqa9QxrCkdMor9VC2k9NT4R4ctRrJA6odQCPkb3yL98vxo"
 public_key = "COCOS56a5dTnfGpuPoWACnYj65dahcXMpTrNQkV3hHWCFkLxMF5mXpx"
 default_account = "nicotest"
 ############
