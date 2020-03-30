@@ -125,6 +125,18 @@ def account_vesting(account_id):
         # 这里可以根据需要添加要提取的amount，asset，account
         gph.vesting_balance_withdraw(vesting_object_id, account=account_id)
 
+def account_vesting_by_sdk(account_id):
+    vesting_objects = gph.get_vesting_balances(account_id)
+    for vesting_object in vesting_objects:
+        vesting_object_id = vesting_object["id"]
+        print(vesting_object_id)
+        # def vesting_balance_withdraw(self, vesting_id, amount=None, asset=None, account=None):
+        # 这里可以根据需要添加要提取的amount，asset，account
+        # gph.vesting_balance_withdraw(vesting_object_id, account=account_id)
+
+def allowed_withdraw_by_sdk(vesting_id):
+    vesting_object = Vesting(vesting_id)
+    return vesting_object.claimable
 
 def allowed_withdraw_test(account_id):
     vesting_objects = get_vesting_balances(account_id)
@@ -133,10 +145,21 @@ def allowed_withdraw_test(account_id):
         amount = allowed_withdraw(vesting_object_id)
         print("vesting_id: {}, allowed_withdraw_amount: {}".format(vesting_object_id, amount))
 
+def allowed_withdraw_by_sdk_test(account_id):
+    vesting_objects = gph.get_vesting_balances(account_id)
+    for vesting_object in vesting_objects:
+        vesting_object_id = vesting_object["id"]
+        amount = allowed_withdraw(vesting_object_id)
+        print("vesting_id: {}, allowed_withdraw_amount: {}".format(vesting_object_id, amount))
+
 if __name__ == '__main__':
     init_wallet()
     # account_vesting("1.2.16")
-    allowed_withdraw_test("1.2.16")
+    # allowed_withdraw_test("1.2.16")
+
+    print("by sdk test")
+    account_vesting_by_sdk("nicotest")
+    allowed_withdraw_by_sdk_test("1.2.16")
 
 '''
 >>> 1. account_vesting 测试
@@ -175,5 +198,15 @@ chain_params {'prefix': 'COCOS', 'chain_id': '9f487f4cca8ababac23d3806a901e9044a
 
 vesting_id: 1.13.10, allowed_withdraw_amount: 0.00038 GAS
 
+
+>>> 3. vesting by sdk test
+dev@ubuntu:~/data/mrepo/BlockContinuity$ python3 vesting.py 
+chain_params {'core_symbol': 'COCOS', 'prefix': 'COCOS', 'chain_id': '9f487f4cca8ababac23d3806a901e9044ab4d82be33cf2abb5cc3185e04fbafd'}
+2020-03-30 17:09:10.086646 [server] [init_wallet:88] [INFO]: wallet create status: True
+2020-03-30 17:09:10.087725 [server] [init_wallet:92] [INFO]: wallet lock status: False
+2020-03-30 17:09:10.533187 [server] [init_wallet:99] [INFO]: account id: 1.2.16, public key: COCOS56a5dTnfGpuPoWACnYj65dahcXMpTrNQkV3hHWCFkLxMF5mXpx
+by sdk test
+1.13.10
+vesting_id: 1.13.10, allowed_withdraw_amount: 0.07542 GAS
 
 '''
