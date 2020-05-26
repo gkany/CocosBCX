@@ -1,5 +1,6 @@
-dev@ubuntu:~/data/mrepo/witness_node/node-test-block-id-api$ python3 vote.py 
-```  text
+dev@ubuntu:~/test/python3 vote.py 
+
+``` json
 >> get_dynamic_global_properties []
 {'jsonrpc': '2.0', 'result': {'witness_budget': 2790000000, 'time': '2020-05-26T07:30:52', 'dynamic_flags': 0, 'accounts_registered_this_interval': 0, 'current_aslot': 18497042, 'id': '2.1.0', 'current_witness': '1.6.2', 'head_block_id': '00004bd777daf10e8a83bb476ec31dd9bd0b7c44', 'head_block_number': 19415, 'last_irreversible_block_num': 19408, 'next_maintenance_time': '2020-05-26T07:40:00', 'last_budget_time': '2020-05-26T07:30:00', 'recently_missed_count': 575693, 'current_transaction_count': 0, 'recent_slots_filled': '340261577449851944168328090111577157119'}, 'id': 1}
 
@@ -81,7 +82,7 @@ propose object: [{'review_period_time': '2020-05-26T07:33:00', 'proposed_transac
 >> get_object 1.10.10
  [{'review_period_time': '2020-05-26T07:33:00', 'proposed_transaction': {'operations': [[57, {'committee_max_votes': 9, 'contract_private_data_size': 3072, 'contract_total_data_size': 10485760, 'contract_max_data_size': 2147483648, 'witness_max_votes': 7}]], 'expiration': '2020-05-26T07:40:00', 'ref_block_num': 19416, 'ref_block_prefix': 743339689, 'extensions': ['1.10.10']}, 'allow_execution': True, 'available_active_approvals': ['1.2.5', '1.2.6', '1.2.7', '1.2.8', '1.2.9', '1.2.10', '1.2.11', '1.2.12', '1.2.13', '1.2.14', '1.2.15'], 'available_owner_approvals': [], 'id': '1.10.10', 'available_key_approvals': [], 'required_owner_approvals': [], 'expiration_time': '2020-05-26T07:35:00', 'trx_hash': '402bc6c68d6597e7b2e212c01acf7d3ebacaaf41500233a279eb45e64e1ee55f', 'required_active_approvals': ['1.2.0']}]
 
-dev@ubuntu:~/data/mrepo/witness_node/node-test-block-id-api$ 
+dev@ubuntu:~/test/$ 
 
 ```  
 
