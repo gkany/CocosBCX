@@ -39,7 +39,7 @@ python3 vote.py
 **注意** : 提案review时间应该大于当前时间到链维护的间隔，否则提案失败，这种情况执行会有提示，`Please wait for the next maintenance`, 可以根据需要修改vote.py逻辑，`sleep(delta_time)`
 
 **执行结果**: 
-``` json
+``` text
 dev@ubuntu:~/test/python3 vote.py 
 
 ``` json
