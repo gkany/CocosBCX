@@ -38,6 +38,7 @@ def request_post(req_data):
        response = json.loads(requests.post(cli_wallet_url, data = json.dumps(req_data), headers = headers).text)
        print('>> {} {}\n{}\n'.format(req_data['method'], req_data['params'], response))
        #print('>> {} {}\n{}'.format(req_data['method'], req_data['params'], response['result']))
+       return response
     except Exception as e:
         print(repr(e))
 
@@ -121,7 +122,8 @@ def get_account(name):
             "params": [name],
             "id":1
         }
-        account_info = json.loads(requests.post(cli_wallet_url, data = json.dumps(body_relay), headers = headers).text)
+        # account_info = json.loads(requests.post(cli_wallet_url, data = json.dumps(body_relay), headers = headers).text)
+        account_info = request_post(body_relay)
         account_object = account_info['result']
         return account_object
     except Exception as e:
@@ -135,9 +137,10 @@ def suggest_brain_key():
             "params": [],
             "id":1
         }
-        response = json.loads(requests.post(cli_wallet_url, data = json.dumps(body_relay), headers = headers).text)
+        # response = json.loads(requests.post(cli_wallet_url, data = json.dumps(body_relay), headers = headers).text)
+        response = request_post(body_relay)
         brain_key = response['result']
-        print('>> suggest_brain_key\n {}\n'.format(brain_key))
+        # print('>> suggest_brain_key\n {}\n'.format(brain_key))
         return brain_key
     except Exception as e:
         print(repr(e))
@@ -154,11 +157,12 @@ def propose_extension_parameter(account, expire_time, changed_param):
             "params": [account, expire_time, changed_param, True],
             "id":1
         }
-        data = json.dumps(body_relay)
-        print(data)
-        response = json.loads(requests.post(cli_wallet_url, data = data, headers = headers).text)
+        # data = json.dumps(body_relay)
+        # print(data)
+        # response = json.loads(requests.post(cli_wallet_url, data = data, headers = headers).text)
+        response = request_post(body_relay)
         result = response['result']
-        print('>> propose_extensions_parameter_change\n {}\n'.format(result))
+        # print('>> propose_extensions_parameter_change\n {}\n'.format(result))
         return result
     except Exception as e:
         print(repr(e))
@@ -171,9 +175,10 @@ def info():
             "params": [],
             "id":1
         }
-        response = json.loads(requests.post(cli_wallet_url, data = json.dumps(body_relay), headers = headers).text)
+        # response = json.loads(requests.post(cli_wallet_url, data = json.dumps(body_relay), headers = headers).text)
+        response = request_post(body_relay)
         info = response['result']
-        print('>> info\n {}\n'.format(info))
+        # print('>> info\n {}\n'.format(info))
         return info
     except Exception as e:
         print(repr(e))
@@ -186,9 +191,10 @@ def get_dynamic_global_properties():
             "params": [],
             "id":1
         }
-        response = json.loads(requests.post(cli_wallet_url, data = json.dumps(body_relay), headers = headers).text)
+        # response = json.loads(requests.post(cli_wallet_url, data = json.dumps(body_relay), headers = headers).text)
+        response = request_post(body_relay)
         result = response['result']
-        print('>> get_dynamic_global_properties\n {}\n'.format(result))
+        # print('>> get_dynamic_global_properties\n {}\n'.format(result))
         return result
     except Exception as e:
         print(repr(e))
@@ -201,7 +207,8 @@ def get_global_properties():
             "params": [],
             "id":1
         }
-        response = json.loads(requests.post(cli_wallet_url, data = json.dumps(body_relay), headers = headers).text)
+        # response = json.loads(requests.post(cli_wallet_url, data = json.dumps(body_relay), headers = headers).text)
+        response = request_post(body_relay)
         result = response['result']
         # print('>> get_global_properties\n {}\n'.format(result))
         return result
@@ -216,9 +223,10 @@ def get_block(num):
             "params": [num],
             "id":1
         }
-        response = json.loads(requests.post(cli_wallet_url, data = json.dumps(body_relay), headers = headers).text)
+        # response = json.loads(requests.post(cli_wallet_url, data = json.dumps(body_relay), headers = headers).text)
+        response = request_post(body_relay)
         block = response['result']
-        print('>> get_block {}\n {}\n'.format(num, block))
+        # print('>> get_block {}\n {}\n'.format(num, block))
         return block
     except Exception as e:
         print(repr(e))
@@ -231,7 +239,8 @@ def get_tx_in_block_num(tx_id):
             "params": [tx_id],
             "id":1
         }
-        response = json.loads(requests.post(cli_wallet_url, data = json.dumps(body_relay), headers = headers).text)
+        # response = json.loads(requests.post(cli_wallet_url, data = json.dumps(body_relay), headers = headers).text)
+        response = request_post(body_relay)
         result = response['result']
         print('>> get_transaction_in_block_info {}\n {}\n'.format(tx_id, result))
         return result
@@ -246,9 +255,25 @@ def get_object(id):
             "params": [id],
             "id":1
         }
-        response = json.loads(requests.post(cli_wallet_url, data = json.dumps(body_relay), headers = headers).text)
+        # response = json.loads(requests.post(cli_wallet_url, data = json.dumps(body_relay), headers = headers).text)
+        response = request_post(body_relay)
         result = response['result']
         print('>> get_object {}\n {}\n'.format(id, result))
+        return result
+    except Exception as e:
+        print(repr(e))
+
+def transfer(from_account, to, amount, asset="COCOS", memo=""):
+    try:
+        body_relay = {
+            "jsonrpc": "2.0",
+            "method": "transfer",
+            "params": [from_account, to, amount, asset, [memo, False], True],
+            "id":1
+        }
+        # response = json.loads(requests.post(cli_wallet_url, data = json.dumps(body_relay), headers = headers).text)
+        response = request_post(body_relay)
+        result = response['result']
         return result
     except Exception as e:
         print(repr(e))
@@ -266,11 +291,13 @@ def proposal(account):
 
     gp = get_global_properties()
     parameters = gp["parameters"]
-    committee_proposal_review_period = parameters["committee_proposal_review_period"]
+    committee_proposal_review_period = int(parameters["committee_proposal_review_period"])
     print("committee_proposal_review_period: {}".format(committee_proposal_review_period))
     if time_delta <= committee_proposal_review_period:
         print("Please wait for the next maintenance")
         return ""
+        # print("Please wait for the next maintenance: {} seconds".format(time_delta+30))
+        # time.sleep(time_delta+30)
 
     #  将字符串转化为时间戳
     maint_time = time.mktime(time.strptime(next_maintenance_time, "%Y-%m-%dT%H:%M:%S"))
@@ -279,6 +306,7 @@ def proposal(account):
     print("expire_time: {}".format(expire_time))
 
     changed = {'witness_max_votes': 7, "committee_max_votes": 9}
+    # changed = {'witness_max_votes': 11, "committee_max_votes": 7}
     result = propose_extension_parameter(account=account, expire_time=expire_time, changed_param=changed)
     tx_id = result[0]
     print("tx_id: {}".format(tx_id))
@@ -333,17 +361,25 @@ def approve_proposal(propose_id, account):
 
 def main():
     account = "init0"
+    # 1. propose
     propose_id = proposal(account)
     if propose_id == "":
         return
+
+    # 2. transfer to committee-account
+    proposal_fee = 3
+    transfer(account, "committee-account", proposal_fee)
+
+    # 3. approve propose
     committees = ["init0", "init1", "init2", "init3", "init4", "init5", "init6", "init7", "init8", "init9", "init10"]
+    # committees = ["init8", "init9", "init10"]
     for committee in committees:
         approve_proposal(propose_id, committee)
     time.sleep(5)
-    print(get_object(propose_id))
+    get_object(propose_id)
 
 if __name__ == '__main__':
-    print('>> {}'.format(sys.argv))
+    # print('>> {}'.format(sys.argv))
     main()
 
 # tar -czvf file.tar.gz file
