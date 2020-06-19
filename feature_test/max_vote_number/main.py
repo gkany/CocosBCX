@@ -275,6 +275,8 @@ if __name__ == '__main__':
                     cli_wallet_clean()
                 elif sys.argv[2] == 'test':
                     wallet_api_test()
+                elif sys.argv[2] == 'import_key':
+                    import_init_account_keys()
             else:
                 cli_wallet_start2()
         elif sys.argv[1] == 'clean':
