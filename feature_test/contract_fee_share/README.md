@@ -1,9 +1,9 @@
 
 ## 启动节点  
-**单节点本地测试**
+**单节点本地测试**  
 单节点部署参考[CocosBCX/chain_init](https://github.com/gkany/CocosBCX/tree/master/chain_init)
 
-## 测试合约
+## 测试合约  
 [contract_34_contract_fee_share_test.lua](https://github.com/gkany/Cocos-Contracts-API/blob/master/contract_34_contract_fee_share_test.lua)
 ``` lua
 function test_set_percent(percent)
@@ -22,7 +22,7 @@ end
 
 ```
 
-## 合约部署
+## 合约部署  
 ``` text
 dev@ubuntu:~/data/mrepo/Cocos-Contracts-API$ python3 contract_test.py 
 >> unlock ['123456']
@@ -116,4 +116,167 @@ sign result: ['213096dff39e86fd37241cc943b67845eae588c9513e49021ec1fe9b85d1d8ab'
 {'id': 1, 'result': {'block_id': '000018131f5dfecb296f476ac0a5e8e9b65ece8e', 'transaction_merkle_root': '95b0802a8f029921122a0029f9b77d36900acf7a', 'witness': '1.6.7', 'witness_signature': '1f02a0b8d25e63cf97f9f4e7d4b6c549726f2ba2a59bbac63c81c8b27e3226fbe77c547d00fb7236aaa547c0a06d78fe7d0ac1eb206a94be2074c75dbbd596fbd8', 'previous': '00001812a1e074ebe96bd6fa109f58fa38c0050e', 'timestamp': '2020-07-01T06:57:16', 'transactions': [['213096dff39e86fd37241cc943b67845eae588c9513e49021ec1fe9b85d1d8ab', {'operations': [[0, {'to': '1.2.5', 'extensions': [], 'from': '1.2.16', 'amount': {'asset_id': '1.3.0', 'amount': 2300000}}], [35, {'function_name': 'test_helloworld', 'caller': '1.2.16', 'value_list': [], 'extensions': [], 'contract_id': '1.16.1'}], [35, {'function_name': 'test_helloworld', 'caller': '1.2.6', 'value_list': [], 'extensions': [], 'contract_id': '1.16.1'}], [0, {'to': '1.2.6', 'extensions': [], 'from': '1.2.16', 'amount': {'asset_id': '1.3.0', 'amount': 7800000}}]], 'extensions': [], 'ref_block_num': 6152, 'signatures': ['1f65584ef7de5df9348d1849b36a0f3fb6ec28126962ad98af4221a9f440850e5160e12fe81548116c1cf66079a1cce0835324a8976ed694c837819a0c626c2940', '2057714cacb4f47c82ead43ba1f62760d1633c8fa98f0c5bf84cbfdb881c2bd4001de75de355b2b13567fb76734d3222b2675ee01af4764097f84296e5f8132579'], 'expiration': '2020-07-01T07:17:44', 'ref_block_prefix': 1788441776, 'operation_results': [[1, {'real_running_time': 178, 'fees': [{'asset_id': '1.3.0', 'amount': 2000000}]}], [4, {'process_value': '', 'relevant_datasize': 35, 'real_running_time': 335, 'fees': [{'asset_id': '1.3.0', 'amount': 2386757}], 'existed_pv': False, 'contract_affecteds': [[3, {'message': 'Hi, Cocos-BCX contract', 'affected_account': '1.2.16'}], [5, {'message': '100%', 'affected_account': '1.2.16', 'fees': [{'asset_id': '1.3.0', 'amount': 2386757}]}]], 'contract_id': '1.16.1'}], [4, {'process_value': '', 'relevant_datasize': 35, 'real_running_time': 336, 'fees': [{'asset_id': '1.3.0', 'amount': 2387757}], 'existed_pv': False, 'contract_affecteds': [[3, {'message': 'Hi, Cocos-BCX contract', 'affected_account': '1.2.6'}], [5, {'message': '20%', 'affected_account': '1.2.6', 'fees': [{'asset_id': '1.3.0', 'amount': 477552}]}], [5, {'message': '80%', 'affected_account': '1.2.16', 'fees': [{'asset_id': '1.3.0', 'amount': 1910205}]}]], 'contract_id': '1.16.1'}], [1, {'real_running_time': 146, 'fees': [{'asset_id': '1.3.0', 'amount': 2000000}]}]]}]]}, 'jsonrpc': '2.0'}
 
 ```
+
+#### cli_wallet 查看区块6163  
+
+``` shell
+unlocked >>> get_block 6163  
+```  
+执行结果  
+``` json
+{
+  "previous": "00001812a1e074ebe96bd6fa109f58fa38c0050e",
+  "timestamp": "2020-07-01T06:57:16",
+  "witness": "1.6.7",
+  "transaction_merkle_root": "95b0802a8f029921122a0029f9b77d36900acf7a",
+  "witness_signature": "1f02a0b8d25e63cf97f9f4e7d4b6c549726f2ba2a59bbac63c81c8b27e3226fbe77c547d00fb7236aaa547c0a06d78fe7d0ac1eb206a94be2074c75dbbd596fbd8",
+  "block_id": "000018131f5dfecb296f476ac0a5e8e9b65ece8e",
+  "transactions": [[
+      "213096dff39e86fd37241cc943b67845eae588c9513e49021ec1fe9b85d1d8ab",{
+        "ref_block_num": 6152,
+        "ref_block_prefix": 1788441776,
+        "expiration": "2020-07-01T07:17:44",
+        "operations": [[
+            0,{
+              "from": "1.2.16",
+              "to": "1.2.5",
+              "amount": {
+                "amount": 2300000,
+                "asset_id": "1.3.0"
+              },
+              "extensions": []
+            }
+          ],[
+            35,{
+              "caller": "1.2.16",
+              "contract_id": "1.16.1",
+              "function_name": "test_helloworld",
+              "value_list": [],
+              "extensions": []
+            }
+          ],[
+            35,{
+              "caller": "1.2.6",
+              "contract_id": "1.16.1",
+              "function_name": "test_helloworld",
+              "value_list": [],
+              "extensions": []
+            }
+          ],[
+            0,{
+              "from": "1.2.16",
+              "to": "1.2.6",
+              "amount": {
+                "amount": 7800000,
+                "asset_id": "1.3.0"
+              },
+              "extensions": []
+            }
+          ]
+        ],
+        "extensions": [],
+        "signatures": [
+          "1f65584ef7de5df9348d1849b36a0f3fb6ec28126962ad98af4221a9f440850e5160e12fe81548116c1cf66079a1cce0835324a8976ed694c837819a0c626c2940",
+          "2057714cacb4f47c82ead43ba1f62760d1633c8fa98f0c5bf84cbfdb881c2bd4001de75de355b2b13567fb76734d3222b2675ee01af4764097f84296e5f8132579"
+        ],
+        "operation_results": [[
+            1,{
+              "fees": [{
+                  "amount": 2000000,
+                  "asset_id": "1.3.0"
+                }
+              ],
+              "real_running_time": 178
+            }
+          ],[
+            4,{
+              "fees": [{
+                  "amount": 2386757,
+                  "asset_id": "1.3.0"
+                }
+              ],
+              "contract_id": "1.16.1",
+              "contract_affecteds": [[
+                  3,{
+                    "affected_account": "1.2.16",
+                    "message": "Hi, Cocos-BCX contract"
+                  }
+                ],[
+                  5,{
+                    "fees": [{
+                        "amount": 2386757,
+                        "asset_id": "1.3.0"
+                      }
+                    ],
+                    "affected_account": "1.2.16",
+                    "message": "100%"
+                  }
+                ]
+              ],
+              "real_running_time": 335,
+              "existed_pv": false,
+              "process_value": "",
+              "relevant_datasize": 35
+            }
+          ],[
+            4,{
+              "fees": [{
+                  "amount": 2387757,
+                  "asset_id": "1.3.0"
+                }
+              ],
+              "contract_id": "1.16.1",
+              "contract_affecteds": [[
+                  3,{
+                    "affected_account": "1.2.6",
+                    "message": "Hi, Cocos-BCX contract"
+                  }
+                ],[
+                  5,{
+                    "fees": [{
+                        "amount": 477552,
+                        "asset_id": "1.3.0"
+                      }
+                    ],
+                    "affected_account": "1.2.6",
+                    "message": "20%"
+                  }
+                ],[
+                  5,{
+                    "fees": [{
+                        "amount": 1910205,
+                        "asset_id": "1.3.0"
+                      }
+                    ],
+                    "affected_account": "1.2.16",
+                    "message": "80%"
+                  }
+                ]
+              ],
+              "real_running_time": 336,
+              "existed_pv": false,
+              "process_value": "",
+              "relevant_datasize": 35
+            }
+          ],[
+            1,{
+              "fees": [{
+                  "amount": 2000000,
+                  "asset_id": "1.3.0"
+                }
+              ],
+              "real_running_time": 146
+            }
+          ]
+        ]
+      }
+    ]
+  ]
+}
+
+```
+
+**说明：**  
+* block中的operations和operation_results是按照索引顺序一一对应的  
+
 
