@@ -259,6 +259,29 @@ def main_build_tx():
     # 5. get block
     block = get_block_by_transaction_id(sign_result[0])
 
+def test_set_percent(owner="nicotest", percent=30):
+    contract = "contract.testapi.contractfeeshare"
+    func = "test_set_percent"
+    params = [[1, {"v":percent}]]
+
+    # caller = "nicotest" #owner
+    call_result = call_contract(owner, contract, func, params, broadcast=True)
+
+    # get block
+    block = get_block_by_transaction_id(call_result[0])
+
+def test_helloworld(caller="nicotest"):
+    contract = "contract.testapi.contractfeeshare"
+    func = "test_helloworld"
+    params = []
+
+    # caller = "nicotest" #owner
+    call_result = call_contract(caller, contract, func, params, broadcast=True)
+
+    # get block
+    block = get_block_by_transaction_id(call_result[0])
+
+
 def get_contract_function_call_op_test():
     caller = "nicotest"
     contract = "contract.testapi.contractfeeshare"
@@ -270,8 +293,62 @@ if __name__ == '__main__':
     # print('>> {}'.format(sys.argv))
     unlock("123456")
 
-    main_build_tx()
+    # main_build_tx()
     # get_contract_function_call_op_test()
 
+    # test_helloworld()
+    test_helloworld(caller="init1")
+
+    # test_set_percent()
 
 # tar -czvf file.tar.gz file
+
+'''
+## 1. test_helloworld
+### 1.1 caller = owner
+>> call_contract_function ['nicotest', 'contract.testapi.contractfeeshare', 'test_helloworld', [], True]
+{'result': ['afba96943360480fd69dd329a060e31b4fdd5290eb29d6ba039a61ed557a4ff5', {'expiration': '2020-07-02T07:25:14', 'signatures': ['207f7875f12f7721cf61b3b32a7cf7df51cb8308f8cefb711f7aee24b6efd150360fd3ccae75ba6bb123d963f46caf68233d4135da34bcd7b2d23e30dff64bd275'], 'operations': [[35, {'function_name': 'test_helloworld', 'extensions': [], 'caller': '1.2.16', 'value_list': [], 'contract_id': '1.16.1'}]], 'ref_block_num': 994, 'ref_block_prefix': 3197526302, 'extensions': []}], 'jsonrpc': '2.0', 'id': 1}
+
+>> get_transaction_in_block_info ['afba96943360480fd69dd329a060e31b4fdd5290eb29d6ba039a61ed557a4ff5']
+{'result': {'trx_hash': 'afba96943360480fd69dd329a060e31b4fdd5290eb29d6ba039a61ed557a4ff5', 'trx_in_block': 0, 'block_num': 1004, 'id': '3.1.2'}, 'jsonrpc': '2.0', 'id': 1}
+
+>> get_transaction_in_block_info afba96943360480fd69dd329a060e31b4fdd5290eb29d6ba039a61ed557a4ff5
+ {'trx_hash': 'afba96943360480fd69dd329a060e31b4fdd5290eb29d6ba039a61ed557a4ff5', 'trx_in_block': 0, 'block_num': 1004, 'id': '3.1.2'}
+
+>> get_block [1004]
+{'result': {'transactions': [['afba96943360480fd69dd329a060e31b4fdd5290eb29d6ba039a61ed557a4ff5', {'expiration': '2020-07-02T07:25:14', 'signatures': ['207f7875f12f7721cf61b3b32a7cf7df51cb8308f8cefb711f7aee24b6efd150360fd3ccae75ba6bb123d963f46caf68233d4135da34bcd7b2d23e30dff64bd275'], 'operations': [[35, {'function_name': 'test_helloworld', 'extensions': [], 'caller': '1.2.16', 'value_list': [], 'contract_id': '1.16.1'}]], 'ref_block_num': 994, 'ref_block_prefix': 3197526302, 'extensions': [], 'operation_results': [[4, {'relevant_datasize': 35, 'fees': [{'asset_id': '1.3.0', 'amount': 2448757}], 'process_value': '', 'existed_pv': False, 'contract_affecteds': [[3, {'message': 'Hi, Cocos-BCX contract', 'affected_account': '1.2.16'}], [5, {'message': '100%', 'fees': [{'asset_id': '1.3.0', 'amount': 2448757}], 'affected_account': '1.2.16'}]], 'contract_id': '1.16.1', 'real_running_time': 397}]]}]], 'transaction_merkle_root': 'd808694bea99fb764f4f8f4e1d91cdad082907e3', 'witness': '1.6.7', 'previous': '000003eb8b2f4742e4993e105fd276db26e53f05', 'timestamp': '2020-07-02T07:04:46', 'witness_signature': '2023b2ea4d6e7a2b12c7d91793e1ead112a0ecabccd9dba1997cf3e86afaa370c37b004023af2e8dfc7f1d32ffc1c058d8f9709b7ab0df11d86843e2346ea51465', 'block_id': '000003ecd11fc1b1de71dc864148d16839fa37ed'}, 'jsonrpc': '2.0', 'id': 1}
+
+### 1.2 caller != owner
+>> call_contract_function ['init1', 'contract.testapi.contractfeeshare', 'test_helloworld', [], True]
+{'id': 1, 'jsonrpc': '2.0', 'result': ['32f248b786e88fcfc64c100254aeb77d378363e48c6669ec0b4aef56b965867f', {'ref_block_prefix': 2352907040, 'extensions': [], 'signatures': ['20235416da2073c564e3bd3b557591184d27a061ee0c1b71bf8366986d730c518a42ad8d8e74b08af97c6a0e94a72fb6bfb0a1ac06db369dcd17ee0e813c15b514'], 'expiration': '2020-07-02T07:37:12', 'operations': [[35, {'function_name': 'test_helloworld', 'caller': '1.2.6', 'extensions': [], 'value_list': [], 'contract_id': '1.16.1'}]], 'ref_block_num': 1320}]}
+
+>> get_transaction_in_block_info ['32f248b786e88fcfc64c100254aeb77d378363e48c6669ec0b4aef56b965867f']
+{'id': 1, 'jsonrpc': '2.0', 'result': {'id': '3.1.4', 'trx_hash': '32f248b786e88fcfc64c100254aeb77d378363e48c6669ec0b4aef56b965867f', 'trx_in_block': 0, 'block_num': 1329}}
+
+>> get_transaction_in_block_info 32f248b786e88fcfc64c100254aeb77d378363e48c6669ec0b4aef56b965867f
+ {'id': '3.1.4', 'trx_hash': '32f248b786e88fcfc64c100254aeb77d378363e48c6669ec0b4aef56b965867f', 'trx_in_block': 0, 'block_num': 1329}
+
+>> get_block [1329]
+{'id': 1, 'jsonrpc': '2.0', 'result': {'transactions': [['32f248b786e88fcfc64c100254aeb77d378363e48c6669ec0b4aef56b965867f', {'ref_block_prefix': 2352907040, 'extensions': [], 'signatures': ['20235416da2073c564e3bd3b557591184d27a061ee0c1b71bf8366986d730c518a42ad8d8e74b08af97c6a0e94a72fb6bfb0a1ac06db369dcd17ee0e813c15b514'], 'expiration': '2020-07-02T07:37:12', 'operations': [[35, {'function_name': 'test_helloworld', 'caller': '1.2.6', 'extensions': [], 'value_list': [], 'contract_id': '1.16.1'}]], 'operation_results': [[4, {'contract_id': '1.16.1', 'relevant_datasize': 35, 'existed_pv': False, 'process_value': '', 'fees': [{'amount': 2497757, 'asset_id': '1.3.0'}], 'real_running_time': 446, 'contract_affecteds': [[3, {'affected_account': '1.2.6', 'message': 'Hi, Cocos-BCX contract'}], [5, {'affected_account': '1.2.6', 'message': '30%', 'fees': [{'amount': 749328, 'asset_id': '1.3.0'}]}], [5, {'affected_account': '1.2.16', 'message': '70%', 'fees': [{'amount': 1748429, 'asset_id': '1.3.0'}]}]]}]], 'ref_block_num': 1320}]], 'transaction_merkle_root': 'a9a22bfbcf4ee35485a8620bfa1357cc6898db8d', 'block_id': '00000531c2982d63962e55fda04f0b3d9c493baa', 'timestamp': '2020-07-02T07:16:44', 'witness': '1.6.5', 'witness_signature': '1f3bcba2db2d90a25d7f50c2f74c3929e233878c01ce8a933a8bc5393a6a0a4d612203e2172b97f16d7a8ba6c0e7c7524f8cc325e698eedee27d374bf8b0b12c41', 'previous': '00000530c1217f626830349e0c2b01b052e5f5bb'}}
+
+
+## test_set_percent
+>> call_contract_function ['nicotest', 'contract.testapi.contractfeeshare', 'test_set_percent', [[1, {'v': 30}]], True]
+{'result': ['a8f1d10f1475d0559cc50f6a6738d71d81c3357d7de9203b7460c1fc33a54d64', {'ref_block_num': 1246, 'extensions': [], 'ref_block_prefix': 124217732, 'operations': [[35, {'value_list': [[1, {'v': '30.00000000000000000'}]], 'contract_id': '1.16.1', 'function_name': 'test_set_percent', 'extensions': [], 'caller': '1.2.16'}]], 'signatures': ['2044aaa1328c9379fcf759fb08a9855f33a34ba6fb4b6f21455f3e7f4204d5e3967015a0825dc1efbe535480304c5c2d7c8e1b1baa260a95948fd361c20641c3ea'], 'expiration': '2020-07-02T07:34:36'}], 'id': 1, 'jsonrpc': '2.0'}
+
+>> get_transaction_in_block_info ['a8f1d10f1475d0559cc50f6a6738d71d81c3357d7de9203b7460c1fc33a54d64']
+{'result': None, 'id': 1, 'jsonrpc': '2.0'}
+
+>> get_transaction_in_block_info a8f1d10f1475d0559cc50f6a6738d71d81c3357d7de9203b7460c1fc33a54d64
+ None
+
+>> get_transaction_in_block_info ['a8f1d10f1475d0559cc50f6a6738d71d81c3357d7de9203b7460c1fc33a54d64']
+{'result': {'trx_in_block': 0, 'trx_hash': 'a8f1d10f1475d0559cc50f6a6738d71d81c3357d7de9203b7460c1fc33a54d64', 'id': '3.1.3', 'block_num': 1258}, 'id': 1, 'jsonrpc': '2.0'}
+
+>> get_transaction_in_block_info a8f1d10f1475d0559cc50f6a6738d71d81c3357d7de9203b7460c1fc33a54d64
+ {'trx_in_block': 0, 'trx_hash': 'a8f1d10f1475d0559cc50f6a6738d71d81c3357d7de9203b7460c1fc33a54d64', 'id': '3.1.3', 'block_num': 1258}
+
+>> get_block [1258]
+{'result': {'timestamp': '2020-07-02T07:14:10', 'witness_signature': '1f298a7d3b29100d1f486b4143061044d0ec0f01eff7cae54e66e53723ffbac46515dd07958425c39ae674394069ac595f24f7bf0c6b8aac6de9f5cfddf7997ee4', 'transaction_merkle_root': '8957169c4204c703292cf1533dbfcc36ced28fab', 'witness': '1.6.8', 'previous': '000004e93454b2b701b5f06298b2d6cd2410c018', 'block_id': '000004eab8a260239a8ec7ff1252d523eb4759df', 'transactions': [['a8f1d10f1475d0559cc50f6a6738d71d81c3357d7de9203b7460c1fc33a54d64', {'ref_block_num': 1246, 'extensions': [], 'ref_block_prefix': 124217732, 'operation_results': [[4, {'real_running_time': 352, 'relevant_datasize': 37, 'contract_id': '1.16.1', 'existed_pv': False, 'fees': [{'amount': 2415475, 'asset_id': '1.3.0'}], 'contract_affecteds': [[3, {'affected_account': '1.2.16', 'message': 'set_invoke_share_percent'}], [5, {'affected_account': '1.2.16', 'fees': [{'amount': 2415475, 'asset_id': '1.3.0'}], 'message': '100%'}]], 'process_value': ''}]], 'operations': [[35, {'value_list': [[1, {'v': '30.00000000000000000'}]], 'contract_id': '1.16.1', 'function_name': 'test_set_percent', 'extensions': [], 'caller': '1.2.16'}]], 'signatures': ['2044aaa1328c9379fcf759fb08a9855f33a34ba6fb4b6f21455f3e7f4204d5e3967015a0825dc1efbe535480304c5c2d7c8e1b1baa260a95948fd361c20641c3ea'], 'expiration': '2020-07-02T07:34:36'}]]}, 'id': 1, 'jsonrpc': '2.0'}
+
+'''
