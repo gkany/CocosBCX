@@ -1,4 +1,4 @@
-## BIP
+# BIP
 
 -----------
 
@@ -351,7 +351,19 @@ rpc-api: getblocktemplate - Fundamentals，[详细](https://github.com/bitcoin/b
 
 rpc-api: getblocktemplate - Pooled Mining，[详细](https://github.com/bitcoin/bips/blob/master/bip-0023.mediawiki)
 
-### 2.2.19 bip-0024
+### 2.2.19 bip-0030 -- Final
+
+duplicate transactions 处理重复交易问题。 [详细](https://github.com/bitcoin/bips/blob/master/bip-0030.mediawiki)
+
+### 2.2.20 bip-0031 -- Final
+
+简单的协议扩展，使客户端可以更轻松地检测到失效的对等连接。[详细](https://github.com/bitcoin/bips/blob/master/bip-0031.mediawiki)
+
+### 2.2.21 bip-0032 -- Final
+
+
+
+
 
 
 
