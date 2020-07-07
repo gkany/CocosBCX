@@ -1,11 +1,13 @@
 
 # 硬分叉功能测试
 -----------------------
-## 设置  
-### 设置说明
-设置的硬分叉时间节点：
-head_block_time: 2020-07-07T07:02:28, hard_fork time: 2020-07-07T00:30:00
-说明：
+## 1. 设置  
+### 1.1 设置说明  
+设置的硬分叉时间节点：  
+``` text  
+head_block_time: 2020-07-07T07:02:28, hard_fork time: 2020-07-07T00:30:00  
+```  
+说明：    
 * hf 的时间其实设置的是不合理的，正常应该设置为比head_block time 大；    
 * hf时间设置不合理，运行后发现，代码逻辑判断上写反了    
   写错的逻辑    
@@ -24,19 +26,19 @@ head_block_time: 2020-07-07T07:02:28, hard_fork time: 2020-07-07T00:30:00
         // 新的逻辑
     }
   ```
-* 合理利用了这个bug，避免又要修改代码，又要重新设置 hardfork time
-节点启动后，运行的是old 逻辑。
-由于正好需要去测试旧的逻辑，所以没有修改代码，直接调用合约测试旧的逻辑。
-测试完成后，修改代码逻辑为正确的逻辑，此时运行的是新的逻辑。
+* 合理利用了这个bug，避免又要修改代码，又要重新设置 hardfork time  
+节点启动后，运行的是old 逻辑。  
+由于正好需要去测试旧的逻辑，所以没有修改代码，直接调用合约测试旧的逻辑。  
+测试完成后，修改代码逻辑为正确的逻辑，此时运行的是新的逻辑。  
 
-### 测试环境  
+### 1.2 测试环境  
 本地，单节点  
-路径：
-``` text
-/home/ck/xukang/local/contract_fee_share2
+路径：  
+``` text  
+/home/ck/xukang/local/contract_fee_share2  
 ```  
 
-## 1. old的逻辑流程测试
+## 2. old的逻辑流程测试  
 ``` json
 ck@ubuntu:~/xukang/CocosBCX/feature_test/contract_fee_share$ python3 builder_tx.py 
 >> unlock ['123456']
@@ -111,9 +113,9 @@ ck@ubuntu:~/xukang/CocosBCX/feature_test/contract_fee_share$ python3 builder_tx.
 
 为了拥有更多测试数据，上面的流程执行了多次。
 
-## 2. 新的流程  
-### 2.1 未修改费用比例之前  
-** a.单个合约调用测试**  
+## 3. 新的流程  
+### 3.1 未修改费用比例之前  
+#### 3.1.1 单个合约调用测试  
 ``` json
 ck@ubuntu:~/xukang/CocosBCX/feature_test/contract_fee_share$ python3 builder_tx.py 
 >> unlock ['123456']
@@ -132,7 +134,7 @@ ck@ubuntu:~/xukang/CocosBCX/feature_test/contract_fee_share$ python3 builder_tx.
 {'jsonrpc': '2.0', 'id': 1, 'result': {'previous': '00000561e7b01d065067a83e40fd7e160b2a809e', 'witness': '1.6.6', 'witness_signature': '20423dcb1566275ef79efc207d5742d7a52b6880af61c4e22af55fa2c2f3623d6d035dcd2df31373099c40d7a3af181f10b2a98f7f729d203e2a823fd9949157ba', 'transaction_merkle_root': '7cd1332b1f5cf17a43c4ec41778c4c8a75dda4d7', 'transactions': [['aac73fd2a099df9be3a4312f81318703421741fd6bc5b621f37636dc312a124d', {'expiration': '2020-07-07T08:10:26', 'ref_block_num': 1367, 'signatures': ['2040b3e6216e544b3e3995c5682d97f039fa140373fad27cb0380906f39c7a676002f04e475f402279dad492bb918ea688febdc22052cd4d84f8dc9c388509d1b7'], 'operations': [[35, {'caller': '1.2.16', 'extensions': [], 'value_list': [], 'function_name': 'test_helloworld', 'contract_id': '1.16.1'}]], 'extensions': [], 'ref_block_prefix': 3053158061, 'operation_results': [[4, {'contract_id': '1.16.1', 'relevant_datasize': 35, 'real_running_time': 610, 'fees': [{'asset_id': '1.3.0', 'amount': 2661757}], 'process_value': '', 'existed_pv': False, 'contract_affecteds': [[3, {'affected_account': '1.2.16', 'message': 'Hi, Cocos-BCX contract'}], [5, {'message': '100%', 'affected_account': '1.2.16', 'fees': [{'asset_id': '1.3.0', 'amount': 2661757}]}]]}], [1, {'real_running_time': 109, 'fees': [{'asset_id': '1.3.1', 'amount': 100000}]}]]}]], 'timestamp': '2020-07-07T07:49:58', 'block_id': '00000562f1891dd3575d8a2ea668a322380bbab1'}}
 ```
 
-b. 多个调用
+#### 3.1.2 多个调用   
 ``` json
 ck@ubuntu:~/xukang/CocosBCX/feature_test/contract_fee_share$ python3 builder_tx.py 
 >> unlock ['123456']
@@ -205,9 +207,9 @@ ck@ubuntu:~/xukang/CocosBCX/feature_test/contract_fee_share$ python3 builder_tx.
 {'jsonrpc': '2.0', 'id': 1, 'result': {'witness_signature': '1f33992f4d68e10fc8c88c14c8634285325fa4a6ec5cca1a1fdb3da3e343a846d174e3c3721b64425953849dbfb1218aba53105431c9b42c42afbd8d9fa8f50c1d', 'witness': '1.6.7', 'transactions': [['d6fc90d8063826e5a16f0b4864e009f8dc74a0a89a2970c8bbf848022139ca8d', {'signatures': ['202cf583c29b724ad9dd2ec7205e179984652f92b0a595b4715714a9a86aea1451368be9774d8ccd7767d179c257f9ac77d7f1e53429c37b1c291c00e58764da09'], 'ref_block_num': 1524, 'operations': [[35, {'value_list': [], 'extensions': [], 'function_name': 'test_helloworld', 'caller': '1.2.6', 'contract_id': '1.16.1'}]], 'operation_results': [[4, {'existed_pv': False, 'contract_affecteds': [[3, {'message': 'Hi, Cocos-BCX contract', 'affected_account': '1.2.6'}], [5, {'message': '100%', 'affected_account': '1.2.6', 'fees': [{'amount': 2316757, 'asset_id': '1.3.0'}]}]], 'real_running_time': 265, 'contract_id': '1.16.1', 'relevant_datasize': 35, 'process_value': '', 'fees': [{'amount': 2316757, 'asset_id': '1.3.0'}]}]], 'expiration': '2020-07-07T08:16:02', 'extensions': [], 'ref_block_prefix': 2136419760}]], 'block_id': '000005fd8363d8e2b18de7a32160d25adff5598c', 'previous': '000005fc3cee8cd6df4ed42f3d77f2722e955481', 'transaction_merkle_root': 'b4b451665bdc0d8b5afe687da32910a1e8bcba0f', 'timestamp': '2020-07-07T07:55:34'}}
 ```
 
-### 2.2 修改费用分摊比例    
-修改为30%
-``` json
+### 3.2 修改费用分摊比例    
+**修改为30%**   
+``` json  
 ck@ubuntu:~/xukang/CocosBCX/feature_test/contract_fee_share$ python3 builder_tx.py 
 >> unlock ['123456']
 {'result': None, 'id': 1, 'jsonrpc': '2.0'}
@@ -225,8 +227,8 @@ ck@ubuntu:~/xukang/CocosBCX/feature_test/contract_fee_share$ python3 builder_tx.
 {'result': {'block_id': '0000062896d51f18e29ecb815bb20424ad05ede1', 'previous': '00000627c6ec4d550b2809acae8ce41ed6cc7856', 'witness': '1.6.6', 'transaction_merkle_root': '13cecb989876d7379c6b8d0fba608c46521abf69', 'witness_signature': '1f574bb30cd3bc959f9eb9d4030b63b614cbb9fa4a4a13d817382dba0d683a244e56c5d25c34a26e2edf11e914f39d7376e43de51799a94b18036f9c8e3d6e4fa5', 'timestamp': '2020-07-07T07:57:08', 'transactions': [['c33ac28e8d4cde8397bc37fddf8b93055b344468f32d5ce61f0956654bdb92b4', {'operations': [[35, {'value_list': [[1, {'v': '30.00000000000000000'}]], 'contract_id': '1.16.1', 'extensions': [], 'caller': '1.2.16', 'function_name': 'test_set_percent'}]], 'expiration': '2020-07-07T08:17:36', 'ref_block_num': 1566, 'extensions': [], 'operation_results': [[4, {'real_running_time': 255, 'contract_id': '1.16.1', 'contract_affecteds': [[3, {'affected_account': '1.2.16', 'message': 'set_invoke_share_percent'}], [5, {'affected_account': '1.2.16', 'message': '100%', 'fees': [{'asset_id': '1.3.0', 'amount': 2318475}]}]], 'process_value': '', 'existed_pv': False, 'fees': [{'asset_id': '1.3.0', 'amount': 2318475}], 'relevant_datasize': 37}], [1, {'real_running_time': 57, 'fees': [{'asset_id': '1.3.1', 'amount': 100000}]}]], 'ref_block_prefix': 1249293485, 'signatures': ['2058538fac98df67b90f718fedcd993222998fa7f2b65ec3ceac4e3be8f89c093e2e33851dda0f3abc03f59c894445ebe0106eb9bf0ee8b9c509470e53d4a111fa']}]]}, 'id': 1, 'jsonrpc': '2.0'}
 ```
 
- ** 执行成功后，查看合约数据 **    
- ``` json
+**执行成功后，查看合约数据**    
+ ``` json  
 locked >>> get_object 1.16.1
 [{
     "id": "1.16.1",
@@ -285,8 +287,8 @@ locked >>> get_object 1.16.1
 
  ```
 
-### 2.3 修改后合约调用测试
-``` json
+### 3.3 修改后合约调用测试  
+``` json  
 ck@ubuntu:~/xukang/CocosBCX/feature_test/contract_fee_share$ python3 builder_tx.py 
 >> unlock ['123456']
 {'id': 1, 'jsonrpc': '2.0', 'result': None}
