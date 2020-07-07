@@ -39,7 +39,7 @@ head_block_time: 2020-07-07T07:02:28, hard_fork time: 2020-07-07T00:30:00
 ```  
 
 ## 2. old的逻辑流程测试  
-``` json
+``` text
 ck@ubuntu:~/xukang/CocosBCX/feature_test/contract_fee_share$ python3 builder_tx.py 
 >> unlock ['123456']
 {'jsonrpc': '2.0', 'id': 1, 'result': None}
@@ -116,7 +116,7 @@ ck@ubuntu:~/xukang/CocosBCX/feature_test/contract_fee_share$ python3 builder_tx.
 ## 3. 新的流程  
 ### 3.1 未修改费用比例之前  
 #### 3.1.1 单个合约调用测试  
-``` json
+``` text
 ck@ubuntu:~/xukang/CocosBCX/feature_test/contract_fee_share$ python3 builder_tx.py 
 >> unlock ['123456']
 {'jsonrpc': '2.0', 'id': 1, 'result': None}
@@ -135,7 +135,7 @@ ck@ubuntu:~/xukang/CocosBCX/feature_test/contract_fee_share$ python3 builder_tx.
 ```
 
 #### 3.1.2 多个调用   
-``` json
+``` text
 ck@ubuntu:~/xukang/CocosBCX/feature_test/contract_fee_share$ python3 builder_tx.py 
 >> unlock ['123456']
 {'jsonrpc': '2.0', 'id': 1, 'result': None}
@@ -209,7 +209,7 @@ ck@ubuntu:~/xukang/CocosBCX/feature_test/contract_fee_share$ python3 builder_tx.
 
 ### 3.2 修改费用分摊比例    
 **修改为30%**   
-``` json  
+``` text  
 ck@ubuntu:~/xukang/CocosBCX/feature_test/contract_fee_share$ python3 builder_tx.py 
 >> unlock ['123456']
 {'result': None, 'id': 1, 'jsonrpc': '2.0'}
@@ -228,7 +228,7 @@ ck@ubuntu:~/xukang/CocosBCX/feature_test/contract_fee_share$ python3 builder_tx.
 ```
 
 **执行成功后，查看合约数据**    
- ``` json  
+ ``` text  
 locked >>> get_object 1.16.1
 [{
     "id": "1.16.1",
@@ -288,7 +288,7 @@ locked >>> get_object 1.16.1
  ```
 
 ### 3.3 修改后合约调用测试  
-``` json  
+``` text  
 ck@ubuntu:~/xukang/CocosBCX/feature_test/contract_fee_share$ python3 builder_tx.py 
 >> unlock ['123456']
 {'id': 1, 'jsonrpc': '2.0', 'result': None}
