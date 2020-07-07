@@ -114,11 +114,30 @@ def cli_wallet_init():
     cli_wallet_operate_init()
     generate_wallet_start()
 
+def import_init_account_keys():
+    params = [
+        ["init0", "5Kj5s6xAkjbFcsGXhP4ioWUk7dZm5aYyKDEWDbWAa5nwA8Paewc"],
+        ["init1", "5K5fqjvMrH5UtUisCgSZHQjiQf9BvtZ5vsKPhCErDy7P2gnLQmw"],
+        ["init2", "5Jdq6Fn8u2m1RUqHLEb5bjqvVvbg6oVDGmwz6Z16Q9KfPuzfDzt"],
+        ["init3", "5JCb6e445N1iLsNqF7w5URJ1sgEZgChzGQKKy2zrCVTHA4SRyiQ"],
+        ["init4", "5JAxJ8dH7mR81u3D3cTpXxTjbv12F9VF4Z4CWgUmvk52D2twxqt"],
+        ["init5", "5KVEqMvCQf5CP4Stkd9CW479uwQnDbhCiFxbdRLXgkxS3RchZ6X"],
+        ["init6", "5Jdvatdk3qpZ8Ek9tQyqh3QwQ5mWNZ7kfnwSVwMUsLLmdUAfUwo"],
+        ["init7", "5JWkfkjwaMZDVPtpcLrFW5PNCXfMxxEH3f4HugbcAdJ8o6DrDnD"],
+        ["init8", "5JWX8nDv8WwgdAb4xnXHxaoXRDVvfEtVmCcnKvfnjcoQy4D6h5v"],
+        ["init9", "5JBYS1qMJfjR9orv2Z74w5D7w1vUBzjgme85qSkBc71urkLHLyV"],
+        ["init10", "5HrCGXRsxFFccSyQSuqzmvL98o2RrbgxEDUzxjjS6Uvb1kkAkjS"]
+    ]
+
+    for param in params:
+        import_key2(param)
+
 def cli_wallet_operate_init():
     print('cli_wallet_url: {}'.format(cli_wallet_url))
     set_password(wallet_password)
     unlock(wallet_password)
     import_key(test_account, test_account_key)
+    import_init_account_keys()
     import_balance(test_account, test_balance_address)
     list_account_balances(test_account)
 
@@ -162,6 +181,18 @@ def import_key(account, key):
             "jsonrpc": "2.0",
             "method": "import_key",
             "params": [account, key],
+            "id":1
+        }
+        request_post(body_relay)
+    except Exception as e:
+        print(repr(e))
+
+def import_key2(params):
+    try:
+        body_relay = {
+            "jsonrpc": "2.0",
+            "method": "import_key",
+            "params": params,
             "id":1
         }
         request_post(body_relay)
@@ -253,3 +284,4 @@ if __name__ == '__main__':
     else:
         node_restart()
 
+# tar -czvf file.tar.gz file
