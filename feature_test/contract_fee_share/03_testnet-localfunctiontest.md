@@ -614,7 +614,7 @@ unspecified: Try the contract resolution execution failure,[2,{"v":"Assert Excep
 ```
 非合约所有者设置不成功。  
 
-### 3.2.2 非合约所有者设置合约分摊比例  
+### 3.2.2 合约所有者设置合约分摊比例  
 **测试接口：**  
 ``` python  
 test_set_percent()
