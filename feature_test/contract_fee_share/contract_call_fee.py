@@ -11,7 +11,7 @@ import time
 
 # config
 host = "127.0.0.1"
-wallet_rpc_port = 8048
+wallet_rpc_port = 8047
 
 wallet_password = 123456
 cli_wallet_url = "http://{}:{}".format(host, wallet_rpc_port)
@@ -371,7 +371,7 @@ if __name__ == '__main__':
     # test_helloworld(log_result=True)
     # test_helloworld(caller="init1", log_result=True)
 
-    # test_set_percent()
+    # test_set_percent(percent=100)
 
     # result = list_account_balances("init1")
     # print("result: {}".format(result))
@@ -380,6 +380,7 @@ if __name__ == '__main__':
     # print("balances: {}".format(result))
     # print("============================================")
     # calc_contract_call_operation_fee(test_helloworld, ["nicotest"])
-    calc_contract_call_operation_fee(test_helloworld_owner, ["nicotest"])
+    #calc_contract_call_operation_fee(test_helloworld_owner, ["nicotest"])
+    calc_contract_call_operation_fee(test_helloworld_not_owner, ["nicotest", "init1"])
 
 # tar -czvf file.tar.gz file
