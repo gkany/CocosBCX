@@ -1410,10 +1410,378 @@ ck@ubuntu:~/xukang/CocosBCX/feature_test/contract_fee_share$
 ```  
 
 **b. GAS不足**
-``` text  
+**测试main代码：**    
+``` python  
+if __name__ == '__main__':
+    # print('>> {}'.format(sys.argv))
+    unlock("123456")
 
+    # main_build_tx()
+    # get_contract_function_call_op_test()
+
+    # test_helloworld(log_result=True)
+    # test_helloworld(caller="init1", log_result=True)
+
+    # test_set_percent(percent=100)
+
+    # result = list_account_balances("init1")
+    # print("result: {}".format(result))
+
+    # result = accounts_balances(["init1", "nicotest"])
+    # print("balances: {}".format(result))
+    # print("============================================")
+    # calc_contract_call_operation_fee(test_helloworld, ["nicotest"])
+    #calc_contract_call_operation_fee(test_helloworld_owner, ["nicotest"])
+    batch_calc_contract_call_operation_fee(test_helloworld_owner, ["nicotest"], count=10)
+    #calc_contract_call_operation_fee(test_helloworld_not_owner, ["nicotest", "init1"])
+    #batch_calc_contract_call_operation_fee(test_helloworld_not_owner, ["nicotest", "init1"])
 ```  
 
+**测试过程和结果：**  
+``` text  
+ck@ubuntu:~/xukang/CocosBCX/feature_test/contract_fee_share$ python3 contract_call_fee.py 
+>> unlock ['123456']
+{'jsonrpc': '2.0', 'id': 1, 'result': None}
+
+accounts: ['nicotest'], count: 10
+index = 0
+>> list_account_balances ['nicotest']
+{'jsonrpc': '2.0', 'id': 1, 'result': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 221884}]}
+
+>> call_contract_function ['nicotest', 'contract.testapi.contractfeeshare', 'test_helloworld', [], True]
+{'jsonrpc': '2.0', 'id': 1, 'result': ['f1bd357518542531b58e9ffeeb4edc275006dd70f0954c8930648828013bdbcb', {'operations': [[35, {'value_list': [], 'caller': '1.2.16', 'function_name': 'test_helloworld', 'contract_id': '1.16.121', 'extensions': []}]], 'expiration': '2020-07-13T03:48:56', 'ref_block_num': 36071, 'extensions': [], 'ref_block_prefix': 1576113869, 'signatures': ['1f604b986b585ff07671c5e603536bd794f555a1a2c1dc7125fc7403f30dcd1ed22b5e3561c029fb34ef9f8e5335a6cdcb62b1a2916116c6f71a977016d99ceb0b']}]}
+
+>> get_transaction_in_block_info ['f1bd357518542531b58e9ffeeb4edc275006dd70f0954c8930648828013bdbcb']
+{'jsonrpc': '2.0', 'id': 1, 'result': {'block_num': 7572720, 'trx_in_block': 0, 'trx_hash': 'f1bd357518542531b58e9ffeeb4edc275006dd70f0954c8930648828013bdbcb', 'id': '3.1.825084'}}
+
+>> get_transaction_in_block_info f1bd357518542531b58e9ffeeb4edc275006dd70f0954c8930648828013bdbcb
+ {'block_num': 7572720, 'trx_in_block': 0, 'trx_hash': 'f1bd357518542531b58e9ffeeb4edc275006dd70f0954c8930648828013bdbcb', 'id': '3.1.825084'}
+
+>> get_block [7572720]
+{'jsonrpc': '2.0', 'id': 1, 'result': {'transaction_merkle_root': '7ab6c4230612dab96b99acb657f5ab8772702c94', 'witness': '1.6.1', 'transactions': [['f1bd357518542531b58e9ffeeb4edc275006dd70f0954c8930648828013bdbcb', {'operations': [[35, {'value_list': [], 'caller': '1.2.16', 'function_name': 'test_helloworld', 'contract_id': '1.16.121', 'extensions': []}]], 'expiration': '2020-07-13T03:48:56', 'ref_block_num': 36071, 'operation_results': [[4, {'process_value': '', 'relevant_datasize': 35, 'contract_affecteds': [[3, {'affected_account': '1.2.16', 'message': 'Hi, Cocos-BCX contract'}], [5, {'affected_account': '1.2.16', 'message': '100%', 'fees': [{'asset_id': '1.3.0', 'amount': 20944}]}]], 'fees': [{'asset_id': '1.3.0', 'amount': 20944}], 'real_running_time': 428, 'contract_id': '1.16.121', 'existed_pv': False}]], 'extensions': [], 'ref_block_prefix': 1576113869, 'signatures': ['1f604b986b585ff07671c5e603536bd794f555a1a2c1dc7125fc7403f30dcd1ed22b5e3561c029fb34ef9f8e5335a6cdcb62b1a2916116c6f71a977016d99ceb0b']}]], 'timestamp': '2020-07-13T03:28:30', 'block_id': '00738cf0e7315380268a468b2d146d1574455c82', 'previous': '00738cef827f7e199da32a974ef5c3d685f0fd5f', 'witness_signature': '1f3e07b0bcf89e989fe570011e48c4515285f418dc2f362aea2137b60e1dc88f5122fd0b4f2330fc667ec1dc9b0bcf26cd0ae53c4251223b967f1aeba546b6bd76'}}
+
+-------------------- contract call fee result ------------------------
+## total_fee: [{'asset_id': '1.3.0', 'amount': 20944}]
+### {'affected_account': '1.2.16', 'message': '100%', 'fees': [{'asset_id': '1.3.0', 'amount': 20944}]}
+-----------------------------------------------------------------------
+>> list_account_balances ['nicotest']
+{'jsonrpc': '2.0', 'id': 1, 'result': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 200940}]}
+
+op before balances: {'nicotest': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 221884}]}
+op after  balances: {'nicotest': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 200940}]}
+balances delta: {'nicotest': {'1.3.0': 0, '1.3.1': 20944}}
+index = 1
+>> list_account_balances ['nicotest']
+{'jsonrpc': '2.0', 'id': 1, 'result': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 200940}]}
+
+>> call_contract_function ['nicotest', 'contract.testapi.contractfeeshare', 'test_helloworld', [], True]
+{'jsonrpc': '2.0', 'id': 1, 'result': ['6494f8b7431f6f37b00b92bbc95f6a9d7bae9b85eebafbd587c890451d79e4b3', {'operations': [[35, {'value_list': [], 'caller': '1.2.16', 'function_name': 'test_helloworld', 'contract_id': '1.16.121', 'extensions': []}]], 'expiration': '2020-07-13T03:49:00', 'ref_block_num': 36071, 'extensions': [], 'ref_block_prefix': 1576113869, 'signatures': ['2019d479e7ff11fe0c91da85f8370cacd6c60b72792954fa0c8c62aafba4130c0924949977cdc9ea1523af215966b6a41e69afea9b4798c3d082cb49faffef3dfe']}]}
+
+>> get_transaction_in_block_info ['6494f8b7431f6f37b00b92bbc95f6a9d7bae9b85eebafbd587c890451d79e4b3']
+{'jsonrpc': '2.0', 'id': 1, 'result': {'block_num': 7572721, 'trx_in_block': 0, 'trx_hash': '6494f8b7431f6f37b00b92bbc95f6a9d7bae9b85eebafbd587c890451d79e4b3', 'id': '3.1.825085'}}
+
+>> get_transaction_in_block_info 6494f8b7431f6f37b00b92bbc95f6a9d7bae9b85eebafbd587c890451d79e4b3
+ {'block_num': 7572721, 'trx_in_block': 0, 'trx_hash': '6494f8b7431f6f37b00b92bbc95f6a9d7bae9b85eebafbd587c890451d79e4b3', 'id': '3.1.825085'}
+
+>> get_block [7572721]
+{'jsonrpc': '2.0', 'id': 1, 'result': {'transaction_merkle_root': 'dfafd6189f38a3a8712c3fc9e4aeb8529ab2a458', 'witness': '1.6.7', 'transactions': [['6494f8b7431f6f37b00b92bbc95f6a9d7bae9b85eebafbd587c890451d79e4b3', {'operations': [[35, {'value_list': [], 'caller': '1.2.16', 'function_name': 'test_helloworld', 'contract_id': '1.16.121', 'extensions': []}]], 'expiration': '2020-07-13T03:49:00', 'ref_block_num': 36071, 'operation_results': [[4, {'process_value': '', 'relevant_datasize': 35, 'contract_affecteds': [[3, {'affected_account': '1.2.16', 'message': 'Hi, Cocos-BCX contract'}], [5, {'affected_account': '1.2.16', 'message': '100%', 'fees': [{'asset_id': '1.3.0', 'amount': 20967}]}]], 'fees': [{'asset_id': '1.3.0', 'amount': 20967}], 'real_running_time': 451, 'contract_id': '1.16.121', 'existed_pv': False}]], 'extensions': [], 'ref_block_prefix': 1576113869, 'signatures': ['2019d479e7ff11fe0c91da85f8370cacd6c60b72792954fa0c8c62aafba4130c0924949977cdc9ea1523af215966b6a41e69afea9b4798c3d082cb49faffef3dfe']}]], 'timestamp': '2020-07-13T03:28:32', 'block_id': '00738cf1237fd18e045f0f93f11a7171177db2d9', 'previous': '00738cf0e7315380268a468b2d146d1574455c82', 'witness_signature': '1f437a610bd55765dd0440db6603508a4e8ef8f31e84952c785ea2aa1a29f4412d6b7b9d53ee747645383adea0bd0ce967cf872e26a364c872e3ebd4a11dc5aa1b'}}
+
+-------------------- contract call fee result ------------------------
+## total_fee: [{'asset_id': '1.3.0', 'amount': 20967}]
+### {'affected_account': '1.2.16', 'message': '100%', 'fees': [{'asset_id': '1.3.0', 'amount': 20967}]}
+-----------------------------------------------------------------------
+>> list_account_balances ['nicotest']
+{'jsonrpc': '2.0', 'id': 1, 'result': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 179973}]}
+
+op before balances: {'nicotest': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 200940}]}
+op after  balances: {'nicotest': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 179973}]}
+balances delta: {'nicotest': {'1.3.0': 0, '1.3.1': 20967}}
+index = 2
+>> list_account_balances ['nicotest']
+{'jsonrpc': '2.0', 'id': 1, 'result': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 179973}]}
+
+>> call_contract_function ['nicotest', 'contract.testapi.contractfeeshare', 'test_helloworld', [], True]
+{'jsonrpc': '2.0', 'id': 1, 'result': ['027e161af1a449e64ff775727c4f82fc8e7eca869f4fd1d838ee3b6169a0fa1a', {'operations': [[35, {'value_list': [], 'caller': '1.2.16', 'function_name': 'test_helloworld', 'contract_id': '1.16.121', 'extensions': []}]], 'expiration': '2020-07-13T03:49:02', 'ref_block_num': 36071, 'extensions': [], 'ref_block_prefix': 1576113869, 'signatures': ['1f421f325c69d60c488bc6f20ed2bda8a68dbda0a6a6834c17eabf8d8cb455cae042c671bef54c3fde85a96c52d17c5dbf6388658a96cf1e86d88d785d853e7117']}]}
+
+>> get_transaction_in_block_info ['027e161af1a449e64ff775727c4f82fc8e7eca869f4fd1d838ee3b6169a0fa1a']
+{'jsonrpc': '2.0', 'id': 1, 'result': {'block_num': 7572722, 'trx_in_block': 0, 'trx_hash': '027e161af1a449e64ff775727c4f82fc8e7eca869f4fd1d838ee3b6169a0fa1a', 'id': '3.1.825086'}}
+
+>> get_transaction_in_block_info 027e161af1a449e64ff775727c4f82fc8e7eca869f4fd1d838ee3b6169a0fa1a
+ {'block_num': 7572722, 'trx_in_block': 0, 'trx_hash': '027e161af1a449e64ff775727c4f82fc8e7eca869f4fd1d838ee3b6169a0fa1a', 'id': '3.1.825086'}
+
+>> get_block [7572722]
+{'jsonrpc': '2.0', 'id': 1, 'result': {'transaction_merkle_root': 'd46271ea1da48be10ca6e237613d534493be0250', 'witness': '1.6.3', 'transactions': [['027e161af1a449e64ff775727c4f82fc8e7eca869f4fd1d838ee3b6169a0fa1a', {'operations': [[35, {'value_list': [], 'caller': '1.2.16', 'function_name': 'test_helloworld', 'contract_id': '1.16.121', 'extensions': []}]], 'expiration': '2020-07-13T03:49:02', 'ref_block_num': 36071, 'operation_results': [[4, {'process_value': '', 'relevant_datasize': 35, 'contract_affecteds': [[3, {'affected_account': '1.2.16', 'message': 'Hi, Cocos-BCX contract'}], [5, {'affected_account': '1.2.16', 'message': '100%', 'fees': [{'asset_id': '1.3.0', 'amount': 20934}]}]], 'fees': [{'asset_id': '1.3.0', 'amount': 20934}], 'real_running_time': 418, 'contract_id': '1.16.121', 'existed_pv': False}]], 'extensions': [], 'ref_block_prefix': 1576113869, 'signatures': ['1f421f325c69d60c488bc6f20ed2bda8a68dbda0a6a6834c17eabf8d8cb455cae042c671bef54c3fde85a96c52d17c5dbf6388658a96cf1e86d88d785d853e7117']}]], 'timestamp': '2020-07-13T03:28:34', 'block_id': '00738cf2861316a7e577b684194c1c5c93518baf', 'previous': '00738cf1237fd18e045f0f93f11a7171177db2d9', 'witness_signature': '2050aaf9823cae8dfc963b538498387f85e4c66cb0a8c607e3b5e3112b7d1094ff2bd8dd44d7e990929812159b668d83017c0b0f9aaa50114cec247ca3c3225cfb'}}
+
+-------------------- contract call fee result ------------------------
+## total_fee: [{'asset_id': '1.3.0', 'amount': 20934}]
+### {'affected_account': '1.2.16', 'message': '100%', 'fees': [{'asset_id': '1.3.0', 'amount': 20934}]}
+-----------------------------------------------------------------------
+>> list_account_balances ['nicotest']
+{'jsonrpc': '2.0', 'id': 1, 'result': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 159039}]}
+
+op before balances: {'nicotest': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 179973}]}
+op after  balances: {'nicotest': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 159039}]}
+balances delta: {'nicotest': {'1.3.0': 0, '1.3.1': 20934}}
+index = 3
+>> list_account_balances ['nicotest']
+{'jsonrpc': '2.0', 'id': 1, 'result': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 159039}]}
+
+>> call_contract_function ['nicotest', 'contract.testapi.contractfeeshare', 'test_helloworld', [], True]
+{'jsonrpc': '2.0', 'id': 1, 'result': ['11f90c3bd8ccf0998ce7e3ccebf6251d3c2c17e61112c20c8e8981b5461f6fa1', {'operations': [[35, {'value_list': [], 'caller': '1.2.16', 'function_name': 'test_helloworld', 'contract_id': '1.16.121', 'extensions': []}]], 'expiration': '2020-07-13T03:49:04', 'ref_block_num': 36073, 'extensions': [], 'ref_block_prefix': 3583439108, 'signatures': ['2029f6346b3827cabea5559f0ee98b0e3dbded525404d54c1107992388cd027be46621c4e0c5bb63fc1e7f36f3913456048a29d5c147aaf254e6b9e4a49fd374af']}]}
+
+>> get_transaction_in_block_info ['11f90c3bd8ccf0998ce7e3ccebf6251d3c2c17e61112c20c8e8981b5461f6fa1']
+{'jsonrpc': '2.0', 'id': 1, 'result': {'block_num': 7572723, 'trx_in_block': 0, 'trx_hash': '11f90c3bd8ccf0998ce7e3ccebf6251d3c2c17e61112c20c8e8981b5461f6fa1', 'id': '3.1.825087'}}
+
+>> get_transaction_in_block_info 11f90c3bd8ccf0998ce7e3ccebf6251d3c2c17e61112c20c8e8981b5461f6fa1
+ {'block_num': 7572723, 'trx_in_block': 0, 'trx_hash': '11f90c3bd8ccf0998ce7e3ccebf6251d3c2c17e61112c20c8e8981b5461f6fa1', 'id': '3.1.825087'}
+
+>> get_block [7572723]
+{'jsonrpc': '2.0', 'id': 1, 'result': {'transaction_merkle_root': '171dba48c4c24fb8fc6e4d478776fb9008e3a918', 'witness': '1.6.5', 'transactions': [['11f90c3bd8ccf0998ce7e3ccebf6251d3c2c17e61112c20c8e8981b5461f6fa1', {'operations': [[35, {'value_list': [], 'caller': '1.2.16', 'function_name': 'test_helloworld', 'contract_id': '1.16.121', 'extensions': []}]], 'expiration': '2020-07-13T03:49:04', 'ref_block_num': 36073, 'operation_results': [[4, {'process_value': '', 'relevant_datasize': 35, 'contract_affecteds': [[3, {'affected_account': '1.2.16', 'message': 'Hi, Cocos-BCX contract'}], [5, {'affected_account': '1.2.16', 'message': '100%', 'fees': [{'asset_id': '1.3.0', 'amount': 20982}]}]], 'fees': [{'asset_id': '1.3.0', 'amount': 20982}], 'real_running_time': 466, 'contract_id': '1.16.121', 'existed_pv': False}]], 'extensions': [], 'ref_block_prefix': 3583439108, 'signatures': ['2029f6346b3827cabea5559f0ee98b0e3dbded525404d54c1107992388cd027be46621c4e0c5bb63fc1e7f36f3913456048a29d5c147aaf254e6b9e4a49fd374af']}]], 'timestamp': '2020-07-13T03:28:36', 'block_id': '00738cf342d1b5832b1cc95a9f7df2348d3c6166', 'previous': '00738cf2861316a7e577b684194c1c5c93518baf', 'witness_signature': '201fd9e9149b3ac8dd8cccbfe8e81afee2ab41bbb9c8d67cb730a25256e20b1b9d33fc472eb64fa4a2be23981d096de3683ce757fd0463587ee912f4b4eefd000d'}}
+
+-------------------- contract call fee result ------------------------
+## total_fee: [{'asset_id': '1.3.0', 'amount': 20982}]
+### {'affected_account': '1.2.16', 'message': '100%', 'fees': [{'asset_id': '1.3.0', 'amount': 20982}]}
+-----------------------------------------------------------------------
+>> list_account_balances ['nicotest']
+{'jsonrpc': '2.0', 'id': 1, 'result': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 138057}]}
+
+op before balances: {'nicotest': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 159039}]}
+op after  balances: {'nicotest': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 138057}]}
+balances delta: {'nicotest': {'1.3.0': 0, '1.3.1': 20982}}
+index = 4
+>> list_account_balances ['nicotest']
+{'jsonrpc': '2.0', 'id': 1, 'result': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 138057}]}
+
+>> call_contract_function ['nicotest', 'contract.testapi.contractfeeshare', 'test_helloworld', [], True]
+{'jsonrpc': '2.0', 'id': 1, 'result': ['df072add8ffc5ee2f139fdb506f168f4b88141bb1611054e0579e6ab5b5954d1', {'operations': [[35, {'value_list': [], 'caller': '1.2.16', 'function_name': 'test_helloworld', 'contract_id': '1.16.121', 'extensions': []}]], 'expiration': '2020-07-13T03:49:06', 'ref_block_num': 36073, 'extensions': [], 'ref_block_prefix': 3583439108, 'signatures': ['1f2cc599ac379ecece01afd2e8eb9175492429bbf16878691c77c000989a6b64a51f0ac84c0a125371c049d6c3622ccdf884dbcdc41ca591cae416e0e14c0998c9']}]}
+
+>> get_transaction_in_block_info ['df072add8ffc5ee2f139fdb506f168f4b88141bb1611054e0579e6ab5b5954d1']
+{'jsonrpc': '2.0', 'id': 1, 'result': {'block_num': 7572724, 'trx_in_block': 0, 'trx_hash': 'df072add8ffc5ee2f139fdb506f168f4b88141bb1611054e0579e6ab5b5954d1', 'id': '3.1.825088'}}
+
+>> get_transaction_in_block_info df072add8ffc5ee2f139fdb506f168f4b88141bb1611054e0579e6ab5b5954d1
+ {'block_num': 7572724, 'trx_in_block': 0, 'trx_hash': 'df072add8ffc5ee2f139fdb506f168f4b88141bb1611054e0579e6ab5b5954d1', 'id': '3.1.825088'}
+
+>> get_block [7572724]
+{'jsonrpc': '2.0', 'id': 1, 'result': {'transaction_merkle_root': '6cdd53f4a8a7fd4b0a46eaebf196ddd878ab8a26', 'witness': '1.6.8', 'transactions': [['df072add8ffc5ee2f139fdb506f168f4b88141bb1611054e0579e6ab5b5954d1', {'operations': [[35, {'value_list': [], 'caller': '1.2.16', 'function_name': 'test_helloworld', 'contract_id': '1.16.121', 'extensions': []}]], 'expiration': '2020-07-13T03:49:06', 'ref_block_num': 36073, 'operation_results': [[4, {'process_value': '', 'relevant_datasize': 35, 'contract_affecteds': [[3, {'affected_account': '1.2.16', 'message': 'Hi, Cocos-BCX contract'}], [5, {'affected_account': '1.2.16', 'message': '100%', 'fees': [{'asset_id': '1.3.0', 'amount': 20919}]}]], 'fees': [{'asset_id': '1.3.0', 'amount': 20919}], 'real_running_time': 403, 'contract_id': '1.16.121', 'existed_pv': False}]], 'extensions': [], 'ref_block_prefix': 3583439108, 'signatures': ['1f2cc599ac379ecece01afd2e8eb9175492429bbf16878691c77c000989a6b64a51f0ac84c0a125371c049d6c3622ccdf884dbcdc41ca591cae416e0e14c0998c9']}]], 'timestamp': '2020-07-13T03:28:38', 'block_id': '00738cf4de6db20c55042c5220f6d7238c0f782b', 'previous': '00738cf342d1b5832b1cc95a9f7df2348d3c6166', 'witness_signature': '1f737a025b2fb99a587a70000c54afd7d15cd9070ee3108d05e01b8abbf45b54044b74cbcf05b0219597894019fce1313261bd72504f76f18898d4db62bb72b23c'}}
+
+-------------------- contract call fee result ------------------------
+## total_fee: [{'asset_id': '1.3.0', 'amount': 20919}]
+### {'affected_account': '1.2.16', 'message': '100%', 'fees': [{'asset_id': '1.3.0', 'amount': 20919}]}
+-----------------------------------------------------------------------
+>> list_account_balances ['nicotest']
+{'jsonrpc': '2.0', 'id': 1, 'result': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 117138}]}
+
+op before balances: {'nicotest': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 138057}]}
+op after  balances: {'nicotest': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 117138}]}
+balances delta: {'nicotest': {'1.3.0': 0, '1.3.1': 20919}}
+index = 5
+>> list_account_balances ['nicotest']
+{'jsonrpc': '2.0', 'id': 1, 'result': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 117138}]}
+
+>> call_contract_function ['nicotest', 'contract.testapi.contractfeeshare', 'test_helloworld', [], True]
+{'jsonrpc': '2.0', 'id': 1, 'result': ['92ee5f2f53726122d8a93612dd12370d2144486c0b0e93949ffe3e7d96b30976', {'operations': [[35, {'value_list': [], 'caller': '1.2.16', 'function_name': 'test_helloworld', 'contract_id': '1.16.121', 'extensions': []}]], 'expiration': '2020-07-13T03:49:08', 'ref_block_num': 36073, 'extensions': [], 'ref_block_prefix': 3583439108, 'signatures': ['1f7bf4f0f59634c10a826d14ad9d62d91ff13155fafc49327c27f0c281baca4cb97d9702c87c8a31ee591611f4f9e0dd55e12a46feec4606d6af221893932d7f6a']}]}
+
+>> get_transaction_in_block_info ['92ee5f2f53726122d8a93612dd12370d2144486c0b0e93949ffe3e7d96b30976']
+{'jsonrpc': '2.0', 'id': 1, 'result': {'block_num': 7572725, 'trx_in_block': 0, 'trx_hash': '92ee5f2f53726122d8a93612dd12370d2144486c0b0e93949ffe3e7d96b30976', 'id': '3.1.825089'}}
+
+>> get_transaction_in_block_info 92ee5f2f53726122d8a93612dd12370d2144486c0b0e93949ffe3e7d96b30976
+ {'block_num': 7572725, 'trx_in_block': 0, 'trx_hash': '92ee5f2f53726122d8a93612dd12370d2144486c0b0e93949ffe3e7d96b30976', 'id': '3.1.825089'}
+
+>> get_block [7572725]
+{'jsonrpc': '2.0', 'id': 1, 'result': {'transaction_merkle_root': '403263d7c011ff4df4d1ad0711d2d74b9a60fa9b', 'witness': '1.6.10', 'transactions': [['92ee5f2f53726122d8a93612dd12370d2144486c0b0e93949ffe3e7d96b30976', {'operations': [[35, {'value_list': [], 'caller': '1.2.16', 'function_name': 'test_helloworld', 'contract_id': '1.16.121', 'extensions': []}]], 'expiration': '2020-07-13T03:49:08', 'ref_block_num': 36073, 'operation_results': [[4, {'process_value': '', 'relevant_datasize': 35, 'contract_affecteds': [[3, {'affected_account': '1.2.16', 'message': 'Hi, Cocos-BCX contract'}], [5, {'affected_account': '1.2.16', 'message': '100%', 'fees': [{'asset_id': '1.3.0', 'amount': 20967}]}]], 'fees': [{'asset_id': '1.3.0', 'amount': 20967}], 'real_running_time': 451, 'contract_id': '1.16.121', 'existed_pv': False}]], 'extensions': [], 'ref_block_prefix': 3583439108, 'signatures': ['1f7bf4f0f59634c10a826d14ad9d62d91ff13155fafc49327c27f0c281baca4cb97d9702c87c8a31ee591611f4f9e0dd55e12a46feec4606d6af221893932d7f6a']}]], 'timestamp': '2020-07-13T03:28:40', 'block_id': '00738cf51770b7c1c16fb9ef9247d2408fc3a9dc', 'previous': '00738cf4de6db20c55042c5220f6d7238c0f782b', 'witness_signature': '20490bb9a5083ce161f8ef6e48baac3d71e11449eccba314b7e94450c4049b2d5118233ad2bb487f5abfd03b781759b5907124516bb225afe4c8eac94ad0f1411c'}}
+
+-------------------- contract call fee result ------------------------
+## total_fee: [{'asset_id': '1.3.0', 'amount': 20967}]
+### {'affected_account': '1.2.16', 'message': '100%', 'fees': [{'asset_id': '1.3.0', 'amount': 20967}]}
+-----------------------------------------------------------------------
+>> list_account_balances ['nicotest']
+{'jsonrpc': '2.0', 'id': 1, 'result': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 96171}]}
+
+op before balances: {'nicotest': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 117138}]}
+op after  balances: {'nicotest': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 96171}]}
+balances delta: {'nicotest': {'1.3.0': 0, '1.3.1': 20967}}
+index = 6
+>> list_account_balances ['nicotest']
+{'jsonrpc': '2.0', 'id': 1, 'result': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 96171}]}
+
+>> call_contract_function ['nicotest', 'contract.testapi.contractfeeshare', 'test_helloworld', [], True]
+{'jsonrpc': '2.0', 'id': 1, 'result': ['3d6a05ab91368ef64ea4fdcd4dd4f40a834972fe9da3c17f342a2e6fd64e9252', {'operations': [[35, {'value_list': [], 'caller': '1.2.16', 'function_name': 'test_helloworld', 'contract_id': '1.16.121', 'extensions': []}]], 'expiration': '2020-07-13T03:49:10', 'ref_block_num': 36073, 'extensions': [], 'ref_block_prefix': 3583439108, 'signatures': ['207242f95f35a9d3cd0dc8b8550e0a28b7abcd97b04fb16d576cf0139e7fc4c1732d4e4185204b166809bd3730d73554256da6c30a610bc868616ad66d5af039d1']}]}
+
+>> get_transaction_in_block_info ['3d6a05ab91368ef64ea4fdcd4dd4f40a834972fe9da3c17f342a2e6fd64e9252']
+{'jsonrpc': '2.0', 'id': 1, 'result': {'block_num': 7572726, 'trx_in_block': 0, 'trx_hash': '3d6a05ab91368ef64ea4fdcd4dd4f40a834972fe9da3c17f342a2e6fd64e9252', 'id': '3.1.825090'}}
+
+>> get_transaction_in_block_info 3d6a05ab91368ef64ea4fdcd4dd4f40a834972fe9da3c17f342a2e6fd64e9252
+ {'block_num': 7572726, 'trx_in_block': 0, 'trx_hash': '3d6a05ab91368ef64ea4fdcd4dd4f40a834972fe9da3c17f342a2e6fd64e9252', 'id': '3.1.825090'}
+
+>> get_block [7572726]
+{'jsonrpc': '2.0', 'id': 1, 'result': {'transaction_merkle_root': 'e6019a09c32403b2fd5ba15260c7f50ac5aa5443', 'witness': '1.6.6', 'transactions': [['3d6a05ab91368ef64ea4fdcd4dd4f40a834972fe9da3c17f342a2e6fd64e9252', {'operations': [[35, {'value_list': [], 'caller': '1.2.16', 'function_name': 'test_helloworld', 'contract_id': '1.16.121', 'extensions': []}]], 'expiration': '2020-07-13T03:49:10', 'ref_block_num': 36073, 'operation_results': [[4, {'process_value': '', 'relevant_datasize': 35, 'contract_affecteds': [[3, {'affected_account': '1.2.16', 'message': 'Hi, Cocos-BCX contract'}], [5, {'affected_account': '1.2.16', 'message': '100%', 'fees': [{'asset_id': '1.3.0', 'amount': 20932}]}]], 'fees': [{'asset_id': '1.3.0', 'amount': 20932}], 'real_running_time': 416, 'contract_id': '1.16.121', 'existed_pv': False}]], 'extensions': [], 'ref_block_prefix': 3583439108, 'signatures': ['207242f95f35a9d3cd0dc8b8550e0a28b7abcd97b04fb16d576cf0139e7fc4c1732d4e4185204b166809bd3730d73554256da6c30a610bc868616ad66d5af039d1']}]], 'timestamp': '2020-07-13T03:28:42', 'block_id': '00738cf6429038aa9775dc3e81d180fbcdd93b75', 'previous': '00738cf51770b7c1c16fb9ef9247d2408fc3a9dc', 'witness_signature': '20256122d45f7b44bd3cc375eab3964e644532d2a12f1a542563410dc4c093b59671a416b21b6b3b8a6578bcd04b48d1a735fb0850caf6a088ef8e3d3d3f18b76c'}}
+
+-------------------- contract call fee result ------------------------
+## total_fee: [{'asset_id': '1.3.0', 'amount': 20932}]
+### {'affected_account': '1.2.16', 'message': '100%', 'fees': [{'asset_id': '1.3.0', 'amount': 20932}]}
+-----------------------------------------------------------------------
+>> list_account_balances ['nicotest']
+{'jsonrpc': '2.0', 'id': 1, 'result': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 75239}]}
+
+op before balances: {'nicotest': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 96171}]}
+op after  balances: {'nicotest': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 75239}]}
+balances delta: {'nicotest': {'1.3.0': 0, '1.3.1': 20932}}
+index = 7
+>> list_account_balances ['nicotest']
+{'jsonrpc': '2.0', 'id': 1, 'result': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 75239}]}
+
+>> call_contract_function ['nicotest', 'contract.testapi.contractfeeshare', 'test_helloworld', [], True]
+{'jsonrpc': '2.0', 'id': 1, 'result': ['ece55f85422361912272a6ebabc965578bfd47216a4cfdc4f18a911c55f3f062', {'operations': [[35, {'value_list': [], 'caller': '1.2.16', 'function_name': 'test_helloworld', 'contract_id': '1.16.121', 'extensions': []}]], 'expiration': '2020-07-13T03:49:12', 'ref_block_num': 36076, 'extensions': [], 'ref_block_prefix': 2025105282, 'signatures': ['1f2fe7a6eacf89daf99e1206ec5fa4f1cb374608c8d784ba815b60a6cc733dbd62505bfef18d546e8276e5ed75a4513272eb5bb9e1101b1550441dc76154ab8049']}]}
+
+>> get_transaction_in_block_info ['ece55f85422361912272a6ebabc965578bfd47216a4cfdc4f18a911c55f3f062']
+{'jsonrpc': '2.0', 'id': 1, 'result': {'block_num': 7572727, 'trx_in_block': 0, 'trx_hash': 'ece55f85422361912272a6ebabc965578bfd47216a4cfdc4f18a911c55f3f062', 'id': '3.1.825091'}}
+
+>> get_transaction_in_block_info ece55f85422361912272a6ebabc965578bfd47216a4cfdc4f18a911c55f3f062
+ {'block_num': 7572727, 'trx_in_block': 0, 'trx_hash': 'ece55f85422361912272a6ebabc965578bfd47216a4cfdc4f18a911c55f3f062', 'id': '3.1.825091'}
+
+>> get_block [7572727]
+{'jsonrpc': '2.0', 'id': 1, 'result': {'transaction_merkle_root': 'd52d39faf5e175858bae9e117271a7f75ed1bb79', 'witness': '1.6.4', 'transactions': [['ece55f85422361912272a6ebabc965578bfd47216a4cfdc4f18a911c55f3f062', {'operations': [[35, {'value_list': [], 'caller': '1.2.16', 'function_name': 'test_helloworld', 'contract_id': '1.16.121', 'extensions': []}]], 'expiration': '2020-07-13T03:49:12', 'ref_block_num': 36076, 'operation_results': [[4, {'process_value': '', 'relevant_datasize': 35, 'contract_affecteds': [[3, {'affected_account': '1.2.16', 'message': 'Hi, Cocos-BCX contract'}], [5, {'affected_account': '1.2.16', 'message': '100%', 'fees': [{'asset_id': '1.3.0', 'amount': 20970}]}]], 'fees': [{'asset_id': '1.3.0', 'amount': 20970}], 'real_running_time': 454, 'contract_id': '1.16.121', 'existed_pv': False}]], 'extensions': [], 'ref_block_prefix': 2025105282, 'signatures': ['1f2fe7a6eacf89daf99e1206ec5fa4f1cb374608c8d784ba815b60a6cc733dbd62505bfef18d546e8276e5ed75a4513272eb5bb9e1101b1550441dc76154ab8049']}]], 'timestamp': '2020-07-13T03:28:44', 'block_id': '00738cf76ebd6aa5e46b3978b1fe3d4fb0f79dd0', 'previous': '00738cf6429038aa9775dc3e81d180fbcdd93b75', 'witness_signature': '1f220db3fd1e896f2efe140dea1363376f0d2a5037e4aff8e774ab14ef9b5b52556dd017e06d410ada9bf8d761c1d66439ecb27d15b79ee4e0809747a296b784d6'}}
+
+-------------------- contract call fee result ------------------------
+## total_fee: [{'asset_id': '1.3.0', 'amount': 20970}]
+### {'affected_account': '1.2.16', 'message': '100%', 'fees': [{'asset_id': '1.3.0', 'amount': 20970}]}
+-----------------------------------------------------------------------
+>> list_account_balances ['nicotest']
+{'jsonrpc': '2.0', 'id': 1, 'result': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 54269}]}
+
+op before balances: {'nicotest': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 75239}]}
+op after  balances: {'nicotest': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 54269}]}
+balances delta: {'nicotest': {'1.3.0': 0, '1.3.1': 20970}}
+index = 8
+>> list_account_balances ['nicotest']
+{'jsonrpc': '2.0', 'id': 1, 'result': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 54269}]}
+
+>> call_contract_function ['nicotest', 'contract.testapi.contractfeeshare', 'test_helloworld', [], True]
+{'jsonrpc': '2.0', 'id': 1, 'result': ['b861d1aedcd2e8e60a41c29bfecadf4d217e7d6d47562bde08fe9992f80590cb', {'operations': [[35, {'value_list': [], 'caller': '1.2.16', 'function_name': 'test_helloworld', 'contract_id': '1.16.121', 'extensions': []}]], 'expiration': '2020-07-13T03:49:14', 'ref_block_num': 36079, 'extensions': [], 'ref_block_prefix': 427720578, 'signatures': ['1f6cb58e95af3e2dced84836e2077e383507539524131cef9505760670734ae494223bdbe237eda50c3c72274e9bc55c4d9ad3fdf08546bba62b5369310eb11d8c']}]}
+
+>> get_transaction_in_block_info ['b861d1aedcd2e8e60a41c29bfecadf4d217e7d6d47562bde08fe9992f80590cb']
+{'jsonrpc': '2.0', 'id': 1, 'result': None}
+
+>> get_transaction_in_block_info b861d1aedcd2e8e60a41c29bfecadf4d217e7d6d47562bde08fe9992f80590cb
+ None
+
+>> get_transaction_in_block_info ['b861d1aedcd2e8e60a41c29bfecadf4d217e7d6d47562bde08fe9992f80590cb']
+{'jsonrpc': '2.0', 'id': 1, 'result': {'block_num': 7572728, 'trx_in_block': 0, 'trx_hash': 'b861d1aedcd2e8e60a41c29bfecadf4d217e7d6d47562bde08fe9992f80590cb', 'id': '3.1.825092'}}
+
+>> get_transaction_in_block_info b861d1aedcd2e8e60a41c29bfecadf4d217e7d6d47562bde08fe9992f80590cb
+ {'block_num': 7572728, 'trx_in_block': 0, 'trx_hash': 'b861d1aedcd2e8e60a41c29bfecadf4d217e7d6d47562bde08fe9992f80590cb', 'id': '3.1.825092'}
+
+>> get_block [7572728]
+{'jsonrpc': '2.0', 'id': 1, 'result': {'transaction_merkle_root': 'ee24e9cb24ecb00da7f6bc8f9fe6c2906576a192', 'witness': '1.6.2', 'transactions': [['b861d1aedcd2e8e60a41c29bfecadf4d217e7d6d47562bde08fe9992f80590cb', {'operations': [[35, {'value_list': [], 'caller': '1.2.16', 'function_name': 'test_helloworld', 'contract_id': '1.16.121', 'extensions': []}]], 'expiration': '2020-07-13T03:49:14', 'ref_block_num': 36079, 'operation_results': [[4, {'process_value': '', 'relevant_datasize': 35, 'contract_affecteds': [[3, {'affected_account': '1.2.16', 'message': 'Hi, Cocos-BCX contract'}], [5, {'affected_account': '1.2.16', 'message': '100%', 'fees': [{'asset_id': '1.3.0', 'amount': 20910}]}]], 'fees': [{'asset_id': '1.3.0', 'amount': 20910}], 'real_running_time': 394, 'contract_id': '1.16.121', 'existed_pv': False}]], 'extensions': [], 'ref_block_prefix': 427720578, 'signatures': ['1f6cb58e95af3e2dced84836e2077e383507539524131cef9505760670734ae494223bdbe237eda50c3c72274e9bc55c4d9ad3fdf08546bba62b5369310eb11d8c']}]], 'timestamp': '2020-07-13T03:28:48', 'block_id': '00738cf8978a9e4b6286838ad198ed00d449800e', 'previous': '00738cf76ebd6aa5e46b3978b1fe3d4fb0f79dd0', 'witness_signature': '1f0185579973283dc78f27dac420b18a4dcc0dbd241baab70ce2d181fb87b30277500a5782cf2a47a3759624b781022d1d818aa14ef0b86d4f25bc340888928b6f'}}
+
+-------------------- contract call fee result ------------------------
+## total_fee: [{'asset_id': '1.3.0', 'amount': 20910}]
+### {'affected_account': '1.2.16', 'message': '100%', 'fees': [{'asset_id': '1.3.0', 'amount': 20910}]}
+-----------------------------------------------------------------------
+>> list_account_balances ['nicotest']
+{'jsonrpc': '2.0', 'id': 1, 'result': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 33359}]}
+
+op before balances: {'nicotest': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 54269}]}
+op after  balances: {'nicotest': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 33359}]}
+balances delta: {'nicotest': {'1.3.0': 0, '1.3.1': 20910}}
+index = 9
+>> list_account_balances ['nicotest']
+{'jsonrpc': '2.0', 'id': 1, 'result': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 33359}]}
+
+>> call_contract_function ['nicotest', 'contract.testapi.contractfeeshare', 'test_helloworld', [], True]
+{'jsonrpc': '2.0', 'id': 1, 'result': ['7a98badce2dc2300de6dede72e11b7e99fd54a207e8a476b6f35fe38e74ba385', {'operations': [[35, {'value_list': [], 'caller': '1.2.16', 'function_name': 'test_helloworld', 'contract_id': '1.16.121', 'extensions': []}]], 'expiration': '2020-07-13T03:49:18', 'ref_block_num': 36080, 'extensions': [], 'ref_block_prefix': 2152935911, 'signatures': ['20463659c5619e80ff01a2a38ba3509ca8dc3d88f2c4dbed835bfcd463de40307866d48b2b11be3a679457bac17bda5ada7bde2af3f7efc9aa1ea455c9ec6ed7fb']}]}
+
+>> get_transaction_in_block_info ['7a98badce2dc2300de6dede72e11b7e99fd54a207e8a476b6f35fe38e74ba385']
+{'jsonrpc': '2.0', 'id': 1, 'result': None}
+
+>> get_transaction_in_block_info 7a98badce2dc2300de6dede72e11b7e99fd54a207e8a476b6f35fe38e74ba385
+ None
+
+>> get_transaction_in_block_info ['7a98badce2dc2300de6dede72e11b7e99fd54a207e8a476b6f35fe38e74ba385']
+{'jsonrpc': '2.0', 'id': 1, 'result': {'block_num': 7572729, 'trx_in_block': 0, 'trx_hash': '7a98badce2dc2300de6dede72e11b7e99fd54a207e8a476b6f35fe38e74ba385', 'id': '3.1.825093'}}
+
+>> get_transaction_in_block_info 7a98badce2dc2300de6dede72e11b7e99fd54a207e8a476b6f35fe38e74ba385
+ {'block_num': 7572729, 'trx_in_block': 0, 'trx_hash': '7a98badce2dc2300de6dede72e11b7e99fd54a207e8a476b6f35fe38e74ba385', 'id': '3.1.825093'}
+
+>> get_block [7572729]
+{'jsonrpc': '2.0', 'id': 1, 'result': {'transaction_merkle_root': 'dda9c63b2c9a25844ffe506a14140f9278cd3dc3', 'witness': '1.6.1', 'transactions': [['7a98badce2dc2300de6dede72e11b7e99fd54a207e8a476b6f35fe38e74ba385', {'operations': [[35, {'value_list': [], 'caller': '1.2.16', 'function_name': 'test_helloworld', 'contract_id': '1.16.121', 'extensions': []}]], 'expiration': '2020-07-13T03:49:18', 'ref_block_num': 36080, 'operation_results': [[4, {'process_value': '', 'relevant_datasize': 35, 'contract_affecteds': [[3, {'affected_account': '1.2.16', 'message': 'Hi, Cocos-BCX contract'}], [5, {'affected_account': '1.2.16', 'message': '100%', 'fees': [{'asset_id': '1.3.0', 'amount': 20957}]}]], 'fees': [{'asset_id': '1.3.0', 'amount': 20957}], 'real_running_time': 441, 'contract_id': '1.16.121', 'existed_pv': False}]], 'extensions': [], 'ref_block_prefix': 2152935911, 'signatures': ['20463659c5619e80ff01a2a38ba3509ca8dc3d88f2c4dbed835bfcd463de40307866d48b2b11be3a679457bac17bda5ada7bde2af3f7efc9aa1ea455c9ec6ed7fb']}]], 'timestamp': '2020-07-13T03:28:52', 'block_id': '00738cf9afcc22738803e5e805288ecf0643ee53', 'previous': '00738cf8978a9e4b6286838ad198ed00d449800e', 'witness_signature': '2003941742ed11920df2cc51498eb5125aadbf931cbdb1f1c8335245d897040e35090f7efe069b3488681c66d6213044d83d8c3ea8dea1899e9e7fab333ffa4c9c'}}
+
+-------------------- contract call fee result ------------------------
+## total_fee: [{'asset_id': '1.3.0', 'amount': 20957}]
+### {'affected_account': '1.2.16', 'message': '100%', 'fees': [{'asset_id': '1.3.0', 'amount': 20957}]}
+-----------------------------------------------------------------------
+>> list_account_balances ['nicotest']
+{'jsonrpc': '2.0', 'id': 1, 'result': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 12402}]}
+
+op before balances: {'nicotest': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 33359}]}
+op after  balances: {'nicotest': [{'asset_id': '1.3.0', 'amount': '5000001913347'}, {'asset_id': '1.3.1', 'amount': 12402}]}
+balances delta: {'nicotest': {'1.3.0': 0, '1.3.1': 20957}}
+ck@ubuntu:~/xukang/CocosBCX/feature_test/contract_fee_share$ 
+ck@ubuntu:~/xukang/CocosBCX/feature_test/contract_fee_share$ python3 contract_call_fee.py 
+>> unlock ['123456']
+{'jsonrpc': '2.0', 'id': 1, 'result': None}
+
+accounts: ['nicotest'], count: 10
+index = 0
+>> list_account_balances ['nicotest']
+{'jsonrpc': '2.0', 'id': 1, 'result': [{'amount': '5000001913347', 'asset_id': '1.3.0'}, {'amount': 12402, 'asset_id': '1.3.1'}]}
+
+>> call_contract_function ['nicotest', 'contract.testapi.contractfeeshare', 'test_helloworld', [], True]
+{'jsonrpc': '2.0', 'id': 1, 'result': ['f4094cb8e5910532dfc757d7931f7c19f9df645925e66c7fa4d57efd2d80b1c5', {'extensions': [], 'ref_block_num': 36083, 'expiration': '2020-07-13T03:49:30', 'signatures': ['1f4e9c9da654e29ec216e4b73798dd91597e8c37e9dbc2df5df603420ba6eea927216d0b22a8b8983ecef3650cbb9f7dc206816f8c79fcaf75c0a59eeb600f8165'], 'ref_block_prefix': 2209730882, 'operations': [[35, {'caller': '1.2.16', 'extensions': [], 'function_name': 'test_helloworld', 'value_list': [], 'contract_id': '1.16.121'}]]}]}
+
+>> get_transaction_in_block_info ['f4094cb8e5910532dfc757d7931f7c19f9df645925e66c7fa4d57efd2d80b1c5']
+{'jsonrpc': '2.0', 'id': 1, 'result': {'trx_in_block': 0, 'block_num': 7572733, 'id': '3.1.825094', 'trx_hash': 'f4094cb8e5910532dfc757d7931f7c19f9df645925e66c7fa4d57efd2d80b1c5'}}
+
+>> get_transaction_in_block_info f4094cb8e5910532dfc757d7931f7c19f9df645925e66c7fa4d57efd2d80b1c5
+ {'trx_in_block': 0, 'block_num': 7572733, 'id': '3.1.825094', 'trx_hash': 'f4094cb8e5910532dfc757d7931f7c19f9df645925e66c7fa4d57efd2d80b1c5'}
+
+>> get_block [7572733]
+{'jsonrpc': '2.0', 'id': 1, 'result': {'timestamp': '2020-07-13T03:29:02', 'block_id': '00738cfd276fe8138e15c53a7e4a64f3d2c47324', 'transaction_merkle_root': '89825bb0f0f2f9aec58349d912e58fc95865f318', 'witness': '1.6.10', 'previous': '00738cfc389220bff159219ccbdbe90f44f00255', 'witness_signature': '1f1646aeead6f62e5d4cb8dc361aa1998d4c4eb9380c5aa8d86f289f67f843de7344e5939050a58e493be11f6f2d036af074339d29b02939b9e16f4d5fbe9b2af7', 'transactions': [['f4094cb8e5910532dfc757d7931f7c19f9df645925e66c7fa4d57efd2d80b1c5', {'operation_results': [[4, {'fees': [{'amount': 21023, 'asset_id': '1.3.0'}], 'relevant_datasize': 35, 'real_running_time': 507, 'existed_pv': False, 'contract_id': '1.16.121', 'process_value': '', 'contract_affecteds': [[3, {'affected_account': '1.2.16', 'message': 'Hi, Cocos-BCX contract'}], [5, {'affected_account': '1.2.16', 'fees': [{'amount': 21023, 'asset_id': '1.3.0'}], 'message': '100%'}]]}]], 'extensions': [], 'ref_block_num': 36083, 'expiration': '2020-07-13T03:49:30', 'signatures': ['1f4e9c9da654e29ec216e4b73798dd91597e8c37e9dbc2df5df603420ba6eea927216d0b22a8b8983ecef3650cbb9f7dc206816f8c79fcaf75c0a59eeb600f8165'], 'ref_block_prefix': 2209730882, 'operations': [[35, {'caller': '1.2.16', 'extensions': [], 'function_name': 'test_helloworld', 'value_list': [], 'contract_id': '1.16.121'}]]}]]}}
+
+-------------------- contract call fee result ------------------------
+## total_fee: [{'amount': 21023, 'asset_id': '1.3.0'}]
+### {'affected_account': '1.2.16', 'fees': [{'amount': 21023, 'asset_id': '1.3.0'}], 'message': '100%'}
+-----------------------------------------------------------------------
+>> list_account_balances ['nicotest']
+{'jsonrpc': '2.0', 'id': 1, 'result': [{'amount': '5000001904726', 'asset_id': '1.3.0'}, {'amount': 0, 'asset_id': '1.3.1'}]}
+
+op before balances: {'nicotest': [{'amount': '5000001913347', 'asset_id': '1.3.0'}, {'amount': 12402, 'asset_id': '1.3.1'}]}
+op after  balances: {'nicotest': [{'amount': '5000001904726', 'asset_id': '1.3.0'}, {'amount': 0, 'asset_id': '1.3.1'}]}
+balances delta: {'nicotest': {'1.3.0': 8621, '1.3.1': 12402}}
+index = 1
+>> list_account_balances ['nicotest']
+{'jsonrpc': '2.0', 'id': 1, 'result': [{'amount': '5000001904726', 'asset_id': '1.3.0'}, {'amount': 0, 'asset_id': '1.3.1'}]}
+
+>> call_contract_function ['nicotest', 'contract.testapi.contractfeeshare', 'test_helloworld', [], True]
+{'error': {'message': 'unspecified: Assert Exception: locked->value >= 0 && itr->get_balance() + delta >= asset(locked->value, delta.asset_id): Some assets are locked and cannot be transferred.asset_id:1.3.0,lock_amount:5000001900000,request_amount:-20939', 'code': 1}, 'jsonrpc': '2.0', 'id': 1}
+
+KeyError('result',)
+Traceback (most recent call last):
+  File "contract_call_fee.py", line 390, in <module>
+    batch_calc_contract_call_operation_fee(test_helloworld_owner, ["nicotest"], count=10)
+  File "contract_call_fee.py", line 368, in batch_calc_contract_call_operation_fee
+    calc_contract_call_operation_fee(func, accounts)
+  File "contract_call_fee.py", line 99, in calc_contract_call_operation_fee
+    func()
+  File "contract_call_fee.py", line 352, in test_helloworld_owner
+    test_helloworld(log_result=True)
+  File "contract_call_fee.py", line 332, in test_helloworld
+    block = get_block_by_transaction_id(call_result[0])
+TypeError: 'NoneType' object is not subscriptable
+ck@ubuntu:~/xukang/CocosBCX/feature_test/contract_fee_share$ 
+```  
+
+**cli_wallet异常信息：**  
+``` text  
+1742604ms th_a       wallet.cpp:1788               sign_transaction     ] Caught exception while broadcasting tx 54b678b3d42e1c4aa5f8c55a33dd27c19b7d8b20:  0 exception: unspecified
+Assert Exception: locked->value >= 0 && itr->get_balance() + delta >= asset(locked->value, delta.asset_id): Some assets are locked and cannot be transferred.asset_id:1.3.0,lock_amount:5000001900000,request_amount:-20939
+    {"error":"Assert Exception: locked->value >= 0 && itr->get_balance() + delta >= asset(locked->value, delta.asset_id): Some assets are locked and cannot be transferred.asset_id:1.3.0,lock_amount:5000001900000,request_amount:-20939","data":{"id":2258,"jsonrpc":"2.0","error":{"code":2258,"message":"Assert Exception: locked->value >= 0 && itr->get_balance() + delta >= asset(locked->value, delta.asset_id): Some assets are locked and cannot be transferred.asset_id:1.3.0,lock_amount:5000001900000,request_amount:-20939"}}}
+    th_a  state.cpp:38 handle_reply
+1742604ms th_a       websocket_api.cpp:158         on_message           ] websocket api exception :{"code":0,"name":"exception","message":"unspecified","stack":[{"context":{"level":"error","file":"state.cpp","line":38,"method":"handle_reply","hostname":"","thread_name":"th_a","timestamp":"2020-07-13T03:29:02"},"format":"${error}","data":{"error":"Assert Exception: locked->value >= 0 && itr->get_balance() + delta >= asset(locked->value, delta.asset_id): Some assets are locked and cannot be transferred.asset_id:1.3.0,lock_amount:5000001900000,request_amount:-20939","data":{"id":2258,"jsonrpc":"2.0","error":{"code":2258,"message":"Assert Exception: locked->value >= 0 && itr->get_balance() + delta >= asset(locked->value, delta.asset_id): Some assets are locked and cannot be transferred.asset_id:1.3.0,lock_amount:5000001900000,request_amount:-20939"}}}},{"context":{"level":"warn","file":"wallet.cpp","line":2090,"method":"call_contract_function","hostname":"","thread_name":"th_a","timestamp":"2020-07-13T03:29:02"},"format":"","data":{"account_id_or_name":"nicotest","contract_id_or_name":"contract.testapi.contractfeeshare","function_name":"test_helloworld","value_list":[],"broadcast":true}},{"context":{"level":"warn","file":"websocket_api.cpp","line":154,"method":"on_message","hostname":"","thread_name":"th_a","timestamp":"2020-07-13T03:29:02"},"format":"","data":{"call.method":"call_contract_function","call.params":["nicotest","contract.testapi.contractfeeshare","test_helloworld",[],true]}}]}
+
+unlocked >>> 
+```  
+最后调用合约失败，原因：账户无足够的GAS和COCOS支付合约调用手续费。     
 
 ### 4.1.2 非合约所有者调用  
 **测试main代码：**    
