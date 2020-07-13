@@ -11,7 +11,7 @@ import time
 
 # config
 host = "127.0.0.1"
-wallet_rpc_port = 8048
+wallet_rpc_port = 8047
 
 wallet_password = 123456
 cli_wallet_url = "http://{}:{}".format(host, wallet_rpc_port)
@@ -307,10 +307,14 @@ if __name__ == '__main__':
     # print('>> {}'.format(sys.argv))
     unlock("123456")
 
-    # main_build_tx()
+    print("############ 1. multi operation in transaction")
+    main_build_tx()
     # get_contract_function_call_op_test()
 
-    #test_helloworld()
+    print("############ 2. contract owner call contranct")
+    test_helloworld()
+    
+    print("############ 3. contract not owner call contranct")
     test_helloworld(caller="init1")
 
     # test_set_percent()

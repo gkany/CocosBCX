@@ -417,6 +417,16 @@ def batch_calc_contract_call_operation_fee(func, accounts, count=5):
         print("index = {}".format(index))
         calc_contract_call_operation_fee(func, accounts)
 
+def set_percent_test(percents):
+    # percents = [48, -19, 100, 125, 0, 37]
+    for percent in percents:
+        try:
+            print("########. set_percent {}%".format(percent))
+            test_set_percent(percent=percent)
+        except Exception as e:
+            print("test set_percent: {} failed. exception: {}".format(percent, repr(e)))
+        print("--------------- END -----------------\n")
+
 if __name__ == '__main__':
     # print('>> {}'.format(sys.argv))
     unlock("123456")
@@ -427,7 +437,9 @@ if __name__ == '__main__':
     # test_helloworld(log_result=True)
     # test_helloworld(caller="init1", log_result=True)
 
-    # test_set_percent(percent=40)
+    #test_set_percent(percent=76)
+    #percents = [48, -19, 100, 125, 0, 37]
+    #set_percent_test(percents)
 
     # result = list_account_balances("init1")
     # print("result: {}".format(result))
@@ -436,9 +448,9 @@ if __name__ == '__main__':
     # print("balances: {}".format(result))
     # print("============================================")
     # calc_contract_call_operation_fee(test_helloworld, ["nicotest"])
-    #calc_contract_call_operation_fee(test_helloworld_owner, ["nicotest"])
-    # batch_calc_contract_call_operation_fee(test_helloworld_owner, ["nicotest"], count=10)
-    # calc_contract_call_operation_fee(test_helloworld_not_owner, ["nicotest", "init1"])
+    calc_contract_call_operation_fee(test_helloworld_owner, ["nicotest"])
+    batch_calc_contract_call_operation_fee(test_helloworld_owner, ["nicotest"], count=10)
+    calc_contract_call_operation_fee(test_helloworld_not_owner, ["nicotest", "init1"])
     batch_calc_contract_call_operation_fee(test_helloworld_not_owner, ["nicotest", "init1"])
 
 # tar -czvf file.tar.gz file
