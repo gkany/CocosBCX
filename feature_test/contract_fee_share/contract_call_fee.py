@@ -361,6 +361,12 @@ def get_contract_function_call_op_test():
     params = []
     get_contract_function_call_op(caller, contract, func, params)
 
+def batch_calc_contract_call_operation_fee(func, accounts, count=5):
+    print("accounts: {}, count: {}".format(accounts, count))
+    for index in range(count):
+        print("index = {}".format(index))
+        calc_contract_call_operation_fee(func, accounts)
+
 if __name__ == '__main__':
     # print('>> {}'.format(sys.argv))
     unlock("123456")
@@ -381,6 +387,8 @@ if __name__ == '__main__':
     # print("============================================")
     # calc_contract_call_operation_fee(test_helloworld, ["nicotest"])
     #calc_contract_call_operation_fee(test_helloworld_owner, ["nicotest"])
-    calc_contract_call_operation_fee(test_helloworld_not_owner, ["nicotest", "init1"])
+    batch_calc_contract_call_operation_fee(test_helloworld_owner, ["nicotest"], count=10)
+    #calc_contract_call_operation_fee(test_helloworld_not_owner, ["nicotest", "init1"])
+    #batch_calc_contract_call_operation_fee(test_helloworld_not_owner, ["nicotest", "init1"])
 
 # tar -czvf file.tar.gz file
