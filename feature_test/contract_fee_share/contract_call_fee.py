@@ -56,6 +56,20 @@ def list_account_balances(account):
         print(repr(e))
     return balances
 
+def get_account(account):
+    try:
+        body_relay = {
+            "jsonrpc": "2.0",
+            "method": "get_account",
+            "params": [account],
+            "id":1
+        }
+        response = request_post(body_relay)
+        result = response['result']
+        return result
+    except Exception as e:
+        print(repr(e))
+
 def accounts_balances(accounts=[]):
     if len(accounts) == 0:
         return None
@@ -79,7 +93,9 @@ def delta_asset_balance(old, new, asset="1.3.0"):
 def delta_assets_balances(old, new, assets=["1.3.0", "1.3.1"]):
     result = {}
     for asset in assets:
-        result[asset] = delta_asset_balance(old, new, asset)
+        delta = delta_asset_balance(old, new, asset)
+        if delta != 0:
+            result[asset] = delta
     return result
 
 # COCOS GAS
@@ -88,19 +104,32 @@ def delta_balances(old_balances, new_balances):
     for account in old_balances.keys():
         old_balance = old_balances[account]
         new_balance = new_balances[account]
-        delta_result[account] = delta_assets_balances(old_balance, new_balance)
+        delta = delta_assets_balances(old_balance, new_balance)
+        if delta:
+            delta_result[account] = delta
     return delta_result
 
 def calc_contract_call_operation_fee(func=None, accounts=[]):
     if not func or len(accounts) == 0:
         return
     
-    old_balances = accounts_balances(accounts)
-    func()
-    current_balances = accounts_balances(accounts)
+    account_ids = []
+    for account in accounts:
+        account_obj = get_account(account)
+        account_ids.append(account_obj["id"])
+
+    old_balances = accounts_balances(account_ids)
+    func_accounts_balances = func()
+    current_balances = accounts_balances(account_ids)
     delta = delta_balances(old_balances, current_balances)
-    print("op before balances: {}\nop after  balances: {}\nbalances delta: {}".format(
+    print("-------------------- contract owner and caller acccount_balances changed --------------------")
+    print(">>> contract call op before account_balances: \n  {}\n>>> contract call op before \
+        account_balances: \n  {}\n>>> account_balances delta: \n  {}".format(
         old_balances, current_balances, delta))
+    print("---------------------------------------------------------------------------------------------\n")
+    print("func_accounts_balances: {}\ncalc_accounts_balances: {}".format(func_accounts_balances, delta))
+    assert func_accounts_balances == delta, "[contract_call_operation fee test] Accounts Balances changed Exception!!!"
+    print("******************* calc_contract_call_operation_fee END ************************************\n")
 
 def get_block(num):
     try:
@@ -320,6 +349,39 @@ def test_set_percent(owner="nicotest", percent=30):
     block = get_block_by_transaction_id(call_result[0])
 
 
+def show_contract_call_fee_in_block(block):
+    print("-------------------- contract call fee result ------------------------")
+    accounts_balances_result = {}
+    # print("block: {}\n".format(block))
+    transactions = block["transactions"]
+    for trx in transactions:
+        # print("### operation_results: {}".format(trx[1]["operation_results"]))
+        operation_results = trx[1]["operation_results"]
+        for op_result in operation_results:
+            if op_result[0] == 4:
+                total_fee = op_result[1]["fees"]
+                print("## total_fee: {}".format(total_fee))
+                contract_affecteds = op_result[1]["contract_affecteds"]
+                accounts_fee_total = 0
+                for contract_affected in contract_affecteds:
+                    account_balances_amount = {}
+                    if contract_affected[0] == 5:
+                        pay_account_fee_total = 0
+                        for asset_fee_obj in contract_affected[1]["fees"]:
+                            pay_account_fee_total += asset_fee_obj["amount"]
+                            account_balances_amount[asset_fee_obj["asset_id"]] = asset_fee_obj["amount"]
+                        accounts_fee_total += pay_account_fee_total
+                        accounts_balances_result[contract_affected[1]["affected_account"]] = account_balances_amount
+                        print("### {}, total_fee: {}".format(contract_affected[1], pay_account_fee_total))
+
+                total_fee_in_block = int(total_fee[0]["amount"])
+                print("### [COCOS] fee_total_in_block: {}, fee_total_range_accounts: {}".format(
+                    total_fee_in_block, accounts_fee_total))
+                assert total_fee_in_block == accounts_fee_total, "contract call fee calc error!!!"
+    print("### account_balances delta in block: \n  {}".format(accounts_balances_result))
+    print("-----------------------------------------------------------------------\n")
+    return accounts_balances_result
+
 def test_helloworld(caller="nicotest", log_result=False):
     contract = "contract.testapi.contractfeeshare"
     func = "test_helloworld"
@@ -331,28 +393,16 @@ def test_helloworld(caller="nicotest", log_result=False):
     # get block
     block = get_block_by_transaction_id(call_result[0])
 
+    accounts_balances_result = None
     if log_result:
-        print("-------------------- contract call fee result ------------------------")
-        # print("block: {}\n".format(block))
-        transactions = block["transactions"]
-        for trx in transactions:
-            # print("### operation_results: {}".format(trx[1]["operation_results"]))
-            operation_results = trx[1]["operation_results"]
-            for op_result in operation_results:
-                if op_result[0] == 4:
-                    total_fee = op_result[1]["fees"]
-                    print("## total_fee: {}".format(total_fee))
-                    contract_affecteds = op_result[1]["contract_affecteds"]
-                    for contract_affected in contract_affecteds:
-                        if contract_affected[0] == 5:
-                            print("### {}".format(contract_affected[1]))
-        print("-----------------------------------------------------------------------")
+        accounts_balances_result = show_contract_call_fee_in_block(block)
+    return accounts_balances_result
 
 def test_helloworld_owner():
-    test_helloworld(log_result=True)
+    return test_helloworld(log_result=True)
 
 def test_helloworld_not_owner():
-    test_helloworld(caller="init1", log_result=True)
+    return test_helloworld(caller="init1", log_result=True)
 
 def get_contract_function_call_op_test():
     caller = "nicotest"
@@ -377,7 +427,7 @@ if __name__ == '__main__':
     # test_helloworld(log_result=True)
     # test_helloworld(caller="init1", log_result=True)
 
-    # test_set_percent(percent=100)
+    # test_set_percent(percent=40)
 
     # result = list_account_balances("init1")
     # print("result: {}".format(result))
@@ -387,8 +437,8 @@ if __name__ == '__main__':
     # print("============================================")
     # calc_contract_call_operation_fee(test_helloworld, ["nicotest"])
     #calc_contract_call_operation_fee(test_helloworld_owner, ["nicotest"])
-    batch_calc_contract_call_operation_fee(test_helloworld_owner, ["nicotest"], count=10)
-    #calc_contract_call_operation_fee(test_helloworld_not_owner, ["nicotest", "init1"])
-    #batch_calc_contract_call_operation_fee(test_helloworld_not_owner, ["nicotest", "init1"])
+    # batch_calc_contract_call_operation_fee(test_helloworld_owner, ["nicotest"], count=10)
+    # calc_contract_call_operation_fee(test_helloworld_not_owner, ["nicotest", "init1"])
+    batch_calc_contract_call_operation_fee(test_helloworld_not_owner, ["nicotest", "init1"])
 
 # tar -czvf file.tar.gz file

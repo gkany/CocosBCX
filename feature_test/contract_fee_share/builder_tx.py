@@ -187,6 +187,20 @@ def call_contract(caller, contract, function, params=[], broadcast=True):
     except Exception as e:
         print(repr(e))
 
+def get_account(account):
+    try:
+        body_relay = {
+            "jsonrpc": "2.0",
+            "method": "get_account",
+            "params": [account],
+            "id":1
+        }
+        response = request_post(body_relay)
+        result = response['result']
+        return result
+    except Exception as e:
+        print(repr(e))
+
 def get_transfer_op(from_account, to, amount, broadcast=False):
     result = transfer(from_account=from_account, to=to, amount=amount, broadcast=broadcast)
     # tx_id = result[0]
@@ -296,7 +310,7 @@ if __name__ == '__main__':
     # main_build_tx()
     # get_contract_function_call_op_test()
 
-    # test_helloworld()
+    #test_helloworld()
     test_helloworld(caller="init1")
 
     # test_set_percent()
