@@ -117,4 +117,20 @@
     >>> rm -rf wallet 
     wallet clean done.
     root@7ef1cba5083e:~/data/test/env/witness#
-```
+```  
+
+### 其他  
+**import_key**  
+``` text  
+import_key init0 5Kj5s6xAkjbFcsGXhP4ioWUk7dZm5aYyKDEWDbWAa5nwA8Paewc
+import_key init1 5K5fqjvMrH5UtUisCgSZHQjiQf9BvtZ5vsKPhCErDy7P2gnLQmw
+import_key init2 5Jdq6Fn8u2m1RUqHLEb5bjqvVvbg6oVDGmwz6Z16Q9KfPuzfDzt
+import_key init3 5JCb6e445N1iLsNqF7w5URJ1sgEZgChzGQKKy2zrCVTHA4SRyiQ
+import_key init4 5JAxJ8dH7mR81u3D3cTpXxTjbv12F9VF4Z4CWgUmvk52D2twxqt
+import_key init5 5KVEqMvCQf5CP4Stkd9CW479uwQnDbhCiFxbdRLXgkxS3RchZ6X
+import_key init6 5Jdvatdk3qpZ8Ek9tQyqh3QwQ5mWNZ7kfnwSVwMUsLLmdUAfUwo
+import_key init7 5JWkfkjwaMZDVPtpcLrFW5PNCXfMxxEH3f4HugbcAdJ8o6DrDnD
+import_key init8 5JWX8nDv8WwgdAb4xnXHxaoXRDVvfEtVmCcnKvfnjcoQy4D6h5v
+import_key init9 5JBYS1qMJfjR9orv2Z74w5D7w1vUBzjgme85qSkBc71urkLHLyV
+import_key init10 5HrCGXRsxFFccSyQSuqzmvL98o2RrbgxEDUzxjjS6Uvb1kkAkjS
+```  
