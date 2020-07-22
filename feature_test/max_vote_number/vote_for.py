@@ -363,6 +363,7 @@ def vote_witness_test(vote_account = "nicotest"):
         witness_id = witness[1]
         random_vote_amount = random.randint(1, vote_amount_max)
         vote_for_witness(vote_account=vote_account, witness=witness_account, votes=random_vote_amount)
+    return witnesses
 
 def vote_committee_test(vote_account = "nicotest"):
     # 1. get_object 2.15.0
@@ -398,17 +399,45 @@ def vote_committee_test(vote_account = "nicotest"):
         committee_id = committee[1]
         random_vote_amount = random.randint(1, vote_amount_max)
         vote_for_committee_member(vote_account=vote_account, committee=committee_account, votes=random_vote_amount)
+    return committees
+
+def cancle_vote_for_witness(vote_account, witnesses):
+    for witness in witnesses:
+        witness_account = witness[0]
+        witness_id = witness[1]
+        random_vote_amount = 0
+        vote_for_witness(vote_account=vote_account, witness=witness_account, votes=random_vote_amount)
+
+
+def cancle_vote_for_committees(vote_account, committees):
+    for committee in committees:
+        committee_account = committee[0]
+        committee_id = committee[1]
+        random_vote_amount = 0
+        vote_for_committee_member(vote_account=vote_account, committee=committee_account, votes=random_vote_amount)
 
 def main():
     print("# 1. test cli_wallet api: get_global_extensions_properties")
     get_global_extensions_properties()
 
-    vote_account = "nicotest"
+    #vote_account = "nicotest"
+    vote_account = "release1142"
+
     print("\n# 2. test vote for witness")
-    vote_witness_test(vote_account)
+    witnesses = vote_witness_test(vote_account)
 
     print("\n# 3. test vote for committee")
-    vote_committee_test(vote_account)
+    committees = vote_committee_test(vote_account)
+
+    time.sleep(10)
+    print("\n# 4. test cancle vote for witness")
+    cancle_vote_for_witness(vote_account, witnesses)
+
+    print("\n# 5. test  cancle vote for committee")
+    cancle_vote_for_committees(vote_account, committees)
+
+    print("test vote for xxx done")
+
 
 if __name__ == '__main__':
     # print('>> {}'.format(sys.argv))
