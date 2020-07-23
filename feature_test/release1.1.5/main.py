@@ -13,8 +13,8 @@ host = "127.0.0.1"
 node_bin_path = "./" # node work_dir
 node_bin_filename = "witness_node"
 node_data_dir = "witness_node_data_dir"
-node_p2p_port = 8050
-node_rpc_port = 8049
+node_p2p_port = 8059
+node_rpc_port = 8149
 
 balance_address = ''
 chain_id = '725fdc4a727a6aa84aea37376bb51e419febbf0f59830c05f3e82f607631e5fc'

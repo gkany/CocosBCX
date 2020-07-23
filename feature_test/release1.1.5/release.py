@@ -13,7 +13,7 @@ import string
 
 # config
 host = "127.0.0.1"
-node_rpc_port = 8049
+node_rpc_port = 8149
 wallet_rpc_port = 8047
 
 wallet_password = 123456
@@ -659,7 +659,9 @@ def test_contract_api_integer_max_and_min(account="nicotest"):
 
 def release_contract_api_test(account="nicotest"):
     test_contract_get_contract_public_data(account="nicotest")
+    print("------------------------------------------------\n")
     test_contract_api_integer_max_and_min(account="nicotest")
+    print("------------------------------------------------\n")
 
 def main():
     unlock()
@@ -669,12 +671,15 @@ def main():
 
     print("# cli_wallet api test")
     release_cli_wallet_api(account=test_account)
+    print("=============================================\n")
 
     print("# vote function test")
     release_vote_function(account=test_account)
+    print("=============================================\n")
 
     print("# contract api test")
     release_contract_api_test(account=test_account)
+    print("=============================================\n")
 
 if __name__ == '__main__':
     main()
