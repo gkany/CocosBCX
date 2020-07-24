@@ -1,6 +1,6 @@
 
 # 1. 修改最大投票数测试  
-** 测试过程和结果：**  
+**测试过程和结果：**  
 ```  text  
 ck@ubuntu:~/xukang/CocosBCX/feature_test/release1.1.5/proposal$ python3 proposal.py 
 >> get_dynamic_global_properties []
