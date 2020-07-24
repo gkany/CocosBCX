@@ -98,14 +98,14 @@ def lookup_world_view(world_view):
     }
     return request_post(req_data, is_assert=False, url=chain_url)['result']
 
-def create_nh_asset(creator, owner, world_view, base_desc, brodcast=True):
+def create_nh_asset(creator, owner, world_view, base_desc, asset="COCOS", brodcast=True):
     req_data = {
         "jsonrpc": "2.0",
         "method": "create_nh_asset",
-        "params": [creator, owner, world_view, base_desc, brodcast],
+        "params": [creator, owner, asset, world_view, base_desc, brodcast],
         "id":1
     }
-    return self.request_post(req_data)["result"]
+    return request_post(req_data)["result"]
 
 def create_world_view_if_not_exist(owner, world_view):
     result = lookup_world_view(world_view)
@@ -207,7 +207,7 @@ def get_object(id):
     return request_post(req_data)['result']
 
 def get_contract_call_tx_result(tx_id):
-    # time.sleep(2) # 保证合约已执行
+    time.sleep(3) # 保证合约已执行
     operation_results = get_transaction_by_id(tx_id)['result']['operation_results']
     print("tx_id: {}, result: {}".format(tx_id, operation_results))
     return operation_results
@@ -288,6 +288,9 @@ class contract_api_case_test(unittest.TestCase):
         lookup_world_view(world_view)
 
         # 3. create nh asset        
+        asset = "COCOS"
+
+        tx_result = {}
         base_describes = [
                 "'nh_symbol': '{}'".format(random_uppercases(3)),
                 "'nh_symbol': '{}'".format(random_uppercases(5)),
@@ -298,9 +301,18 @@ class contract_api_case_test(unittest.TestCase):
         ]
 
         for base_describe in base_describes:
-            result = create_nh_asset(g_owner, g_owner, world_view, base_describe)['result']
+            result = create_nh_asset(g_owner, g_owner, world_view, base_describe, asset)
             tx_id = result[0]
             time.sleep(2)
-            get_contract_call_tx_result(tx_id)
+            op_results = get_contract_call_tx_result(tx_id)
+            tx_result[tx_id] = op_results
+
+        print("\n----------------------------")
+        #print(tx_result)
+        for tx_id, result in tx_result.items():
+            print("tx: {}, result: {}".format(tx_id, result))
+        print("----------------------------")
         print('{} done\n'.format(sys._getframe().f_code.co_name))
 
+if __name__ == "__main__":
+    unittest.main()
