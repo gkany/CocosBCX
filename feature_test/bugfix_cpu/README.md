@@ -2,6 +2,37 @@
 主要是磁盘文件的读写，从串行改成并行多任务模式：  
 对应接口主要是：open和flush  
 主要逻辑修改如下：  
+**修改前：**  
+``` c++  
+void object_database::flush()
+{
+   fc::create_directories( _data_dir/ "object_database.tmp" / "lock" );
+   for( uint32_t space = 1; space <graphene::chain::reserved_spaces::RESERVED_SPACES_COUNT; ++space )
+   {
+      fc::create_directories( _data_dir / "object_database.tmp" / fc::to_string(space) );
+      const auto types = _index[space].size();
+      for( uint32_t type = 0; type  <  types; ++type )
+         if( _index[space][type] )
+            _index[space][type]->save( _data_dir / "object_database.tmp" / fc::to_string(space)/fc::to_string(type) );
+   }
+    //......
+}
+
+void object_database::open(const fc::path& data_dir)
+{ 
+    try {
+        _data_dir = data_dir;
+        //......
+        
+        for( uint32_t space = 1; space < graphene::chain::reserved_spaces::RESERVED_SPACES_COUNT; ++space )
+            for( uint32_t type = 0; type  < _index[space].size(); ++type )
+                if( _index[space][type] )
+                    _index[space][type]->open( _data_dir / "object_database" / fc::to_string(space)/fc::to_string(type) );
+    } FC_CAPTURE_AND_RETHROW( (data_dir) ) 
+}
+```  
+
+**修改后：**  
 ``` c++  
 void object_database::flush()
 {
