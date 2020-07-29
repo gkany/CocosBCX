@@ -79,7 +79,17 @@ def handle_log(input="witness_node.log", output="block_time.log"):
     cmd_exec(cmd)
 
 
-# grep "test_handle_block" witness_node.log | cut -d "]" -f 3 | cut -d " " -f 4,7 >> block_time.log
+'''
+>>> cat got_block.log
+2911292ms th_a       application.cpp:538           handle_block         ] Got block: #4960000 time: 2020-03-24T10:27:22 latency: 10945269292 ms from: hashquark  irreversible: 4959992 (-8), now: 2020-07-29T02:48:31
+2920599ms th_a       application.cpp:538           handle_block         ] Got block: #4970000 time: 2020-03-24T16:00:42 latency: 10925278599 ms from: beijing-bp  irreversible: 4969991 (-9), now: 2020-07-29T02:48:40
+2929625ms th_a       application.cpp:538           handle_block         ] Got block: #4980000 time: 2020-03-24T21:34:02 latency: 10905287625 ms from: blockchainkeys  irreversible: 4979992 (-8), now: 2020-07-29T02:48:49
+
+>>> grep "handle_block" got_block.log | grep "Got block" | cut -d "]" -f 2 | cut -d " " -f 4,17
+#4960000 2020-07-29T02:48:31
+#4970000 2020-07-29T02:48:40
+#4980000 2020-07-29T02:48:49
+'''
 def handle_get_block(filename="block_time.log", console=True):
     print("handle {}".format(filename))
     excel_file = xlwt.Workbook() #创建工作簿
@@ -107,9 +117,10 @@ def handle_get_block(filename="block_time.log", console=True):
             print("-------- excel data --------")
             print("block, block range, total_time")
         for line in f:
+            #print("line: {}".format(line))
             excel_row_data = []
-            tokens = line.split(',')
-            block_num = tokens[0].strip()
+            tokens = line.split(' ')
+            block_num = int(tokens[0].strip()[1:-1])
             now_time = tokens[1].strip()
             if last_block == -1:
                 last_block = block_num
@@ -117,7 +128,7 @@ def handle_get_block(filename="block_time.log", console=True):
                 continue
 
             #if int(block_num) - int(last_block) < 10000:
-            if int(block_num) - int(last_block) < 2:
+            if block_num - last_block < 2:
                 print("last_block: {}, block_num: {}".format(last_block, block_num))
                 break
             total_time = calc_elapsed_time(last_time, now_time)
@@ -149,6 +160,14 @@ def handle_get_block(filename="block_time.log", console=True):
     
     result_filename = "{}.xlsx".format(filename.split(".")[0])
     excel_file.save(result_filename) #保存文件
+
+def pre_handle_get_block_log(input="got_block.log", output="block_time.log"):
+    excel_file = "{}.xlsx".format(output.split(".")[0])
+    cmd = 'rm {} {}'.format(output, excel_file)
+    cmd_exec(cmd)
+
+    cmd = 'grep "handle_block" {} | grep "Got block" | cut -d "]" -f 2 | cut -d " " -f 4,17 >> {}'.format(input, output)
+    cmd_exec(cmd)
 
 
 def handle_reIndex_block_log(input="witness_node.log", output="block_time.log"):
@@ -253,11 +272,18 @@ def test_reIndex():
     #handle_reIndex_block_log(input, output)
     handle_reIndex_block_time(filename=output, console=False)
 
+def test_handle_get_block():
+    #input = "/home/dev/CocosBCX/feature_test/bugfix_cpu/got_block.log"
+    input = "got_block.log"
+    pre_handle_get_block_log(input)
+    handle_get_block()
+
 if __name__ == '__main__':
     # handle(filename="data.log")  
     # main()
     # handle_reindex_block_time()
-    test_reIndex()
+    #test_reIndex()
+    test_handle_get_block()
 
 '''
 localhost:reindex a123$ python3 handle_block_time.py 
