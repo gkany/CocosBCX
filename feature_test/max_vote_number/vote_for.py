@@ -12,19 +12,7 @@ import random
 
 # config
 host = "127.0.0.1"
-## witness_node
-node_bin_path = "./" # node work_dir
-node_bin_filename = "witness_node"
-node_data_dir = "witness_node_data_dir"
-node_p2p_port = 8050
 node_rpc_port = 8049
-
-balance_address = ''
-chain_id = '725fdc4a727a6aa84aea37376bb51e419febbf0f59830c05f3e82f607631e5fc'
-
-
-wallet_bin_path = "wallet" # cli_wallet work_dir
-wallet_bin_filename = "cli_wallet"
 wallet_rpc_port = 8047
 
 wallet_password = 123456

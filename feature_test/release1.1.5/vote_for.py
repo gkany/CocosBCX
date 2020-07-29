@@ -420,8 +420,8 @@ def main():
     print("# 1. test cli_wallet api: get_global_extensions_properties")
     get_global_extensions_properties()
 
-    #vote_account = "nicotest"
-    vote_account = "release1142"
+    vote_account = "nicotest"
+    # vote_account = "release1142"
 
     print("\n# 2. test vote for witness")
     witnesses = vote_witness_test(vote_account)
