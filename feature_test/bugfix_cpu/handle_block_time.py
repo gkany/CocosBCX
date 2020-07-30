@@ -274,9 +274,12 @@ def test_reIndex():
 
 def test_handle_get_block():
     #input = "/home/dev/CocosBCX/feature_test/bugfix_cpu/got_block.log"
-    input = "got_block.log"
-    pre_handle_get_block_log(input)
-    handle_get_block()
+    #input = "got_block.log"
+    #input = "got_block_100_record.log"
+    input = "witness_node.log"
+    output = "witness_node_block_time.log"
+    pre_handle_get_block_log(input, output)
+    handle_get_block(output)
 
 if __name__ == '__main__':
     # handle(filename="data.log")  

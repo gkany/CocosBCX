@@ -19,6 +19,7 @@ def check_block(start_block, end_block=-1):
         info = gph.info()
         print("info: {}".format(info))
         end_block = info['head_block_number']
+    print("start block: {}, end_block: {}".format(start_block, end_block))
 
     key_block_num = str(start_block)
     for i in range(int(start_block), int(end_block)):
@@ -63,8 +64,15 @@ def compare_time_test():
     result = compare_time('2020-04-17', '2020-04-19')
     print("result: {}".format(result))
 
+def test1():
+    start_block = 9120000
+    end_block = -1
+    check_block(start_block, end_block)
+
 if __name__ == '__main__':
     print('args: {}'.format(sys.argv))
+    test1()
+    '''
     if len(sys.argv) < 2:
         print('Usage: python3 check.py start_block end_block')
         sys.exit(1)
@@ -73,6 +81,7 @@ if __name__ == '__main__':
     if len(sys.argv) >= 2:
         end_block = sys.argv[2]
     check_block(start_block, end_block)
+    '''
 
 '''
 1. 功能
