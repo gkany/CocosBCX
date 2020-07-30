@@ -184,12 +184,116 @@ def exec_sysbench_cpu(output="sysbench_test"):
     result_filename = "{}.xlsx".format(output)
     excel_file.save(result_filename) #保存文件
 
+'''
+    sysbench --num-threads=2 --test=fileio --file-total-size=1G --file-test-mode=rndrw prepare
+    sysbench --num-threads=2 --test=fileio --file-total-size=2G --file-test-mode=rndrw run
+    sysbench --num-threads=2 --test=fileio --file-total-size=2G --file-test-mode=rndrw cleanup
+    连续/顺序写(seqwr)、连续改写(seqrewr)、连续读(seqrd)、随机读(rndrd)、随机写(rndwr)、随机读写(rndrw)
+'''
+def exec_sysbench_io(output="sysbench_test"):
+    # 1. get cpu cores and sysbench fileio 
+    total_size = '3G'
+    test_modes = ["seqwr", "seqrewr", "seqrd", "rndrd", "rndwr", "rndrw"]
+    io_cores = machine_cpu_cores()
+    io_results = []
+    for test_mode in test_modes:
+        i = 1
+        while i <= io_cores: 
+            # 1. prepare
+            cmd_prepare = 'sysbench --num-threads={} --test=fileio --file-total-size={} --file-test-mode={} prepare'.format(
+                i, total_size, test_mode)
+            cmd_result = str(subprocess_cmd_exec(cmd_prepare), encoding = "utf-8")
+
+            # 2. run and result handle
+            cmd_prepare = 'sysbench --num-threads={} --test=fileio --file-total-size={} --file-test-mode={} run'.format(
+                i, total_size, test_mode)
+            cmd_run_result = str(subprocess_cmd_exec(cmd_prepare), encoding = "utf-8")
+
+            # 3. cleanup
+            cmd_prepare = 'sysbench --num-threads={} --test=fileio --file-total-size={} --file-test-mode={} cleanup'.format(
+                i, total_size, test_mode)
+            cmd_result = str(subprocess_cmd_exec(cmd_prepare), encoding = "utf-8")
+
+            io_result = {}
+            results = cmd_run_result.split("\n")
+            for line in results:
+                line = line.strip()
+                if line.find("Number of threads") != -1:
+                    threads = line.split(":")[1].strip()
+                    io_result["threads"] = threads
+                elif line.find("total time:") != -1:
+                    total_time = line.split(":")[1].strip()
+                    io_result["total_time"] = total_time
+                elif line.find("total number of events:") != -1:
+                    total_events = line.split(":")[1].strip()
+                    io_result["total_events"] = total_events
+                elif line.find("total time taken by event execution:") != -1:
+                    total_event_time = line.split(":")[1].strip()
+                    io_result["total_event_time"] = total_event_time
+                elif line.find("min:") != -1:
+                    per_req_min_time = line.split(":")[1].strip()
+                    io_result["min"] = per_req_min_time
+                elif line.find("avg:") != -1:
+                    per_req_avg_time = line.split(":")[1].strip()
+                    io_result["avg"] = per_req_avg_time
+                elif line.find("max:") != -1:
+                    per_req_max_time = line.split(":")[1].strip()
+                    io_result["max"] = per_req_max_time
+                elif line.find("Read") != -1 and line.find("Written") != -1 and line.find("Total") != -1:
+                    # Read 93.766Mb  Written 62.516Mb  Total transferred 156.28Mb  (105.73Mb/sec)
+                    speed = line.split("(")[1][0:-1]
+                    io_result["speed"] = speed
+            io_result["mode"] = test_mode
+            io_result["total_size"] = total_size
+            io_results.append(io_result)
+            i = 2*i
+    # print(io_results)
+
+    # 2. write file 
+    excel_file = xlwt.Workbook() #创建工作簿
+
+    row0 = ["线程数", "测试模式", "文件大小", "传输速度", "总执行时间", "最小", "最大", "平均"]
+    print(row0)
+
+    default = xlwt.easyxf('font: name Arial;') # define style out the loop will work
+    title = u'sysbench io'
+    sheet = excel_file.add_sheet(title, cell_overwrite_ok=True) #创建sheet
+    write_sheet_title(sheet, row0)
+
+    # write data to excel 
+    column = 1
+    for io_result in io_results:
+        # print(">>> {}".format(io_result))
+        excel_row_data = []
+        excel_row_data.append(io_result["threads"])
+        excel_row_data.append(io_result["mode"])
+        excel_row_data.append(io_result["total_size"])
+        excel_row_data.append(io_result["speed"])
+        excel_row_data.append(io_result["total_time"])
+        excel_row_data.append(io_result["min"])
+        excel_row_data.append(io_result["max"])
+        excel_row_data.append(io_result["avg"])
+        print(excel_row_data)
+
+        try:
+            for i in range(0, len(excel_row_data)):
+                # sheet.write(column, i, excel_row_data[i], set_style())
+                sheet.write(column, i, excel_row_data[i], default)
+        except Exception as e:
+            print("excel_row_data: {}".format(excel_row_data))
+            print("[ERROR] column: {}, error: {}".format(column, repr(e)))
+            break
+        column += 1
+    result_filename = "{}.xlsx".format(output)
+    excel_file.save(result_filename) #保存文件
+
 def cpu_performance_test(output="cpu_performance", console=True):
     print("handle {}".format(filename))
     pass
 
 def main():
-    exec_sysbench_cpu()
+    # exec_sysbench_cpu()
+    exec_sysbench_io()
     pass
 
 if __name__ == '__main__':
@@ -205,4 +309,81 @@ dev@ubuntu:~/data/mrepo/CocosBCX/feature_test/machine_performance$ python3 main.
 ['1', 20000, 50000, '182.2933s', '8.61ms', '13.43ms', '9.11ms']
 ['2', 20000, 50000, '113.5063s', '7.37ms', '73.35ms', '11.35ms']
 ['4', 20000, 50000, '53.7401s', '8.80ms', '24.73ms', '10.75ms']
+
+dev@ubuntu:~/data/mrepo/CocosBCX/feature_test/machine_performance$ python3 main.py 
+>>> cat /proc/cpuinfo| grep "cpu cores"| uniq
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=seqwr prepare
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=seqwr run
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=seqwr cleanup
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=seqwr prepare
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=seqwr run
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=seqwr cleanup
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=seqwr prepare
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=seqwr run
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=seqwr cleanup
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=seqrewr prepare
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=seqrewr run
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=seqrewr cleanup
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=seqrewr prepare
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=seqrewr run
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=seqrewr cleanup
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=seqrewr prepare
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=seqrewr run
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=seqrewr cleanup
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=seqrd prepare
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=seqrd run
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=seqrd cleanup
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=seqrd prepare
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=seqrd run
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=seqrd cleanup
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=seqrd prepare
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=seqrd run
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=seqrd cleanup
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=rndrd prepare
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=rndrd run
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=rndrd cleanup
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=rndrd prepare
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=rndrd run
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=rndrd cleanup
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=rndrd prepare
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=rndrd run
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=rndrd cleanup
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=rndwr prepare
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=rndwr run
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=rndwr cleanup
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=rndwr prepare
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=rndwr run
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=rndwr cleanup
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=rndwr prepare
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=rndwr run
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=rndwr cleanup
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=rndrw prepare
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=rndrw run
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=rndrw cleanup
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=rndrw prepare
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=rndrw run
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=rndrw cleanup
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=rndrw prepare
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=rndrw run
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=rndrw cleanup
+['线程数', '测试模式', '文件大小', '传输速度', '总执行时间', '最小', '最大', '平均']
+['1', 'seqwr', '3G', '59.971Mb/sec', '51.2244s', '0.01ms', '1008.06ms', '0.13ms']
+['2', 'seqwr', '3G', '61.739Mb/sec', '49.7576s', '0.01ms', '801.01ms', '0.31ms']
+['4', 'seqwr', '3G', '47.843Mb/sec', '64.2105s', '0.01ms', '1762.92ms', '0.74ms']
+['1', 'seqrewr', '3G', '59.723Mb/sec', '51.4371s', '0.00ms', '133.49ms', '0.14ms']
+['2', 'seqrewr', '3G', '37.436Mb/sec', '82.0597s', '0.00ms', '1275.23ms', '0.38ms']
+['4', 'seqrewr', '3G', '41.539Mb/sec', '73.9554s', '0.00ms', '1238.20ms', '0.85ms']
+['1', 'seqrd', '3G', '3.7387Gb/sec', '0.8024s', '0.00ms', '2.99ms', '0.00ms']
+['2', 'seqrd', '3G', '4.3322Gb/sec', '0.6925s', '0.00ms', '0.13ms', '0.00ms']
+['4', 'seqrd', '3G', '8.1746Gb/sec', '0.3670s', '0.00ms', '1.89ms', '0.01ms']
+['1', 'rndrd', '3G', '2.9501Gb/sec', '0.0517s', '0.00ms', '1.62ms', '0.00ms']
+['2', 'rndrd', '3G', '4.0476Gb/sec', '0.0377s', '0.00ms', '1.28ms', '0.01ms']
+['4', 'rndrd', '3G', '7.4289Gb/sec', '0.0208s', '0.00ms', '1.60ms', '0.01ms']
+['1', 'rndwr', '3G', '35.752Mb/sec', '4.3704s', '0.01ms', '0.36ms', '0.01ms']
+['2', 'rndwr', '3G', '54.627Mb/sec', '2.8626s', '0.01ms', '1.17ms', '0.02ms']
+['4', 'rndwr', '3G', '53.509Mb/sec', '2.9335s', '0.01ms', '1.35ms', '0.02ms']
+['1', 'rndrw', '3G', '82.387Mb/sec', '1.8965s', '0.00ms', '0.19ms', '0.01ms']
+['2', 'rndrw', '3G', '87.355Mb/sec', '1.7896s', '0.00ms', '1.17ms', '0.01ms']
+['4', 'rndrw', '3G', '90.314Mb/sec', '1.7373s', '0.00ms', '2.95ms', '0.02ms']
+
 '''
