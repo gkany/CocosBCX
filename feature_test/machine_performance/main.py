@@ -100,7 +100,7 @@ def machine_cpu_cores():
     # print("cpu cores: {}".format(cpu_cores))
     return cpu_cores
 
-def exec_sysbench_cpu(output="sysbench_test"):
+def exec_sysbench_cpu(output="dev_sysbench_cpu_test"):
     max_requests = 20000  # 2w
     cpu_max_prime = 50000 # 5w
 
@@ -190,7 +190,7 @@ def exec_sysbench_cpu(output="sysbench_test"):
     sysbench --num-threads=2 --test=fileio --file-total-size=2G --file-test-mode=rndrw cleanup
     连续/顺序写(seqwr)、连续改写(seqrewr)、连续读(seqrd)、随机读(rndrd)、随机写(rndwr)、随机读写(rndrw)
 '''
-def exec_sysbench_io(output="sysbench_test"):
+def exec_sysbench_io(output="dev_sysbench_io_test"):
     # 1. get cpu cores and sysbench fileio 
     total_size = '3G'
     test_modes = ["seqwr", "seqrewr", "seqrd", "rndrd", "rndwr", "rndrw"]
@@ -287,13 +287,101 @@ def exec_sysbench_io(output="sysbench_test"):
     result_filename = "{}.xlsx".format(output)
     excel_file.save(result_filename) #保存文件
 
+
+# sysbench --test=memory --memory-total-size=200G --memory-oper=read run
+def exec_sysbench_memory(output="dev_sysbench_memory_test"):
+    total_size = '200G'
+    memory_opers = ['read', 'write']
+
+    # 1. get memory cores and sysbench memory 
+    memory_results = []
+    for oper in memory_opers:
+        cmd = "sysbench --test=memory --memory-total-size={} --memory-oper={} run".format(
+            total_size, oper)
+        cmd_result = str(subprocess_cmd_exec(cmd), encoding = "utf-8")
+        memory_result = {}
+        results = cmd_result.split("\n")
+        for line in results:
+            line = line.strip()
+            if line.find("Number of threads") != -1:
+                threads = line.split(":")[1].strip()
+                memory_result["threads"] = threads
+            elif line.find("total time:") != -1:
+                total_time = line.split(":")[1].strip()
+                memory_result["total_time"] = total_time
+            elif line.find("total number of events:") != -1:
+                total_events = line.split(":")[1].strip()
+                memory_result["total_events"] = total_events
+            elif line.find("total time taken by event execution:") != -1:
+                total_event_time = line.split(":")[1].strip()
+                memory_result["total_event_time"] = total_event_time
+            elif line.find("min:") != -1:
+                per_req_min_time = line.split(":")[1].strip()
+                memory_result["min"] = per_req_min_time
+            elif line.find("avg:") != -1:
+                per_req_avg_time = line.split(":")[1].strip()
+                memory_result["avg"] = per_req_avg_time
+            elif line.find("max:") != -1:
+                per_req_max_time = line.split(":")[1].strip()
+                memory_result["max"] = per_req_max_time
+            elif line.find("Operations performed:") != -1:
+                op_speed = line.split("(")[1][0:-1]
+                memory_result["op_speed"] = op_speed
+            elif line.find("transferred") != -1:
+                speed = line.split("(")[1][0:-1]
+                memory_result["speed"] = speed
+        memory_result["mode"] = oper
+        memory_result["total_size"] = total_size
+        memory_results.append(memory_result)
+    # print(memory_results)
+
+    # 2. write file 
+    excel_file = xlwt.Workbook() #创建工作簿
+
+    row0 = ["线程数", "测试模式", "总测试数据", "传输性能", "传输速度", "总执行时间", "最小", "最大", "平均"]
+    print(row0)
+
+    default = xlwt.easyxf('font: name Arial;') # define style out the loop will work
+    title = u'sysbench memory'
+    sheet = excel_file.add_sheet(title, cell_overwrite_ok=True) #创建sheet
+    write_sheet_title(sheet, row0)
+
+    # write data to excel 
+    column = 1
+    for memory_result in memory_results:
+        # print(">>> {}".format(memory_result))
+        excel_row_data = []
+        excel_row_data.append(memory_result["threads"])
+        excel_row_data.append(memory_result["mode"])
+        excel_row_data.append(memory_result["total_size"])
+        excel_row_data.append(memory_result["op_speed"])
+        excel_row_data.append(memory_result["speed"])
+        excel_row_data.append(memory_result["total_time"])
+        excel_row_data.append(memory_result["min"])
+        excel_row_data.append(memory_result["max"])
+        excel_row_data.append(memory_result["avg"])
+        print(excel_row_data)
+
+        try:
+            for i in range(0, len(excel_row_data)):
+                # sheet.write(column, i, excel_row_data[i], set_style())
+                sheet.write(column, i, excel_row_data[i], default)
+        except Exception as e:
+            print("excel_row_data: {}".format(excel_row_data))
+            print("[ERROR] column: {}, error: {}".format(column, repr(e)))
+            break
+        column += 1
+    result_filename = "{}.xlsx".format(output)
+    excel_file.save(result_filename) #保存文件
+
 def cpu_performance_test(output="cpu_performance", console=True):
     print("handle {}".format(filename))
     pass
 
 def main():
     # exec_sysbench_cpu()
-    exec_sysbench_io()
+    # exec_sysbench_io()
+    exec_sysbench_memory()
     pass
 
 if __name__ == '__main__':
@@ -385,5 +473,11 @@ dev@ubuntu:~/data/mrepo/CocosBCX/feature_test/machine_performance$ python3 main.
 ['1', 'rndrw', '3G', '82.387Mb/sec', '1.8965s', '0.00ms', '0.19ms', '0.01ms']
 ['2', 'rndrw', '3G', '87.355Mb/sec', '1.7896s', '0.00ms', '1.17ms', '0.01ms']
 ['4', 'rndrw', '3G', '90.314Mb/sec', '1.7373s', '0.00ms', '2.95ms', '0.02ms']
+
+>>> sysbench --test=memory --memory-total-size=200G --memory-oper=read run
+>>> sysbench --test=memory --memory-total-size=200G --memory-oper=write run
+['线程数', '测试模式', '总测试数据', '传输性能', '传输速度', '总执行时间', '最小', '最大', '平均']
+['1', 'read', '200G', '4519402.85 ops/sec', '4413.48 MB/sec', '46.4033s', '0.00ms', '2.18ms', '0.00ms']
+['1', 'write', '200G', '2916100.03 ops/sec', '2847.75 MB/sec', '71.9163s', '0.00ms', '2.10ms', '0.00ms']
 
 '''
