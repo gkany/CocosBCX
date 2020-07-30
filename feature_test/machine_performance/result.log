@@ -1,0 +1,113 @@
+dev@ubuntu:~/test$ ./fileio.sh 
+sysbench 0.4.12:  multi-threaded system evaluation benchmark
+
+128 files, 16384Kb each, 2048Mb total
+Creating files for the test...
+sysbench 0.4.12:  multi-threaded system evaluation benchmark
+
+Running the test with following options:
+Number of threads: 2
+
+Extra file open flags: 0
+128 files, 16Mb each
+2Gb total file size
+Block size 16Kb
+Number of random requests for random IO: 10000
+Read/Write ratio for combined random IO test: 1.50
+Periodic FSYNC enabled, calling fsync() each 100 requests.
+Calling fsync() at the end of test, Enabled.
+Using synchronous I/O mode
+Doing random r/w test
+Threads started!
+Done.
+
+Operations performed:  6001 Read, 4001 Write, 12800 Other = 22802 Total
+Read 93.766Mb  Written 62.516Mb  Total transferred 156.28Mb  (105.73Mb/sec)
+ 6766.51 Requests/sec executed
+
+Test execution summary:
+    total time:                          1.4782s
+    total number of events:              10002
+    total time taken by event execution: 0.0688
+    per-request statistics:
+         min:                                  0.00ms
+         avg:                                  0.01ms
+         max:                                  0.53ms
+         approx.  95 percentile:               0.01ms
+
+Threads fairness:
+    events (avg/stddev):           5001.0000/61.00
+    execution time (avg/stddev):   0.0344/0.00
+
+sysbench 0.4.12:  multi-threaded system evaluation benchmark
+
+Removing test files...
+dev@ubuntu:~/test$ 
+
+
+dev@ubuntu:~/test$ ./memory.sh 
+sysbench 0.4.12:  multi-threaded system evaluation benchmark
+
+Running the test with following options:
+Number of threads: 1
+
+Doing memory operations speed test
+Memory block size: 1K
+
+Memory transfer size: 204800M
+
+Memory operations type: read
+Memory scope type: global
+Threads started!
+Done.
+
+Operations performed: 209715200 (4278978.07 ops/sec)
+
+204800.00 MB transferred (4178.69 MB/sec)
+
+
+Test execution summary:
+    total time:                          49.0106s
+    total number of events:              209715200
+    total time taken by event execution: 35.0072
+    per-request statistics:
+         min:                                  0.00ms
+         avg:                                  0.00ms
+         max:                                  2.48ms
+         approx.  95 percentile:               0.00ms
+
+Threads fairness:
+    events (avg/stddev):           209715200.0000/0.00
+    execution time (avg/stddev):   35.0072/0.00
+
+
+
+dev@ubuntu:~/test$ ./cpu.sh 
+sysbench 0.4.12:  multi-threaded system evaluation benchmark
+
+Running the test with following options:
+Number of threads: 1
+
+Doing CPU performance benchmark
+
+Threads started!
+Done.
+
+Maximum prime number checked in CPU test: 20000
+
+
+Test execution summary:
+    total time:                          26.4515s
+    total number of events:              10000
+    total time taken by event execution: 26.4489
+    per-request statistics:
+         min:                                  1.88ms
+         avg:                                  2.64ms
+         max:                                  6.38ms
+         approx.  95 percentile:               2.94ms
+
+Threads fairness:
+    events (avg/stddev):           10000.0000/0.00
+    execution time (avg/stddev):   26.4489/0.00
+
+dev@ubuntu:~/test$ 
