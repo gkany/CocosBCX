@@ -374,14 +374,278 @@ def exec_sysbench_memory(output="dev_sysbench_memory_test"):
     result_filename = "{}.xlsx".format(output)
     excel_file.save(result_filename) #保存文件
 
-def cpu_performance_test(output="cpu_performance", console=True):
-    print("handle {}".format(filename))
-    pass
+#################################  rebuild  ###################################
+def sysbench_cpu():
+    max_requests = 20000  # 2w
+    cpu_max_prime = 50000 # 5w
+
+    # 1. get cpu cores and sysbench cpu 
+    cpu_cores = machine_cpu_cores()
+    cpu_results = []
+    i = 1
+    while i <= cpu_cores: 
+        cmd = "sysbench --num-threads={} --max-requests={} --test=cpu --cpu-max-prime={} run".format(
+            i, max_requests, cpu_max_prime)
+        cmd_result = str(subprocess_cmd_exec(cmd), encoding = "utf-8")
+        cpu_result = {}
+        results = cmd_result.split("\n")
+        for line in results:
+            line = line.strip()
+            if line.find("Number of threads") != -1:
+                threads = line.split(":")[1].strip()
+                cpu_result["threads"] = threads
+            elif line.find("total time:") != -1:
+                total_time = line.split(":")[1].strip()
+                cpu_result["total_time"] = total_time
+            elif line.find("total number of events:") != -1:
+                total_events = line.split(":")[1].strip()
+                cpu_result["total_events"] = total_events
+            elif line.find("total time taken by event execution:") != -1:
+                total_event_time = line.split(":")[1].strip()
+                cpu_result["total_event_time"] = total_event_time
+            elif line.find("min:") != -1:
+                per_req_min_time = line.split(":")[1].strip()
+                cpu_result["min"] = per_req_min_time
+            elif line.find("avg:") != -1:
+                per_req_avg_time = line.split(":")[1].strip()
+                cpu_result["avg"] = per_req_avg_time
+            elif line.find("max:") != -1:
+                per_req_max_time = line.split(":")[1].strip()
+                cpu_result["max"] = per_req_max_time
+        cpu_result["max_requests"] = max_requests
+        cpu_result["max_prime"] = cpu_max_prime
+        cpu_results.append(cpu_result)
+        i = 2*i
+    # print(cpu_results)
+    return cpu_results
+
+def sysbench_io():
+    # 1. get cpu cores and sysbench fileio 
+    total_size = '3G'
+    test_modes = ["seqwr", "seqrewr", "seqrd", "rndrd", "rndwr", "rndrw"]
+    io_cores = machine_cpu_cores()
+    io_results = []
+    for test_mode in test_modes:
+        i = 1
+        while i <= io_cores: 
+            # 1. prepare
+            cmd_prepare = 'sysbench --num-threads={} --test=fileio --file-total-size={} --file-test-mode={} prepare'.format(
+                i, total_size, test_mode)
+            cmd_result = str(subprocess_cmd_exec(cmd_prepare), encoding = "utf-8")
+
+            # 2. run and result handle
+            cmd_prepare = 'sysbench --num-threads={} --test=fileio --file-total-size={} --file-test-mode={} run'.format(
+                i, total_size, test_mode)
+            cmd_run_result = str(subprocess_cmd_exec(cmd_prepare), encoding = "utf-8")
+
+            # 3. cleanup
+            cmd_prepare = 'sysbench --num-threads={} --test=fileio --file-total-size={} --file-test-mode={} cleanup'.format(
+                i, total_size, test_mode)
+            cmd_result = str(subprocess_cmd_exec(cmd_prepare), encoding = "utf-8")
+
+            io_result = {}
+            results = cmd_run_result.split("\n")
+            for line in results:
+                line = line.strip()
+                if line.find("Number of threads") != -1:
+                    threads = line.split(":")[1].strip()
+                    io_result["threads"] = threads
+                elif line.find("total time:") != -1:
+                    total_time = line.split(":")[1].strip()
+                    io_result["total_time"] = total_time
+                elif line.find("total number of events:") != -1:
+                    total_events = line.split(":")[1].strip()
+                    io_result["total_events"] = total_events
+                elif line.find("total time taken by event execution:") != -1:
+                    total_event_time = line.split(":")[1].strip()
+                    io_result["total_event_time"] = total_event_time
+                elif line.find("min:") != -1:
+                    per_req_min_time = line.split(":")[1].strip()
+                    io_result["min"] = per_req_min_time
+                elif line.find("avg:") != -1:
+                    per_req_avg_time = line.split(":")[1].strip()
+                    io_result["avg"] = per_req_avg_time
+                elif line.find("max:") != -1:
+                    per_req_max_time = line.split(":")[1].strip()
+                    io_result["max"] = per_req_max_time
+                elif line.find("Read") != -1 and line.find("Written") != -1 and line.find("Total") != -1:
+                    # Read 93.766Mb  Written 62.516Mb  Total transferred 156.28Mb  (105.73Mb/sec)
+                    speed = line.split("(")[1][0:-1]
+                    io_result["speed"] = speed
+            io_result["mode"] = test_mode
+            io_result["total_size"] = total_size
+            io_results.append(io_result)
+            i = 2*i
+    # print(io_results)
+    return io_results
+
+def sysbench_memory():
+    total_size = '200G'
+    memory_opers = ['read', 'write']
+
+    # 1. get memory cores and sysbench memory 
+    memory_results = []
+    for oper in memory_opers:
+        cmd = "sysbench --test=memory --memory-total-size={} --memory-oper={} run".format(
+            total_size, oper)
+        cmd_result = str(subprocess_cmd_exec(cmd), encoding = "utf-8")
+        memory_result = {}
+        results = cmd_result.split("\n")
+        for line in results:
+            line = line.strip()
+            if line.find("Number of threads") != -1:
+                threads = line.split(":")[1].strip()
+                memory_result["threads"] = threads
+            elif line.find("total time:") != -1:
+                total_time = line.split(":")[1].strip()
+                memory_result["total_time"] = total_time
+            elif line.find("total number of events:") != -1:
+                total_events = line.split(":")[1].strip()
+                memory_result["total_events"] = total_events
+            elif line.find("total time taken by event execution:") != -1:
+                total_event_time = line.split(":")[1].strip()
+                memory_result["total_event_time"] = total_event_time
+            elif line.find("min:") != -1:
+                per_req_min_time = line.split(":")[1].strip()
+                memory_result["min"] = per_req_min_time
+            elif line.find("avg:") != -1:
+                per_req_avg_time = line.split(":")[1].strip()
+                memory_result["avg"] = per_req_avg_time
+            elif line.find("max:") != -1:
+                per_req_max_time = line.split(":")[1].strip()
+                memory_result["max"] = per_req_max_time
+            elif line.find("Operations performed:") != -1:
+                op_speed = line.split("(")[1][0:-1]
+                memory_result["op_speed"] = op_speed
+            elif line.find("transferred") != -1:
+                speed = line.split("(")[1][0:-1]
+                memory_result["speed"] = speed
+        memory_result["mode"] = oper
+        memory_result["total_size"] = total_size
+        memory_results.append(memory_result)
+    # print(memory_results)
+    return memory_results
+
+def exec_sysbench(output="dev_sysbench_test"):
+    excel_file = xlwt.Workbook() #创建工作簿
+
+    # 1. write sysbench cpu result
+    print("----------------------------------------------------------------")
+    print("------------------- sysbench cpu ------------------------")
+    cpu_results = sysbench_cpu()
+    row0 = ['线程数', '最大请求数', '计算最大素数', '时间', '最小', '最大', '平均']
+    print(row0)
+
+    default = xlwt.easyxf('font: name Arial;') # define style out the loop will work
+    title = u'sysbench cpu'
+    sheet = excel_file.add_sheet(title, cell_overwrite_ok=True) #创建sheet
+    write_sheet_title(sheet, row0)
+
+    # write data to excel 
+    column = 1
+    for cpu_result in cpu_results:
+        # print(">>> {}".format(cpu_result))
+        excel_row_data = []
+        excel_row_data.append(cpu_result["threads"])
+        excel_row_data.append(cpu_result["max_requests"])
+        excel_row_data.append(cpu_result["max_prime"])
+        excel_row_data.append(cpu_result["total_time"])
+        excel_row_data.append(cpu_result["min"])
+        excel_row_data.append(cpu_result["max"])
+        excel_row_data.append(cpu_result["avg"])
+        print(excel_row_data)
+
+        try:
+            for i in range(0, len(excel_row_data)):
+                # sheet.write(column, i, excel_row_data[i], set_style())
+                sheet.write(column, i, excel_row_data[i], default)
+        except Exception as e:
+            print("excel_row_data: {}".format(excel_row_data))
+            print("[ERROR] column: {}, error: {}".format(column, repr(e)))
+            break
+        column += 1
+
+    # 2. write sysbench io result 
+    print("------------------- sysbench io -------------------------")
+    io_results = sysbench_io()
+    row0 = ["线程数", "测试模式", "文件大小", "传输速度", "总执行时间", "最小", "最大", "平均"]
+    print(row0)
+
+    default = xlwt.easyxf('font: name Arial;') # define style out the loop will work
+    title = u'sysbench io'
+    sheet = excel_file.add_sheet(title, cell_overwrite_ok=True) #创建sheet
+    write_sheet_title(sheet, row0)
+
+    # write data to excel 
+    column = 1
+    for io_result in io_results:
+        # print(">>> {}".format(io_result))
+        excel_row_data = []
+        excel_row_data.append(io_result["threads"])
+        excel_row_data.append(io_result["mode"])
+        excel_row_data.append(io_result["total_size"])
+        excel_row_data.append(io_result["speed"])
+        excel_row_data.append(io_result["total_time"])
+        excel_row_data.append(io_result["min"])
+        excel_row_data.append(io_result["max"])
+        excel_row_data.append(io_result["avg"])
+        print(excel_row_data)
+
+        try:
+            for i in range(0, len(excel_row_data)):
+                # sheet.write(column, i, excel_row_data[i], set_style())
+                sheet.write(column, i, excel_row_data[i], default)
+        except Exception as e:
+            print("excel_row_data: {}".format(excel_row_data))
+            print("[ERROR] column: {}, error: {}".format(column, repr(e)))
+            break
+        column += 1
+
+    # 3. write sysbench memory
+    print("------------------- sysbench memory -------------------------")
+    memory_results = sysbench_memory()
+    row0 = ["线程数", "测试模式", "总测试数据", "传输性能", "传输速度", "总执行时间", "最小", "最大", "平均"]
+    print(row0)
+
+    default = xlwt.easyxf('font: name Arial;') # define style out the loop will work
+    title = u'sysbench memory'
+    sheet = excel_file.add_sheet(title, cell_overwrite_ok=True) #创建sheet
+    write_sheet_title(sheet, row0)
+
+    # write data to excel 
+    column = 1
+    for memory_result in memory_results:
+        # print(">>> {}".format(memory_result))
+        excel_row_data = []
+        excel_row_data.append(memory_result["threads"])
+        excel_row_data.append(memory_result["mode"])
+        excel_row_data.append(memory_result["total_size"])
+        excel_row_data.append(memory_result["op_speed"])
+        excel_row_data.append(memory_result["speed"])
+        excel_row_data.append(memory_result["total_time"])
+        excel_row_data.append(memory_result["min"])
+        excel_row_data.append(memory_result["max"])
+        excel_row_data.append(memory_result["avg"])
+        print(excel_row_data)
+
+        try:
+            for i in range(0, len(excel_row_data)):
+                # sheet.write(column, i, excel_row_data[i], set_style())
+                sheet.write(column, i, excel_row_data[i], default)
+        except Exception as e:
+            print("excel_row_data: {}".format(excel_row_data))
+            print("[ERROR] column: {}, error: {}".format(column, repr(e)))
+            break
+        column += 1
+
+    result_filename = "{}.xlsx".format(output)
+    excel_file.save(result_filename) #保存文件
 
 def main():
     # exec_sysbench_cpu()
     # exec_sysbench_io()
-    exec_sysbench_memory()
+    # exec_sysbench_memory()
+    exec_sysbench()
     pass
 
 if __name__ == '__main__':
@@ -479,5 +743,99 @@ dev@ubuntu:~/data/mrepo/CocosBCX/feature_test/machine_performance$ python3 main.
 ['线程数', '测试模式', '总测试数据', '传输性能', '传输速度', '总执行时间', '最小', '最大', '平均']
 ['1', 'read', '200G', '4519402.85 ops/sec', '4413.48 MB/sec', '46.4033s', '0.00ms', '2.18ms', '0.00ms']
 ['1', 'write', '200G', '2916100.03 ops/sec', '2847.75 MB/sec', '71.9163s', '0.00ms', '2.10ms', '0.00ms']
+
+=================================== rebuild 
+dev@ubuntu:~/data/mrepo/CocosBCX/feature_test/machine_performance$ python3 main.py 
+----------------------------------------------------------------
+------------------- sysbench cpu ------------------------
+>>> cat /proc/cpuinfo| grep "cpu cores"| uniq
+>>> sysbench --num-threads=1 --max-requests=20000 --test=cpu --cpu-max-prime=50000 run
+>>> sysbench --num-threads=2 --max-requests=20000 --test=cpu --cpu-max-prime=50000 run
+>>> sysbench --num-threads=4 --max-requests=20000 --test=cpu --cpu-max-prime=50000 run
+['线程数', '最大请求数', '计算最大素数', '时间', '最小', '最大', '平均']
+['1', 20000, 50000, '149.3717s', '6.73ms', '15.00ms', '7.47ms']
+['2', 20000, 50000, '81.9942s', '6.94ms', '41.18ms', '8.20ms']
+['4', 20000, 50000, '51.7005s', '8.89ms', '57.32ms', '10.34ms']
+------------------- sysbench io -------------------------
+>>> cat /proc/cpuinfo| grep "cpu cores"| uniq
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=seqwr prepare
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=seqwr run
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=seqwr cleanup
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=seqwr prepare
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=seqwr run
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=seqwr cleanup
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=seqwr prepare
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=seqwr run
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=seqwr cleanup
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=seqrewr prepare
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=seqrewr run
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=seqrewr cleanup
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=seqrewr prepare
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=seqrewr run
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=seqrewr cleanup
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=seqrewr prepare
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=seqrewr run
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=seqrewr cleanup
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=seqrd prepare
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=seqrd run
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=seqrd cleanup
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=seqrd prepare
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=seqrd run
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=seqrd cleanup
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=seqrd prepare
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=seqrd run
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=seqrd cleanup
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=rndrd prepare
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=rndrd run
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=rndrd cleanup
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=rndrd prepare
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=rndrd run
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=rndrd cleanup
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=rndrd prepare
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=rndrd run
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=rndrd cleanup
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=rndwr prepare
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=rndwr run
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=rndwr cleanup
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=rndwr prepare
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=rndwr run
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=rndwr cleanup
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=rndwr prepare
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=rndwr run
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=rndwr cleanup
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=rndrw prepare
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=rndrw run
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=rndrw cleanup
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=rndrw prepare
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=rndrw run
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=rndrw cleanup
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=rndrw prepare
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=rndrw run
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=rndrw cleanup
+['线程数', '测试模式', '文件大小', '传输速度', '总执行时间', '最小', '最大', '平均']
+['1', 'seqwr', '3G', '47.731Mb/sec', '64.3613s', '0.01ms', '1136.00ms', '0.22ms']
+['2', 'seqwr', '3G', '46.661Mb/sec', '65.8368s', '0.01ms', '196.30ms', '0.35ms']
+['4', 'seqwr', '3G', '61.491Mb/sec', '49.9586s', '0.01ms', '713.17ms', '0.54ms']
+['1', 'seqrewr', '3G', '47.346Mb/sec', '64.8842s', '0.00ms', '573.71ms', '0.18ms']
+['2', 'seqrewr', '3G', '55.313Mb/sec', '55.5386s', '0.00ms', '875.79ms', '0.32ms']
+['4', 'seqrewr', '3G', '47.587Mb/sec', '64.5552s', '0.00ms', '951.31ms', '0.79ms']
+['1', 'seqrd', '3G', '4.3183Gb/sec', '0.6947s', '0.00ms', '1.34ms', '0.00ms']
+['2', 'seqrd', '3G', '5.918Gb/sec', '0.5069s', '0.00ms', '0.34ms', '0.00ms']
+['4', 'seqrd', '3G', '7.5313Gb/sec', '0.3983s', '0.00ms', '1.56ms', '0.01ms']
+['1', 'rndrd', '3G', '2.9509Gb/sec', '0.0517s', '0.00ms', '0.26ms', '0.00ms']
+['2', 'rndrd', '3G', '4.4864Gb/sec', '0.0340s', '0.00ms', '0.19ms', '0.01ms']
+['4', 'rndrd', '3G', '7.0748Gb/sec', '0.0220s', '0.00ms', '0.70ms', '0.01ms']
+['1', 'rndwr', '3G', '17.303Mb/sec', '9.0302s', '0.00ms', '0.55ms', '0.01ms']
+['2', 'rndwr', '3G', '60.608Mb/sec', '2.5796s', '0.01ms', '1.12ms', '0.01ms']
+['4', 'rndwr', '3G', '63.003Mb/sec', '2.4947s', '0.01ms', '1.22ms', '0.02ms']
+['1', 'rndrw', '3G', '72.954Mb/sec', '2.1417s', '0.00ms', '0.33ms', '0.01ms']
+['2', 'rndrw', '3G', '63.987Mb/sec', '2.4441s', '0.00ms', '0.47ms', '0.01ms']
+['4', 'rndrw', '3G', '95.335Mb/sec', '1.6462s', '0.00ms', '2.80ms', '0.02ms']
+------------------- sysbench memory -------------------------
+>>> sysbench --test=memory --memory-total-size=200G --memory-oper=read run
+>>> sysbench --test=memory --memory-total-size=200G --memory-oper=write run
+['线程数', '测试模式', '总测试数据', '传输性能', '传输速度', '总执行时间', '最小', '最大', '平均']
+['1', 'read', '200G', '4446223.22 ops/sec', '4342.01 MB/sec', '47.1670s', '0.00ms', '0.98ms', '0.00ms']
+['1', 'write', '200G', '3029082.57 ops/sec', '2958.09 MB/sec', '69.2339s', '0.00ms', '10.32ms', '0.00ms']
 
 '''
