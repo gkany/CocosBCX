@@ -646,6 +646,7 @@ def main():
     # exec_sysbench_io()
     # exec_sysbench_memory()
     output = "ck_chain_slave_prod001_sysbench_test"
+    output = "ck_ubuntu_dev_sysbench_test"
     exec_sysbench(output)
     pass
 

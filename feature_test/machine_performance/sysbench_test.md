@@ -196,5 +196,103 @@ root@ck-chain-slave-prod-001:/data/test# python3 main.py
 
 ``` 
 
+# 3. ck ubuntu 测试
+``` text  
+ck@ubuntu:~/xukang/CocosBCX/feature_test/machine_performance$ python3 main.py 
+----------------------------------------------------------------
+------------------- sysbench cpu ------------------------
+>>> cat /proc/cpuinfo| grep "cpu cores"| uniq
+>>> sysbench --num-threads=1 --max-requests=20000 --test=cpu --cpu-max-prime=50000 run
+>>> sysbench --num-threads=2 --max-requests=20000 --test=cpu --cpu-max-prime=50000 run
+>>> sysbench --num-threads=4 --max-requests=20000 --test=cpu --cpu-max-prime=50000 run
+['线程数', '最大请求数', '计算最大素数', '时间', '最小', '最大', '平均']
+['1', 20000, 50000, '252.9125s', '10.37ms', '96.17ms', '12.65ms']
+['2', 20000, 50000, '112.5096s', '10.62ms', '56.78ms', '11.25ms']
+['4', 20000, 50000, '56.6034s', '10.81ms', '98.30ms', '11.32ms']
+------------------- sysbench io -------------------------
+>>> cat /proc/cpuinfo| grep "cpu cores"| uniq
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=seqwr prepare
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=seqwr run
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=seqwr cleanup
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=seqwr prepare
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=seqwr run
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=seqwr cleanup
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=seqwr prepare
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=seqwr run
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=seqwr cleanup
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=seqrewr prepare
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=seqrewr run
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=seqrewr cleanup
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=seqrewr prepare
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=seqrewr run
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=seqrewr cleanup
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=seqrewr prepare
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=seqrewr run
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=seqrewr cleanup
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=seqrd prepare
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=seqrd run
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=seqrd cleanup
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=seqrd prepare
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=seqrd run
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=seqrd cleanup
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=seqrd prepare
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=seqrd run
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=seqrd cleanup
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=rndrd prepare
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=rndrd run
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=rndrd cleanup
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=rndrd prepare
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=rndrd run
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=rndrd cleanup
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=rndrd prepare
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=rndrd run
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=rndrd cleanup
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=rndwr prepare
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=rndwr run
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=rndwr cleanup
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=rndwr prepare
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=rndwr run
+
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=rndwr cleanup
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=rndwr prepare
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=rndwr run
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=rndwr cleanup
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=rndrw prepare
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=rndrw run
+>>> sysbench --num-threads=1 --test=fileio --file-total-size=3G --file-test-mode=rndrw cleanup
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=rndrw prepare
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=rndrw run
+>>> sysbench --num-threads=2 --test=fileio --file-total-size=3G --file-test-mode=rndrw cleanup
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=rndrw prepare
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=rndrw run
+>>> sysbench --num-threads=4 --test=fileio --file-total-size=3G --file-test-mode=rndrw cleanup
+['线程数', '测试模式', '文件大小', '传输速度', '总执行时间', '最小', '最大', '平均']
+['1', 'seqwr', '3G', '99.722Mb/sec', '30.8056s', '0.05ms', '198.54ms', '0.07ms']
+['2', 'seqwr', '3G', '106.52Mb/sec', '28.8402s', '0.05ms', '176.35ms', '0.13ms']
+['4', 'seqwr', '3G', '102.93Mb/sec', '29.8463s', '0.05ms', '109.10ms', '0.25ms']
+['1', 'seqrewr', '3G', '113.91Mb/sec', '26.9688s', '0.04ms', '899.03ms', '0.07ms']
+['2', 'seqrewr', '3G', '115.41Mb/sec', '26.6170s', '0.04ms', '172.25ms', '0.11ms']
+['4', 'seqrewr', '3G', '107.85Mb/sec', '28.4827s', '0.05ms', '1328.23ms', '0.24ms']
+['1', 'seqrd', '3G', '4.869Gb/sec', '0.6161s', '0.00ms', '0.05ms', '0.00ms']
+['2', 'seqrd', '3G', '6.7201Gb/sec', '0.4464s', '0.00ms', '0.04ms', '0.00ms']
+['4', 'seqrd', '3G', '10.817Gb/sec', '0.2773s', '0.00ms', '0.05ms', '0.01ms']
+['1', 'rndrd', '3G', '3.9029Gb/sec', '0.0391s', '0.00ms', '0.04ms', '0.00ms']
+['2', 'rndrd', '3G', '6.1195Gb/sec', '0.0249s', '0.00ms', '0.06ms', '0.00ms']
+['4', 'rndrd', '3G', '9.0658Gb/sec', '0.0172s', '0.00ms', '0.12ms', '0.01ms']
+['1', 'rndwr', '3G', '2.0306Mb/sec', '76.9480s', '0.04ms', '9.98ms', '0.05ms']
+['2', 'rndwr', '3G', '3.0167Mb/sec', '51.7946s', '0.05ms', '11.07ms', '0.07ms']
+['4', 'rndwr', '3G', '3.7083Mb/sec', '42.1651s', '0.05ms', '28.39ms', '0.12ms']
+['1', 'rndrw', '3G', '4.5099Mb/sec', '34.6463s', '0.00ms', '0.12ms', '0.02ms']
+['2', 'rndrw', '3G', '6.5751Mb/sec', '23.7638s', '0.00ms', '8.89ms', '0.03ms']
+['4', 'rndrw', '3G', '6.7792Mb/sec', '23.0529s', '0.00ms', '250.31ms', '0.08ms']
+------------------- sysbench memory -------------------------
+>>> sysbench --test=memory --memory-total-size=200G --memory-oper=read run
+>>> sysbench --test=memory --memory-total-size=200G --memory-oper=write run
+['线程数', '测试模式', '总测试数据', '传输性能', '传输速度', '总执行时间', '最小', '最大', '平均']
+['1', 'read', '200G', '4147751.54 ops/sec', '4050.54 MB/sec', '50.5612s', '0.00ms', '13.60ms', '0.00ms']
+['1', 'write', '200G', '2958079.82 ops/sec', '2888.75 MB/sec', '70.8957s', '0.00ms', '6.78ms', '0.00ms']
+
+```  
+
 
 
