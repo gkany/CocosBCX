@@ -1,0 +1,4 @@
+*.log
+cli_wallet
+cli_wallet.tar.gz
+wallet.json  

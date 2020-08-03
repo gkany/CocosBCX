@@ -134,3 +134,18 @@ import_key init8 5JWX8nDv8WwgdAb4xnXHxaoXRDVvfEtVmCcnKvfnjcoQy4D6h5v
 import_key init9 5JBYS1qMJfjR9orv2Z74w5D7w1vUBzjgme85qSkBc71urkLHLyV
 import_key init10 5HrCGXRsxFFccSyQSuqzmvL98o2RrbgxEDUzxjjS6Uvb1kkAkjS
 ```  
+
+### 链环境  
+#### 测试网  
+``` text  
+./cli_wallet --chain-id 1ae3653a3105800f5722c5bda2b55530d0e9e8654314e2f3dc6d2b010da641c5 -s wss://test.cocosbcx.net  -r 0.0.0.0:8037
+
+```  
+
+#### 主网  
+``` text  
+./cli_wallet --chain-id 6057d856c398875cac2650fe33caef3d5f6b403d184c5154abbff526ec1143c4 -s wss://api.cocosbcx.net  -r 0.0.0.0:8036
+
+``` 
+ 
+
