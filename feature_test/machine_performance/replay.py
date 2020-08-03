@@ -91,8 +91,8 @@ def handle_replay_log(filename="witness_node_replay_ck_chain_slave_prod_001.log"
     print("handle {}".format(filename))
     excel_file = xlwt.Workbook() #创建工作簿
     sheet1 = excel_file.add_sheet(u'节点replay数据统计', cell_overwrite_ok=True) #创建sheet
-    row0 = [u'区块', u'区块范围', u'总耗时/单位秒', u'write db耗时/单位秒', u'apply or push block']
-    column_widths = [256*20, 256*20, 256*20, 256*20, 256*20]
+    row0 = [u'区块', u'区块范围', u'总耗时/单位秒', u'write db耗时/单位秒', u'apply or push block耗时/单位秒']
+    column_widths = [256*20, 256*20, 256*20, 256*20, 256*30]
 
     #生成第一行
     for i in range(0, len(row0)):
