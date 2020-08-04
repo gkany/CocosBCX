@@ -1,6 +1,7 @@
 
 # ck-chain-slave-prod-001:/data/cocos/release_test 测试  
 ``` text  
+
 >>> rm witness_node_replay_ck_chain_slave_prod_001.log witness_node_replay_ck_chain_slave_prod_001.xlsx
 >>> grep "wrote database to disk at block" witness_node.log | cut -d "]" -f 2 | cut -d " " -f 8,11-14 >> witness_node_replay_ck_chain_slave_prod_001.log
 handle witness_node_replay_ck_chain_slave_prod_001.log
@@ -100,7 +101,13 @@ block_num, block_range, total_time, write_db_time, apply_or_push_block_time
 9580000, 9580000~9690000, -, 1.93737, -
 9690000, 9690000~9690000, -, 1.49754, -
 9690000, 9690000~9790000, 9096, 2.56852, 9093.43148
+9790000, 9790000~9900000, 16096, 3.57337, 16092.42663
+9900000, 9900000~10000000, 15188, 4.45384, 15183.54616
+10000000, 10000000~10110000, 7371, 5.59464, 7365.40536
+10110000, 10110000~10210000, 7890, 6.58679, 7883.41321
+10210000, 10210000~10320000, 1698, 6.82722, 1691.17278
+10320000, 10320000~10420000, 31, 6.76752, 24.23248
 -------- excel data END --------
-[elapsed_time] max: 9096, min: 9096
+[elapsed_time] max: 16096, min: 31
 ```  
 
