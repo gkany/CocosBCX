@@ -277,7 +277,7 @@ def test_handle_get_block():
     #input = "got_block.log"
     #input = "got_block_100_record.log"
     input = "witness_node.log"
-    output = "witness_node_block_time_ck_chain_slave_prod_001.log"
+    output = "witness_node_get_block_time_ck_chain_slave_prod_001.log"
     pre_handle_get_block_log(input, output)
     handle_get_block(output)
 
