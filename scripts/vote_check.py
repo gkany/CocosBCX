@@ -6,12 +6,15 @@ import requests
 import operator
 
 node_rpc_urls = {
-    "mainnet-fn": "https://api.cocosbcx.net", #
-    "test-node-release8543": "http://127.0.0.1:8543",
-    "test-node-release8249": "http://127.0.0.1:8249"
-}
+        "mainnet-fn": "https://api.cocosbcx.net", #
+        "test-node-release8543": "http://127.0.0.1:8543",
+        "test-node-release8249": "http://127.0.0.1:8249"
+        }
 
 headers = {"content-type": "application/json"}
+
+token = "ef1b32d74e29f20dab8aa3f3983219de65bf1a70cb2e2085a8b5fe1adfedb7bb"
+alert_address = "https://oapi.dingtalk.com/robot/send?access_token=" + token
 
 def request_post(url, req_data, is_assert=True):
     response = json.loads(requests.post(url, data = json.dumps(req_data), headers = headers).text)
@@ -20,6 +23,22 @@ def request_post(url, req_data, is_assert=True):
     if is_assert:
         assert 'error' not in response
     return response
+
+def send_message(messages, label=['vote_check']):
+    try:
+        body_relay = {
+                "jsonrpc": "2.0",
+                "msgtype": "text",
+                "text": {
+                    "content": str(label) + str(messages)
+                    },
+                "id":1
+                }
+        response = json.loads(requests.post(alert_address, data=json.dumps(body_relay), headers=headers).text)
+        print('request response: {}'.format(response))
+    except Exception as e:
+        print("task error: '{}'".format(repr(e)))
+
 
 ###################### class Vote Object
 class VoteObj(object):
@@ -65,20 +84,20 @@ class VoteObj(object):
 # curl http://127.0.0.1:8049 -d '{"id":1, "method": "call", "params": [0, "get_witnesses", [["1.6.23"]]]}' && echo ""
 def get_node_witness(url, witnesses=["1.6.1", "1.6.2"]):
     req_data = {
-        "jsonrpc": "2.0",
-        "method": "call",
-        "params": [0, "get_witnesses", [witnesses]],
-        "id":1
-    }
+            "jsonrpc": "2.0",
+            "method": "call",
+            "params": [0, "get_witnesses", [witnesses]],
+            "id":1
+            }
     return request_post(url, req_data)["result"]
 
 def get_node_committee_members(url, members=["1.5.1", "1.5.2"]):
     req_data = {
-        "jsonrpc": "2.0",
-        "method": "call",
-        "params": [0, "get_committee_members", [members]],
-        "id":1
-    }
+            "jsonrpc": "2.0",
+            "method": "call",
+            "params": [0, "get_committee_members", [members]],
+            "id":1
+            }
     return request_post(url, req_data)["result"]
 
 # curl https://api.cocosbcx.net -d '{"id":1, "method":"call", "params":[0,"get_global_properties",[]]}' && echo ""
@@ -88,11 +107,11 @@ def get_global_properties():
         url = value
         break
     req_data = {
-        "jsonrpc": "2.0",
-        "method": "call",
-        "params": [0, "get_global_properties", []],
-        "id":1
-    }
+            "jsonrpc": "2.0",
+            "method": "call",
+            "params": [0, "get_global_properties", []],
+            "id":1
+            }
     return request_post(url, req_data)["result"]
 
 def get_witnesses_votes(url, witnesses=[]):
@@ -132,12 +151,14 @@ def compare_witness_vote():
                 vote_obj.show_supporters_different(last_vote)
                 diffent_ids.append(id)
         if diffent_ids:
-            diffent_key = last_key + "--" + key
+            #diffent_key = last_key + "--" + key
+            diffent_key = last_key + "对比" + key
             diffent[diffent_key] = diffent_ids
         print("\ncompare node active_witness votes: {} and {} done.".format(last_key, key))
         last_key = key
         last_votes = votes
     print("\ncompare witnesses votes done. diffent witness: {}\n".format(diffent))
+    return diffent
 
 def compare_committee_members_vote():
     active_committee_members = get_global_properties()["active_committee_members"]
@@ -160,16 +181,25 @@ def compare_committee_members_vote():
                 vote_obj.show_supporters_different(last_vote)
                 diffent_ids.append(id)
         if diffent_ids:
-            diffent_key = last_key + "--" + key
+            #diffent_key = last_key + "--" + key
+            diffent_key = last_key + "对比" + key
             diffent[diffent_key] = diffent_ids
         print("\ncompare node {} and {} active_committee votes done. ".format(last_key, key))
         last_key = key
         last_votes = votes
     print("\ncompare committee members votes done. diffent committee: {}\n".format(diffent))
-        
+    return diffent
+
 def vote_check():
-    compare_witness_vote()
-    compare_committee_members_vote()
+    witness_diff = compare_witness_vote()
+    committee_diff = compare_committee_members_vote()
+    messages = {
+            "对比节点列表": node_rpc_urls.keys(),
+            "节点见证人投票数据异常的见证人ID列表": witness_diff,
+            "节点理事会投票数据异常的理事会ID列表": committee_diff
+            }
+    print(messages)
+    send_message(messages)
     print("vote check done.")
 
 def main():
