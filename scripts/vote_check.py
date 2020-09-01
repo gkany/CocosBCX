@@ -7,7 +7,8 @@ import requests
 
 urls = {
     "default": "https://api.cocosbcx.net", #
-    # "node1": "http://127.0.0.1:8049"
+    "release8543": "http://127.0.0.1:8543",
+    "release8249": "http://127.0.0.1:8249"
 }
 
 headers = {"content-type": "application/json"}
@@ -15,7 +16,7 @@ headers = {"content-type": "application/json"}
 def request_post(url, req_data, is_assert=True):
     response = json.loads(requests.post(url, data = json.dumps(req_data), headers = headers).text)
     # print('>> {} {}\n{}\n'.format(req_data['method'], req_data['params'], response))
-    print('>> {} {}\n'.format(req_data['method'], req_data['params']))
+    print('>>[{}] {} {}\n'.format(url, req_data['method'], req_data['params']))
     if is_assert:
         assert 'error' not in response
     return response
@@ -26,7 +27,7 @@ class VoteObj(object):
         self.id = obj["id"]
         self.url = obj["url"]
         self.vote_id = obj["vote_id"]
-        self.supporters = obj["supporters"]
+        #self.supporters = obj["supporters"]
         if is_witness:
             self.account = obj["witness_account"]
         else:
@@ -36,6 +37,12 @@ class VoteObj(object):
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
+
+    def __str__(self):
+        #return "id:{}, url:{}, vote_id:{}, account:{}, total_votes:{}, work_status:{}, supporters:{}".format(
+        #        self.id, self.url, self.vote_id, self.account, self.total_votes, self.work_status, self.supporters)
+        return "id:{}, url:{}, vote_id:{}, account:{}, total_votes:{}, work_status:{}".format(
+                self.id, self.url, self.vote_id, self.account, self.total_votes, self.work_status)
 
 ##########################
 
@@ -89,16 +96,47 @@ def get_committee_members_votes(url, members=[]):
 def compare_witness_vote():
     active_witnesses = get_global_properties()["active_witnesses"]
     results = {}
-    for key, url in  urls.items():
+    for key, url in urls.items():
         results[key] = get_witnesses_votes(url, active_witnesses)
-    print(results)
+    #print(results)
+    last_key = None
+    last_votes = None
+    for key, votes in results.items():
+        if not last_votes:
+            last_key = key
+            last_votes = votes
+            continue
+        for id, vote_obj in votes.items():
+            last_vote = last_votes[id]
+            #print("----------------")
+            #print(vote_obj,"\n",last_vote)
+            assert vote_obj == last_vote
+        print("compare active_witness votes: {} == {} done.".format(last_key, key))
+        last_key = key
+        last_votes = votes
 
 def compare_committee_members_vote():
     active_committee_members = get_global_properties()["active_committee_members"]
     results = {}
     for key, url in urls.items():
         results[key] = get_committee_members_votes(url, active_committee_members)
-    print(results)
+    #print(results)
+    last_key = None
+    last_votes = None
+    for key, votes in results.items():
+        if not last_votes:
+            last_key = key
+            last_votes = votes
+            continue
+        for id, vote_obj in votes.items():
+            last_vote = last_votes[id]
+            #print("----------------")
+            #print(vote_obj,"\n",last_vote)
+            assert vote_obj == last_vote
+        print("compare active_committee votes: {} == {} done.".format(last_key, key))
+        last_key = key
+        last_votes = votes
+        
 
 def vote_check():
     compare_witness_vote()
