@@ -16,7 +16,7 @@ headers = {"content-type": "application/json"}
 def request_post(url, req_data, is_assert=True):
     response = json.loads(requests.post(url, data = json.dumps(req_data), headers = headers).text)
     # print('>> {} {}\n{}\n'.format(req_data['method'], req_data['params'], response))
-    print('>>[{}] {} {}\n'.format(url, req_data['method'], req_data['params']))
+    print('>>{} {} from {}\n'.format(req_data['method'], req_data['params'], url))
     if is_assert:
         assert 'error' not in response
     return response
@@ -114,6 +114,7 @@ def compare_witness_vote():
         print("compare active_witness votes: {} == {} done.".format(last_key, key))
         last_key = key
         last_votes = votes
+    print("compare witnesses votes done.\n")
 
 def compare_committee_members_vote():
     active_committee_members = get_global_properties()["active_committee_members"]
@@ -136,6 +137,7 @@ def compare_committee_members_vote():
         print("compare active_committee votes: {} == {} done.".format(last_key, key))
         last_key = key
         last_votes = votes
+    print("compare committee members votes done.\n")
         
 
 def vote_check():
