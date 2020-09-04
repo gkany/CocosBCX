@@ -6,9 +6,10 @@ import requests
 import operator
 
 node_rpc_urls = {
-        "mainnet-fn": "https://api.cocosbcx.net", #
-        "test-node-release8543": "http://127.0.0.1:8543",
-        "test-node-release8249": "http://127.0.0.1:8249"
+        #"mainnet-fn": "https://api.cocosbcx.net", 
+        #"fn-prod01": "http://10.22.0.14:8049",
+        "fn-prod02": "http://10.22.0.7:8049",
+        "fn-prod03": "http://10.22.0.17:8049"
         }
 
 headers = {"content-type": "application/json"}
@@ -25,6 +26,7 @@ def request_post(url, req_data, is_assert=True):
     return response
 
 def send_message(messages, label=['vote_check']):
+    return
     try:
         body_relay = {
                 "jsonrpc": "2.0",

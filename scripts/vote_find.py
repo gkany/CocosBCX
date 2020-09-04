@@ -6,7 +6,9 @@ import requests
 import operator
 import argparse
 
-node_rpc_url = "https://api.cocosbcx.net"
+#node_rpc_url = "https://api.cocosbcx.net"
+node_rpc_url = "http://127.0.0.1:8049"
+node_rpc_url = "http://10.22.0.17:8049"
 
 headers = {"content-type": "application/json"}
 
@@ -187,7 +189,14 @@ def vote_find(vote_object=None, vote_accounts=[]):
                     vote_obj = VoteObj(obj)
                     supporters = vote_obj.supporters
                     if supporters and account in supporters.keys():
+                        print("\n>>>>>>>>>>>>>> {}, vote_object_id: {}, vote_id: {}".format(account, vote_obj.id, vote_obj.vote_id))
+                        print("supporters.keys: ", supporters.keys())
+                        #account_votes[vote_obj.id] = [vote_obj.vote_id, supporters[account]]
                         account_votes[vote_obj.id] = supporters[account]
+                    else:
+                        account_votes[vote_obj.id] = [vote_obj.vote_id, "Supporter Vote miss"]
+                        print("\n---------------- {} -----------------: vote_object_id: {}, vote_id: {}".format(account, vote_obj.id, vote_obj.vote_id))
+                        print("supporters.keys: ", supporters.keys())
             result[account] = account_votes
     else:
         is_witness, id = get_vote_object_id(vote_object)
