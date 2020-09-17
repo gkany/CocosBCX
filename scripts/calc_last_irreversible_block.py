@@ -102,37 +102,48 @@ if __name__ == '__main__':
 
 
 '''
-### test1
 dev@ubuntu:~/data/CocosBCX/scripts$ python3 calc_last_irreversible_block.py 
-id: 2.1.0, head_block_number: 12444885, last_irreversible_block_num: 12444865
-witness size: 11, offset: 3, offset block_num: 12444882
+id: 2.1.0, head_block_number: 12456780, last_irreversible_block_num: 12456768
 
-last_irreversible_block_num    : 12444865
-new_last_irreversible_block_num: 12444870
->> [DB]update_last_irreversible_block: 12444870
-id: 2.1.0, head_block_number: 12444885, last_irreversible_block_num: 12444865
-dev@ubuntu:~/data/CocosBCX/scripts$ 
+witness:1.6.15, account: blockchainkeys, last_confirmed_block_num: 12456777
+witness:1.6.17, account: cpower, last_confirmed_block_num: 12456779
+witness:1.6.20, account: dongdongxixi2020, last_confirmed_block_num: 12420111
+witness:1.6.23, account: chainplay-bp, last_confirmed_block_num: 12456773
+witness:1.6.25, account: bigcocos, last_confirmed_block_num: 12456776
+witness:1.6.26, account: ladys-bp, last_confirmed_block_num: 12456767
+witness:1.6.27, account: cocostomoon, last_confirmed_block_num: 12456778
+witness:1.6.29, account: moonriver, last_confirmed_block_num: 12450926
+witness:1.6.34, account: imcocos-bp, last_confirmed_block_num: 12456768
+witness:1.6.35, account: cocos-ying, last_confirmed_block_num: 12456775
+witness:1.6.36, account: we-chat, last_confirmed_block_num: 12456780
 
-### test2
-dev@ubuntu:~/data/CocosBCX/scripts$ python3 calc_last_irreversible_block.py 
-id: 2.1.0, head_block_number: 12444885, last_irreversible_block_num: 12444865
-witness size: 11, offset: 3, offset block_num: 12444882
+witness size: 11, offset: 3, offset block_num: 12456773
 
-last_irreversible_block_num    : 12444865
-new_last_irreversible_block_num: 12444870
->> [DB]update_last_irreversible_block: 12444870
-id: 2.1.0, head_block_number: 12444885, last_irreversible_block_num: 12444865
-dev@ubuntu:~/data/CocosBCX/scripts$ 
-dev@ubuntu:~/data/CocosBCX/scripts$ 
-
-### test3
-dev@ubuntu:~/data/CocosBCX/scripts$ python3 calc_last_irreversible_block.py 
-id: 2.1.0, head_block_number: 12452183, last_irreversible_block_num: 12450924
-witness size: 11, offset: 3, offset block_num: 12452182
-
-last_irreversible_block_num    : 12450924
-new_last_irreversible_block_num: 12444867
+last_irreversible_block_num    : 12456768
+new_last_irreversible_block_num: 12456768
 >> Don't update_last_irreversible_block
-id: 2.1.0, head_block_number: 12452184, last_irreversible_block_num: 12450924
+id: 2.1.0, head_block_number: 12456781, last_irreversible_block_num: 12456773
+dev@ubuntu:~/data/CocosBCX/scripts$ 
+dev@ubuntu:~/data/CocosBCX/scripts$ python3 calc_last_irreversible_block.py 
+id: 2.1.0, head_block_number: 12456783, last_irreversible_block_num: 12456776
+
+witness:1.6.15, account: blockchainkeys, last_confirmed_block_num: 12456777
+witness:1.6.17, account: cpower, last_confirmed_block_num: 12456779
+witness:1.6.20, account: dongdongxixi2020, last_confirmed_block_num: 12420111
+witness:1.6.23, account: chainplay-bp, last_confirmed_block_num: 12456782
+witness:1.6.25, account: bigcocos, last_confirmed_block_num: 12456776
+witness:1.6.26, account: ladys-bp, last_confirmed_block_num: 12456781
+witness:1.6.27, account: cocostomoon, last_confirmed_block_num: 12456778
+witness:1.6.29, account: moonriver, last_confirmed_block_num: 12450926
+witness:1.6.34, account: imcocos-bp, last_confirmed_block_num: 12456783
+witness:1.6.35, account: cocos-ying, last_confirmed_block_num: 12456784
+witness:1.6.36, account: we-chat, last_confirmed_block_num: 12456780
+
+witness size: 11, offset: 3, offset block_num: 12456782
+
+last_irreversible_block_num    : 12456776
+new_last_irreversible_block_num: 12456777
+>> [DB]update_last_irreversible_block: 12456777
+id: 2.1.0, head_block_number: 12456784, last_irreversible_block_num: 12456777
 dev@ubuntu:~/data/CocosBCX/scripts$ 
 '''
