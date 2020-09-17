@@ -56,25 +56,32 @@ def update_last_irreversible_block():
     witness_last_blocks = []
     gpo = get_objects("2.0.0")[0]
     dpo = get_objects("2.1.0")[0]
-    print("id: {}, head_block_number: {}, last_irreversible_block_num: {}".format(
+    last_irreversible_block_num = dpo['last_irreversible_block_num']
+    print("id: {}, head_block_number: {}, last_irreversible_block_num: {}\n".format(
         dpo['id'],dpo['head_block_number'], dpo['last_irreversible_block_num']))
     active_witnesses = gpo['active_witnesses']
     for witness_id in active_witnesses:
         witness = get_objects(witness_id)[0]
         last_confirmed_block_num = witness['last_confirmed_block_num']
         witness_last_blocks.append(last_confirmed_block_num)
+        witness_account_obj = get_objects(witness["witness_account"])[0]
+        if last_confirmed_block_num < last_irreversible_block_num - 11:
+            print("\033[1;32;40mwitness:{}, account: {}, last_confirmed_block_num: {}\033[0m".format(
+                witness['id'], witness_account_obj["name"], last_confirmed_block_num))
+        else:
+            print("witness:{}, account: {}, last_confirmed_block_num: {}".format(
+                witness['id'], witness_account_obj["name"], last_confirmed_block_num))
 
     witness_size = len(witness_last_blocks) 
     offset = math.floor(((GRAPHENE_100_PERCENT - GRAPHENE_IRREVERSIBLE_THRESHOLD) * witness_size / GRAPHENE_100_PERCENT))
     # print('>> witness size: {}, offset: {}'.format(witness_size, offset))
 
     block_nums = np.array(witness_last_blocks)
-    print('witness size: {}, offset: {}, offset block_num: {}'.format(witness_size, offset, block_nums[offset]))
+    print('\nwitness size: {}, offset: {}, offset block_num: {}'.format(witness_size, offset, block_nums[offset]))
     part_numbers = np.partition(block_nums, offset)
     # print('\npartition sort: ', part_numbers)
 
     new_last_irreversible_block_num = part_numbers[offset]
-    last_irreversible_block_num = dpo['last_irreversible_block_num']
     print('\nlast_irreversible_block_num    : {}'.format(last_irreversible_block_num))
     print('new_last_irreversible_block_num: {}'.format(new_last_irreversible_block_num))
     msg = ""
