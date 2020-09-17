@@ -77,10 +77,12 @@ def update_last_irreversible_block():
     last_irreversible_block_num = dpo['last_irreversible_block_num']
     print('\nlast_irreversible_block_num    : {}'.format(last_irreversible_block_num))
     print('new_last_irreversible_block_num: {}'.format(new_last_irreversible_block_num))
+    msg = ""
     if new_last_irreversible_block_num > last_irreversible_block_num:
-        print('>> [DB]update_last_irreversible_block: {}'.format(new_last_irreversible_block_num))
+        msg = ">> [DB]update_last_irreversible_block: {}".format(new_last_irreversible_block_num)
     else:
-        print(">> Don't update_last_irreversible_block")
+        msg = ">> Don't update_last_irreversible_block"
+    print("\033[1;32;40m{}\033[0m".format(msg))
 
 def main():
     update_last_irreversible_block()
