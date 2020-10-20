@@ -6,7 +6,17 @@ import requests
 import operator
 import argparse
 
-node_rpc_url = "https://api.cocosbcx.net"
+node_rpc_urls = {
+        "mainnet-fn": "https://api.cocosbcx.net",
+        "fn-prod01": "http://10.22.0.14:8049",
+        "fn-prod02": "http://10.22.0.7:8049",
+        "fn-prod03": "http://10.22.0.17:8049",
+        "fn-prod04": "http://10.22.0.3:8049"
+}
+
+chain_env_key = "fn-prod02"
+#node_rpc_url = "https://api.cocosbcx.net"
+node_rpc_url = node_rpc_urls[chain_env_key]
 
 headers = {"content-type": "application/json"}
 
@@ -231,6 +241,7 @@ if __name__ == '__main__':
     vote_object = args.vote_object
 
     result = vote_check_total(vote_object)
+    print("chain_env_key: {}, url: {}".format(chain_env_key, node_rpc_urls[chain_env_key]))
     if result:
         print("check result: ", json.dumps(result, indent=4))
     else:

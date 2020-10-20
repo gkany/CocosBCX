@@ -7,9 +7,10 @@ import operator
 
 node_rpc_urls = {
         #"mainnet-fn": "https://api.cocosbcx.net", 
-        #"fn-prod01": "http://10.22.0.14:8049",
+        "fn-prod01": "http://10.22.0.14:8049",
         "fn-prod02": "http://10.22.0.7:8049",
-        "fn-prod03": "http://10.22.0.17:8049"
+        "fn-prod03": "http://10.22.0.17:8049",
+        "fn-prod04": "http://10.22.0.3:8049"
         }
 
 headers = {"content-type": "application/json"}
@@ -20,7 +21,7 @@ alert_address = "https://oapi.dingtalk.com/robot/send?access_token=" + token
 def request_post(url, req_data, is_assert=True):
     response = json.loads(requests.post(url, data = json.dumps(req_data), headers = headers).text)
     # print('>> {} {}\n{}\n'.format(req_data['method'], req_data['params'], response))
-    print('>>{} {} from {}\n'.format(req_data['method'], req_data['params'], url))
+    #print('>>{} {} from {}\n'.format(req_data['method'], req_data['params'], url))
     if is_assert:
         assert 'error' not in response
     return response
@@ -153,8 +154,8 @@ def compare_witness_vote():
                 vote_obj.show_supporters_different(last_vote)
                 diffent_ids.append(id)
         if diffent_ids:
-            #diffent_key = last_key + "--" + key
-            diffent_key = last_key + "对比" + key
+            diffent_key = last_key + "--" + key
+            #diffent_key = last_key + "对比" + key
             diffent[diffent_key] = diffent_ids
         print("\ncompare node active_witness votes: {} and {} done.".format(last_key, key))
         last_key = key
@@ -183,8 +184,8 @@ def compare_committee_members_vote():
                 vote_obj.show_supporters_different(last_vote)
                 diffent_ids.append(id)
         if diffent_ids:
-            #diffent_key = last_key + "--" + key
-            diffent_key = last_key + "对比" + key
+            diffent_key = last_key + "--" + key
+            #diffent_key = last_key + "对比" + key
             diffent[diffent_key] = diffent_ids
         print("\ncompare node {} and {} active_committee votes done. ".format(last_key, key))
         last_key = key
@@ -195,12 +196,13 @@ def compare_committee_members_vote():
 def vote_check():
     witness_diff = compare_witness_vote()
     committee_diff = compare_committee_members_vote()
+    
     messages = {
-            "对比节点列表": node_rpc_urls.keys(),
-            "节点见证人投票数据异常的见证人ID列表": witness_diff,
-            "节点理事会投票数据异常的理事会ID列表": committee_diff
+            "Compared Nodes": list(node_rpc_urls.keys()),
+            "Inconsistent active witness": witness_diff,
+            "Inconsistent active committee": committee_diff
             }
-    print(messages)
+    print(json.dumps(messages, indent=4))
     send_message(messages)
     print("vote check done.")
 
